@@ -1,1 +1,159 @@
-# btp-env-java
+# BTP Environment for Java
+Utility for easily reading application configurations for bound services and certificates in the SAP Cloud Platform Cloud Foundry and Kubernetes (K8S) environment.
+
+## Cloud Foundry Specifics
+Cloud Foundry provides application configurations via environment variables.
+The properties of the bound services are in [VCAP_SERVICES](http://docs.cloudfoundry.org/devguide/deploy-apps/environment-variable.html#VCAP-SERVICES) environment variable.
+
+### Service Binding
+In Cloud Foundry you bind a service instance to your application either via a deployment descriptor or with a command like this:
+```sh
+cf bind-service <app-name> <service-name>
+```
+
+## Kubernetes Specifics
+https://github.com/SAP/sap-btp-service-operator
+
+
+Kubernetes offers several ways of handling application configurations for bound services and certificates. btp-env-java library expects that such configurations are handled as Kubernetes Secrets and mounted as files to the pod at a specific path. This path can be provided by the application developer, but the default is `/etc/secrets/sapbtp`. From there, btp-env-java library assumes that the directory structure is the following `/etc/secrets/sapcp/<service-name>/<instance-name>`. Here `<service-name>` and `<instance-name>` are both directories and the latter contains the credentials/configurations for the service instance as files, where the file name is the name of the configuration/credential and the content is respectively the value.
+
+For example, the following folder structure:
+```sh
+
+/etc/
+    /secrets/
+            /sapbtp/
+                 /identity/
+                 |    /instance1/
+                 |    |          /clientid
+                 |    |          /certificate
+                 /servicemanager/
+                       /instance/
+                                  /user
+                                  /pass
+```
+resembles two instances of service `hana` - `hanaInst1` and `hanaInst2` each with their own credentials/configurations and one instance of service `xsuaa` called `xsuaaInst` with its credentials.
+
+### Service Binding
+In Kubernetes you can create and bind to a service instance in the following way using the Service Catalog:
+
+```sh
+svcat provision xsuaaInst --class xsuaa --plan application
+svcat bind xsuaaInst --name xsuaaBind
+```
+Upon creation of the binding, the Service Catalog will create a Kubernetes secret (by default with the same name as the binding) containing credentials, configurations and certificates. This secret can then be mounted to the pod as a volume.
+
+The following *deployment.yml* file would generate the file structure above, assuming we have bindings `hanaBind1`, `hanaBind2` and `xsuaaBind` for service instances `hanaInst1`, `hanaInst2` and `xsuaaInst` created with Service Catalog:
+```sh
+...
+     containers:
+      - name: app
+        image: app-image:1.0.0
+        ports:
+          - appPort: 8080
+        volumeMounts:
+        - name: hana-volume-1
+          mountPath: "/etc/secrets/sapcp/hana/hanaInst1"
+          readOnly: true
+        - name: hana-volume-2
+          mountPath: "/etc/secrets/sapcp/hana/hanaInst2"
+          readOnly: true
+        - name: xsuaa-volume
+          mountPath: "/etc/secrets/sapcp/xsuaa/xsuaaInst"
+          readOnly: true
+      volumes:
+      - name: hana-volume-1
+        secret:
+          secretName: hanaBind1
+      - name: hana-volume-2
+        secret:
+          secretName: hanaBind2
+      - name: xsuaa-volume
+        secret:
+          secretName: xsuaaBind
+
+```
+
+Of course, you can also create Kubernetes secrets directly with `kubectl` and  mount them to the pod. As long as the mount path follows the `<root-path>/<service-name>/<instance-name>` pattern, btp-env-java library will be able to discover the bound services configurations.
+
+**Note**: The library attempts to parse property values which represent valid JSON objects.
+Property values representing arrays are not being parsed.
+
+The following service credentials:
+
+```
+/etc/
+    /secrets/
+            /sapcp/
+                 /some-service/
+                       /some-instance/
+                                  /url   - containing https://some-service
+                                  /uaa   - containing { "url": "https://uaa", "clientid": "client", "clientsecret": "secret" }
+                                  /other - containing [1, "two"]
+```
+
+Will be available to the application as:
+
+```json
+{
+  url: 'https://some-service',
+  uaa: {
+    url: 'https://uaa',
+    clientid: 'client',
+    clientsecret: 'secret'
+  },
+  other: '[1, "two"]'
+}
+```
+
+
+## Usage
+
+### Service Lookup via Tag/Label
+Here is how you can get this service configuration in your Java application if you don't know the instance name in advance:
+```java
+
+```
+
+You can look up services based on their metadata:
+```java
+
+```
+This example finds a service binding with `xyz` in the tags or label in case of Kubernetes.
+
+> **K8s Hint**
+> If you have mounted your secrets to a different path, ...
+
+### User-Provided Service Instances
+While this package can look up any kind of bound service instances, you should be aware that [User-Provided Service Instances](https://docs.cloudfoundry.org/devguide/services/user-provided.html) have less properties than managed service instances and no tags.
+
+
+## Local Usage
+
+TODO
+
+## API
+
+TODO
+
+## Contributors
+- SAP Cloud SDK (Johannes)
+  - **johannes.schneider03@sap.com**
+  - christoph.schubert@sap.com
+  - ? alexander.duemont@sap.com
+  - ? matthias.kuhr@sap.com
+  - ? artem.kovalov@sap.com
+
+- SAP Cloud Security
+  - liga.ozolina@sap.com
+  - nena.raab@sap.com
+
+## Stakeholders
+- marc.becker@sap.com
+- matthia.braun@sap.com
+- frank.stephan@sap.com
+
+## Specifications
+- https://github.com/openservicebrokerapi/servicebroker/blob/master/spec.md#body-11
+
+## API / Java Doc
