@@ -1,5 +1,5 @@
 # BTP Environment for Java
-Utility for easily reading application configurations for bound services and certificates in the SAP Cloud Platform Cloud Foundry and Kubernetes (K8S) environment.
+Utility for easily reading application configurations for bound services in the SAP Business Technology Platform Cloud Foundry and Kubernetes (K8S) environment.
 
 ## Cloud Foundry Specifics
 Cloud Foundry provides application configurations via environment variables.
