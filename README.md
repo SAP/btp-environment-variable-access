@@ -34,11 +34,8 @@ For example, the following folder structure:
 resembles two instances of service `xsuaa` - `application` and `broker` each with their own configurations and one instance of service `servicemanager` called `sm-instance` with its configurations.
 
 ### Service Binding
-In Kubernetes you can create and bind to a service instance in the following way using the SAP BTP Service Operator:
+In Kubernetes you can create and bind to a service instance using the SAP BTP Service Operator as described [here](https://github.com/SAP/sap-btp-service-operator#using-the-sap-btp-service-operator).
 
-```sh
-TODO
-```
 Upon creation of the binding, the Service Catalog will create a Kubernetes secret (by default with the same name as the binding) containing credentials, configurations and certificates. This secret can then be mounted to the pod as a volume.
 
 The following *deployment.yml* file would generate the file structure above, assuming we have bindings `hanaBind1`, `hanaBind2` and `xsuaaBind` for service instances `hanaInst1`, `hanaInst2` and `xsuaaInst` created with Service Catalog:
@@ -63,8 +60,8 @@ The following *deployment.yml* file would generate the file structure above, ass
 
 Of course, you can also create Kubernetes secrets directly with `kubectl` and  mount them to the pod. As long as the mount path follows the `<root-path>/<service-name>/<instance-name>` pattern, btp-env-java library will be able to discover the bound services configurations.
 
-**Note**: The library attempts to parse property values which represent valid JSON objects.
-Property values representing arrays are not being parsed.
+**Note**: The library attempts to parse property values which represent valid JSON objects.<br>
+** TODO any limitations? Can we parse arrays properly?
 
 The following service credentials:
 
