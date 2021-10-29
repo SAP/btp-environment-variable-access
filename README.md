@@ -12,10 +12,7 @@ cf bind-service <app-name> <service-name>
 ```
 
 ## Kubernetes Specifics
-https://github.com/SAP/sap-btp-service-operator
-
-
-Kubernetes offers several ways of handling application configurations for bound services and certificates. btp-env-java library expects that such configurations are handled as Kubernetes Secrets and mounted as files to the pod at a specific path. This path can be provided by the application developer, but the default is `/etc/secrets/sapbtp`. From there, btp-env-java library assumes that the directory structure is the following `/etc/secrets/sapcp/<service-name>/<instance-name>`. Here `<service-name>` and `<instance-name>` are both directories and the latter contains the credentials/configurations for the service instance as files, where the file name is the name of the configuration/credential and the content is respectively the value.
+Kubernetes offers several ways of handling application configurations for bound services and certificates. btp-env-java library expects that such configurations are handled as Kubernetes Secrets and mounted as files to the pod at a specific path. This path can be provided by the application developer, but the default is `/etc/secrets/sapbtp`. From there, btp-env-java library assumes that the directory structure is the following `/etc/secrets/sapcp/<service-name>/<instance-name>`. Here `<service-name>` and `<instance-name>` are both directories and the latter contains the credentials/configurations for the service instance as files. [SAP BTP service operator](https://github.com/SAP/sap-btp-service-operator) supports several ways on how files are organized.
 
 For example, the following folder structure:
 ```sh
@@ -23,55 +20,45 @@ For example, the following folder structure:
 /etc/
     /secrets/
             /sapbtp/
-                 /identity/
-                 |    /instance1/
+                 /xsuaa/
+                 |    /application/
+                 |    |          /clientid
+                 |    |          /certificate
+                 |    /broker/
                  |    |          /clientid
                  |    |          /certificate
                  /servicemanager/
-                       /instance/
-                                  /user
-                                  /pass
+                       /sm-instance/
+                                  /credentials
 ```
-resembles two instances of service `hana` - `hanaInst1` and `hanaInst2` each with their own credentials/configurations and one instance of service `xsuaa` called `xsuaaInst` with its credentials.
+resembles two instances of service `xsuaa` - `application` and `broker` each with their own configurations and one instance of service `servicemanager` called `sm-instance` with its configurations.
 
 ### Service Binding
-In Kubernetes you can create and bind to a service instance in the following way using the Service Catalog:
+In Kubernetes you can create and bind to a service instance in the following way using the SAP BTP Service Operator:
 
 ```sh
-svcat provision xsuaaInst --class xsuaa --plan application
-svcat bind xsuaaInst --name xsuaaBind
+TODO
 ```
 Upon creation of the binding, the Service Catalog will create a Kubernetes secret (by default with the same name as the binding) containing credentials, configurations and certificates. This secret can then be mounted to the pod as a volume.
 
 The following *deployment.yml* file would generate the file structure above, assuming we have bindings `hanaBind1`, `hanaBind2` and `xsuaaBind` for service instances `hanaInst1`, `hanaInst2` and `xsuaaInst` created with Service Catalog:
 ```sh
 ...
+   spec:
      containers:
-      - name: app
-        image: app-image:1.0.0
-        ports:
-          - appPort: 8080
-        volumeMounts:
-        - name: hana-volume-1
-          mountPath: "/etc/secrets/sapcp/hana/hanaInst1"
-          readOnly: true
-        - name: hana-volume-2
-          mountPath: "/etc/secrets/sapcp/hana/hanaInst2"
-          readOnly: true
-        - name: xsuaa-volume
-          mountPath: "/etc/secrets/sapcp/xsuaa/xsuaaInst"
-          readOnly: true
-      volumes:
-      - name: hana-volume-1
-        secret:
-          secretName: hanaBind1
-      - name: hana-volume-2
-        secret:
-          secretName: hanaBind2
-      - name: xsuaa-volume
-        secret:
-          secretName: xsuaaBind
-
+       - name: app
+         image: app-image:1.0.0
+         ports:
+           - name: http
+             containerPort: 8080
+         volumeMounts:
+           - name: xsuaa
+             mountPath: "/etc/secrets/sapbtp/xsuaa/application"
+             readOnly: true
+     volumes:
+       - name: xsuaa
+         secret:
+           secretName: xsuaa-service-binding
 ```
 
 Of course, you can also create Kubernetes secrets directly with `kubectl` and  mount them to the pod. As long as the mount path follows the `<root-path>/<service-name>/<instance-name>` pattern, btp-env-java library will be able to discover the bound services configurations.
@@ -94,16 +81,8 @@ The following service credentials:
 
 Will be available to the application as:
 
-```json
-{
-  url: 'https://some-service',
-  uaa: {
-    url: 'https://uaa',
-    clientid: 'client',
-    clientsecret: 'secret'
-  },
-  other: '[1, "two"]'
-}
+```
+TODO
 ```
 
 
