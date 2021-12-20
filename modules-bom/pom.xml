@@ -4,8 +4,8 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>cloud-environment-modules-bom</artifactId>
     <groupId>com.sap.cloud.environment</groupId>
+    <artifactId>cloud-environment-java-modules-bom</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <packaging>pom</packaging>
 
@@ -17,7 +17,12 @@
         <dependencies>
             <dependency>
                 <groupId>com.sap.cloud.environment.api</groupId>
-                <artifactId>cloud-environment-core-api</artifactId>
+                <artifactId>cloud-environment-java-core-api</artifactId>
+                <version>${cloud-environment.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.sap.cloud.environment.api</groupId>
+                <artifactId>cloud-environment-java-consumption-api</artifactId>
                 <version>${cloud-environment.version}</version>
             </dependency>
         </dependencies>

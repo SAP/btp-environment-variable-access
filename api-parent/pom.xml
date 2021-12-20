@@ -6,15 +6,16 @@
 
     <parent>
         <groupId>com.sap.cloud.environment</groupId>
-        <artifactId>cloud-environment-parent</artifactId>
+        <artifactId>cloud-environment-java-parent</artifactId>
         <version>0.0.1-SNAPSHOT</version>
     </parent>
     <groupId>com.sap.cloud.environment.api</groupId>
-    <artifactId>cloud-environment-api-parent</artifactId>
+    <artifactId>cloud-environment-java-api-parent</artifactId>
     <packaging>pom</packaging>
 
     <modules>
         <module>core-api</module>
+        <module>consumption-api</module>
     </modules>
 
 </project>

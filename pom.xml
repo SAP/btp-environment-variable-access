@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.sap.cloud.environment</groupId>
-    <artifactId>cloud-environment-parent</artifactId>
+    <artifactId>cloud-environment-java-parent</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <packaging>pom</packaging>
 
@@ -16,6 +16,8 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
         <cloud-environment.version>0.0.1-SNAPSHOT</cloud-environment.version>
+
+        <maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
     </properties>
 
     <modules>
@@ -28,12 +30,26 @@
         <dependencies>
             <dependency>
                 <groupId>com.sap.cloud.environment</groupId>
-                <artifactId>cloud-environment-bom</artifactId>
+                <artifactId>cloud-environment-java-bom</artifactId>
                 <version>${cloud-environment.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
         </dependencies>
     </dependencyManagement>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>${maven-compiler-plugin.version}</version>
+                <configuration>
+                    <source>8</source>
+                    <target>8</target>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 
 </project>
