@@ -3,21 +3,16 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-
+    <modules>
+        <module>org-json</module>
+    </modules>
     <parent>
-        <groupId>com.sap.cloud.environment</groupId>
         <artifactId>cloud-environment-java-parent</artifactId>
+        <groupId>com.sap.cloud.environment</groupId>
         <version>0.0.1-SNAPSHOT</version>
     </parent>
-    <groupId>com.sap.cloud.environment.api</groupId>
-    <artifactId>cloud-environment-java-api-parent</artifactId>
+    <groupId>com.sap.cloud.environment.parse</groupId>
+    <artifactId>cloud-environment-java-parse-binding-parent</artifactId>
     <packaging>pom</packaging>
-
-    <modules>
-        <module>core-api</module>
-        <module>consumption-api</module>
-        <module>access-api</module>
-        <module>parse-api</module>
-    </modules>
 
 </project>

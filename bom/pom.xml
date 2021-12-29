@@ -12,6 +12,7 @@
     <properties>
         <cloud-environment.version>0.0.1-SNAPSHOT</cloud-environment.version>
         <jsr305.version>3.0.2</jsr305.version>
+        <org.json.version>20211205</org.json.version>
         <junit-jupiter.version>5.7.1</junit-jupiter.version>
         <assertj-core.version>3.18.1</assertj-core.version>
         <mockito-core.version>3.12.3</mockito-core.version>
@@ -33,6 +34,11 @@
                 <groupId>com.google.code.findbugs</groupId>
                 <artifactId>jsr305</artifactId>
                 <version>${jsr305.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.json</groupId>
+                <artifactId>json</artifactId>
+                <version>${org.json.version}</version>
             </dependency>
 
             <!-- Scope: Test -->

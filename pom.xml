@@ -24,6 +24,8 @@
         <module>api-parent</module>
         <module>bom</module>
         <module>modules-bom</module>
+        <module>service-binding-parent</module>
+        <module>parse-binding-parent</module>
     </modules>
 
     <dependencyManagement>

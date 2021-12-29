@@ -7,12 +7,14 @@ package com.sap.cloud.environment.api;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Map;
-import java.util.stream.Stream;
 
 public interface ServiceBinding
 {
     @Nonnull
-    Stream<String> getKeys();
+    Iterable<String> getKeys();
+
+    @Nonnull
+    Iterable<Map.Entry<String, Object>> getEntries();
 
     boolean containsKey(@Nonnull final String key);
 

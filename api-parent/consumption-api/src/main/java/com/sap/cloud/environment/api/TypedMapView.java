@@ -92,6 +92,14 @@ public final class TypedMapView {
         throw new ValueCastException();
     }
 
+    public int getInteger(@Nonnull final String key) throws KeyNotFoundException, ValueCastException {
+        return getNumber(key).intValue();
+    }
+
+    public double getDouble(@Nonnull final String key) throws KeyNotFoundException, ValueCastException {
+        return getNumber(key).doubleValue();
+    }
+
     @Nonnull
     public Number getNumber(@Nonnull final String key) throws KeyNotFoundException, ValueCastException {
         final Object value = get(key);
@@ -101,14 +109,6 @@ public final class TypedMapView {
         }
 
         throw new ValueCastException();
-    }
-
-    public int getInteger(@Nonnull final String key) throws KeyNotFoundException, ValueCastException {
-        return getNumber(key).intValue();
-    }
-
-    public double getDouble(@Nonnull final String key) throws KeyNotFoundException, ValueCastException {
-        return getNumber(key).doubleValue();
     }
 
     @Nonnull

@@ -25,6 +25,26 @@
                 <artifactId>cloud-environment-java-consumption-api</artifactId>
                 <version>${cloud-environment.version}</version>
             </dependency>
+            <dependency>
+                <groupId>com.sap.cloud.environment.api</groupId>
+                <artifactId>cloud-environment-java-access-api</artifactId>
+                <version>${cloud-environment.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.sap.cloud.environment.api</groupId>
+                <artifactId>cloud-environment-java-parse-api</artifactId>
+                <version>${cloud-environment.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.sap.cloud.environment.servicebinding</groupId>
+                <artifactId>cloud-environment-java-sap-service-operator</artifactId>
+                <version>${cloud-environment.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.sap.cloud.environment.parse</groupId>
+                <artifactId>cloud-environment-java-parse-org-json</artifactId>
+                <version>${cloud-environment.version}</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
