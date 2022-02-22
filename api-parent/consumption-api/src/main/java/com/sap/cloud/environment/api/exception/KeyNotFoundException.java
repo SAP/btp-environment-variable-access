@@ -4,6 +4,7 @@
 
 package com.sap.cloud.environment.api.exception;
 
-public class KeyNotFoundException extends RuntimeException {
+public class KeyNotFoundException extends RuntimeException
+{
     private static final long serialVersionUID = 1457209610404439200L;
 }

@@ -21,12 +21,12 @@
             <artifactId>cloud-environment-java-access-api</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.sap.cloud.environment.api</groupId>
-            <artifactId>cloud-environment-java-parse-api</artifactId>
-        </dependency>
-        <dependency>
             <groupId>com.google.code.findbugs</groupId>
             <artifactId>jsr305</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.json</groupId>
+            <artifactId>json</artifactId>
         </dependency>
 
         <!-- Scope: Test -->
@@ -43,11 +43,6 @@
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-core</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.sap.cloud.environment.parse</groupId>
-            <artifactId>cloud-environment-java-parse-org-json</artifactId>
             <scope>test</scope>
         </dependency>
     </dependencies>

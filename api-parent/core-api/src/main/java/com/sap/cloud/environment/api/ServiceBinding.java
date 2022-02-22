@@ -5,22 +5,36 @@
 package com.sap.cloud.environment.api;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 public interface ServiceBinding
 {
     @Nonnull
-    Iterable<String> getKeys();
+    List<String> getKeys();
+
+    boolean containsKey( @Nonnull final String key );
 
     @Nonnull
-    Iterable<Map.Entry<String, Object>> getEntries();
-
-    boolean containsKey(@Nonnull final String key);
-
-    @Nullable
-    Object get(@Nonnull final String key);
+    Optional<Object> get( @Nonnull final String key );
 
     @Nonnull
-    Map<String, Object> toMap();
+    Optional<String> getName();
+
+    @Nonnull
+    Optional<String> getServiceName();
+
+    @Nonnull
+    Optional<String> getServicePlan();
+
+    @Nonnull
+    List<String> getTags();
+
+    @Nonnull
+    Map<String, Object> getCredentials();
+
+    // TODO: what's the use-case for this method?
+    @Nonnull
+    Map<String, Object> copyToMap();
 }

@@ -1,0 +1,6 @@
+{
+    "plan": "secret-root-key-xsuaa-plan",
+    "tags": ["secret-root-key-xsuaa-tag-1", "secret-root-key-xsuaa-tag-2"],
+    "clientid": "secret-root-key-xsuaa-clientid",
+    "clientsecret": "secret-root-key-xsuaa-clientsecret"
+}

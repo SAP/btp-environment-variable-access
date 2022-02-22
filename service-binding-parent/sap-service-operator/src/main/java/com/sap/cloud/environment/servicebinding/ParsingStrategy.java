@@ -8,7 +8,8 @@ import java.nio.file.Path;
 import com.sap.cloud.environment.api.ServiceBinding;
 
 @FunctionalInterface
-public interface ParsingStrategy {
+public interface ParsingStrategy
+{
     @Nullable
-    ServiceBinding parse(@Nonnull final String serviceName, @Nonnull final String bindingName, @Nonnull final Path bindingPath) throws IOException;
+    ServiceBinding parse( @Nonnull final String serviceName, @Nonnull final String bindingName, @Nonnull final Path bindingPath ) throws IOException;
 }

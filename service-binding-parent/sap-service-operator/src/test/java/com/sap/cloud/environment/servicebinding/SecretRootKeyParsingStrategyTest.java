@@ -3,28 +3,52 @@ package com.sap.cloud.environment.servicebinding;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
-import java.util.Collections;
 
 import com.sap.cloud.environment.api.ServiceBinding;
-import com.sap.cloud.environment.parse.JsonMapParser;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-class SecretRootKeyParsingStrategyTest {
-
+class SecretRootKeyParsingStrategyTest
+{
     @Test
-    void emptyDirectoryLeadsToNull() throws IOException {
-        final Path emptyDirectoryPath = TestResource.get(SecretRootKeyParsingStrategyTest.class, "EmptyDirectory");
+    void multipleFilesLeadToNull() throws IOException
+    {
+        final Path path = TestResource.get(SecretRootKeyParsingStrategyTest.class, "MultipleFiles");
 
-        final SecretRootKeyParsingStrategy sut = new SecretRootKeyParsingStrategy(StandardCharsets.UTF_8,
-                new JsonMapParser(),
-                Collections.emptyMap(),
-                PropertySetter.TO_ROOT);
+        final SecretRootKeyParsingStrategy sut = SecretRootKeyParsingStrategy.newDefault();
 
-        final ServiceBinding serviceBinding = sut.parse("none", "empty", emptyDirectoryPath);
+        final ServiceBinding serviceBinding = sut.parse("service", "binding", path);
 
         assertThat(serviceBinding).isNull();
+    }
+
+    @Test
+    void fileWithoutJsonLeadsToNull() throws IOException
+    {
+        final Path path = TestResource.get(SecretRootKeyParsingStrategyTest.class, "NotAJsonFile");
+
+        final SecretRootKeyParsingStrategy sut = SecretRootKeyParsingStrategy.newDefault();
+
+        final ServiceBinding serviceBinding = sut.parse("service", "binding", path);
+
+        assertThat(serviceBinding).isNull();
+    }
+
+    @Test
+    void parseValidBinding() throws IOException
+    {
+        final Path path = TestResource.get(SecretRootKeyParsingStrategyTest.class, "ValidBinding");
+
+        final SecretRootKeyParsingStrategy sut = SecretRootKeyParsingStrategy.newDefault();
+
+        final ServiceBinding serviceBinding = sut.parse("XSUAA", "my-xsuaa-binding", path);
+
+        assertThat(serviceBinding).isNotNull();
+        assertThat(serviceBinding.getName().orElse("")).isEqualTo("my-xsuaa-binding");
+        assertThat(serviceBinding.getServiceName().orElse("")).isEqualTo("XSUAA");
+        assertThat(serviceBinding.getServicePlan().orElse("")).isEqualTo("lite");
+        assertThat(serviceBinding.getTags()).containsExactly("tag1", "tag2");
+        assertThat(serviceBinding.getCredentials()).containsKeys("clientid", "clientsecret");
     }
 }

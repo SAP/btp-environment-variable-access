@@ -17,7 +17,6 @@
         <module>core-api</module>
         <module>consumption-api</module>
         <module>access-api</module>
-        <module>parse-api</module>
     </modules>
 
 </project>

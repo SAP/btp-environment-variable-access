@@ -8,6 +8,9 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -19,34 +22,45 @@ import com.sap.cloud.environment.api.ServiceBinding;
 import com.sap.cloud.environment.api.ServiceBindingAccessor;
 import com.sap.cloud.environment.api.exception.ServiceBindingAccessException;
 
-public class SapServiceOperatorServiceBindingAccessor implements ServiceBindingAccessor {
+public class SapServiceOperatorServiceBindingAccessor implements ServiceBindingAccessor
+{
     @Nonnull
-    public static final Path DEFAULT_ROOT_PATH = Paths.get("/etc/secrets/sapcp");
+    public static final Path DEFAULT_ROOT_PATH = Paths.get("/etc/secrets/sapbtp");
+    @Nonnull
+    public static final Collection<ParsingStrategy> DEFAULT_PARSING_STRATEGIES =
+            Collections.unmodifiableCollection(
+                    Arrays.asList(SecretRootKeyParsingStrategy.newDefault(),
+                                  SecretKeyParsingStrategy.newDefault(),
+                                  DataParsingStrategy.newDefault())
+            );
     @Nonnull
     public static final Charset DEFAULT_CHARSET = StandardCharsets.UTF_8;
 
     @Nonnull
     private final Supplier<Path> rootPathSupplier;
     @Nonnull
-    private final List<ParsingStrategy> parsingStrategies;
+    private final Collection<ParsingStrategy> parsingStrategies;
 
-//    public SapServiceOperatorServiceBindingAccessor() {
-//        this(() -> DEFAULT_ROOT_PATH);
-//    }
+    public SapServiceOperatorServiceBindingAccessor()
+    {
+        this(() -> DEFAULT_ROOT_PATH,
+             DEFAULT_PARSING_STRATEGIES);
+    }
 
-    public SapServiceOperatorServiceBindingAccessor(@Nonnull final Supplier<Path> rootPathSupplier,
-                                                    @Nonnull final List<ParsingStrategy> parsingStrategies) {
+    public SapServiceOperatorServiceBindingAccessor( @Nonnull final Supplier<Path> rootPathSupplier,
+                                                     @Nonnull final Collection<ParsingStrategy> parsingStrategies )
+    {
         this.rootPathSupplier = rootPathSupplier;
         this.parsingStrategies = parsingStrategies;
     }
 
     @Nonnull
     @Override
-    public Iterable<ServiceBinding> getServiceBindings() {
+    public List<ServiceBinding> getServiceBindings()
+    {
         try {
             final Path rootPath = rootPathSupplier.get();
             return Files.list(rootPath).filter(Files::isDirectory).flatMap(this::parseServiceBindings).collect(Collectors.toList());
-
         } catch (final SecurityException | IOException e) {
             // TODO: propagate exception
             throw new ServiceBindingAccessException();
@@ -54,15 +68,16 @@ public class SapServiceOperatorServiceBindingAccessor implements ServiceBindingA
     }
 
     @Nonnull
-    private Stream<ServiceBinding> parseServiceBindings(@Nonnull final Path servicePath) {
+    private Stream<ServiceBinding> parseServiceBindings( @Nonnull final Path servicePath )
+    {
         try {
             return Files.list(servicePath)
                     .filter(Files::isDirectory)
                     .map(bindingPath ->
-                            parsingStrategies.stream()
-                                    .map(strategy -> applyStrategy(strategy, servicePath, bindingPath))
-                                    .filter(Objects::nonNull)
-                                    .findFirst())
+                                 parsingStrategies.stream()
+                                         .map(strategy -> applyStrategy(strategy, servicePath, bindingPath))
+                                         .filter(Objects::nonNull)
+                                         .findFirst())
                     .filter(Optional::isPresent)
                     .map(Optional::get);
         } catch (final IOException e) {
@@ -72,7 +87,8 @@ public class SapServiceOperatorServiceBindingAccessor implements ServiceBindingA
     }
 
     @Nullable
-    private ServiceBinding applyStrategy(@Nonnull final ParsingStrategy strategy, @Nonnull final Path servicePath, @Nonnull final Path bindingPath) {
+    private ServiceBinding applyStrategy( @Nonnull final ParsingStrategy strategy, @Nonnull final Path servicePath, @Nonnull final Path bindingPath )
+    {
         try {
             return strategy.parse(servicePath.getFileName().toString(), bindingPath.getFileName().toString(), bindingPath);
         } catch (final IOException e) {

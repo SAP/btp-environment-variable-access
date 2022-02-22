@@ -2,10 +2,13 @@ package com.sap.cloud.environment.api;
 
 import javax.annotation.Nonnull;
 
+import java.util.List;
+
 import com.sap.cloud.environment.api.exception.ServiceBindingAccessException;
 
 @FunctionalInterface
-public interface ServiceBindingAccessor {
+public interface ServiceBindingAccessor
+{
     @Nonnull
-    Iterable<ServiceBinding> getServiceBindings() throws ServiceBindingAccessException;
+    List<ServiceBinding> getServiceBindings() throws ServiceBindingAccessException;
 }

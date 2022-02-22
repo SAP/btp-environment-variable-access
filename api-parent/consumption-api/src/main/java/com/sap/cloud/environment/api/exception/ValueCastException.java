@@ -4,6 +4,7 @@
 
 package com.sap.cloud.environment.api.exception;
 
-public class ValueCastException extends RuntimeException {
+public class ValueCastException extends RuntimeException
+{
     private static final long serialVersionUID = -2894546268341628598L;
 }
