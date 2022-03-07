@@ -15,7 +15,7 @@ public interface ServiceBindingAccessor
     @Nonnull
     default List<ServiceBinding> getServiceBindings() throws ServiceBindingAccessException
     {
-        return getServiceBindings(ServiceBindingAccessorOptions.NONE);
+        return getServiceBindings(DefaultServiceBindingAccessor.getOptions());
     }
 
     @Nonnull

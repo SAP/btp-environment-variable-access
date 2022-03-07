@@ -21,7 +21,7 @@ class SapServiceOperatorServiceBindingAccessorTest
     {
         final Path path = TestResource.get(SapServiceOperatorServiceBindingAccessorTest.class, "MixedBindings");
 
-        final SapServiceOperatorServiceBindingAccessor sut = new SapServiceOperatorServiceBindingAccessor(() -> path,
+        final SapServiceOperatorServiceBindingAccessor sut = new SapServiceOperatorServiceBindingAccessor(path,
                                                                                                           SapServiceOperatorServiceBindingAccessor.DEFAULT_PARSING_STRATEGIES);
 
         final List<ServiceBinding> serviceBindings = sut.getServiceBindings();
@@ -110,7 +110,7 @@ class SapServiceOperatorServiceBindingAccessorTest
     {
         final Path path = TestResource.get(SapServiceOperatorServiceBindingAccessorTest.class, "InvalidBinding");
 
-        final SapServiceOperatorServiceBindingAccessor sut = new SapServiceOperatorServiceBindingAccessor(() -> path,
+        final SapServiceOperatorServiceBindingAccessor sut = new SapServiceOperatorServiceBindingAccessor(path,
                                                                                                           SapServiceOperatorServiceBindingAccessor.DEFAULT_PARSING_STRATEGIES);
 
         final List<ServiceBinding> serviceBindings = sut.getServiceBindings();

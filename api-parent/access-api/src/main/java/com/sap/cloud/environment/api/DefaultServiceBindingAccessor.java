@@ -18,10 +18,15 @@ public final class DefaultServiceBindingAccessor
     @Nonnull
     private static final ReadWriteLock instanceLock = new ReentrantReadWriteLock();
     @Nonnull
+    private static final ReadWriteLock optionsLock = new ReentrantReadWriteLock();
+    @Nonnull
     private static ServiceBindingAccessor instance;
+    @Nonnull
+    private static ServiceBindingAccessorOptions options;
 
     static {
         instance = newDefaultInstance();
+        options = ServiceBindingAccessorOptions.NONE;
     }
 
     private DefaultServiceBindingAccessor()
@@ -66,5 +71,30 @@ public final class DefaultServiceBindingAccessor
                                                                             ServiceBindingMerger.KEEP_EVERYTHING);
 
         return new SimpleServiceBindingCache(bindingMerger);
+    }
+
+    @Nonnull
+    public static ServiceBindingAccessorOptions getOptions()
+    {
+        optionsLock.readLock().lock();
+        try {
+            return options;
+        } finally {
+            optionsLock.readLock().unlock();
+        }
+    }
+
+    public static void setOptions( @Nullable final ServiceBindingAccessorOptions options )
+    {
+        optionsLock.writeLock().lock();
+        try {
+            if (options == null) {
+                DefaultServiceBindingAccessor.options = ServiceBindingAccessorOptions.NONE;
+            } else {
+                DefaultServiceBindingAccessor.options = options;
+            }
+        } finally {
+            optionsLock.writeLock().unlock();
+        }
     }
 }

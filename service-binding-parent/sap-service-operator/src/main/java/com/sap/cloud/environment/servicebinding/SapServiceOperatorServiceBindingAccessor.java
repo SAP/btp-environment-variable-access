@@ -40,19 +40,19 @@ public class SapServiceOperatorServiceBindingAccessor implements ServiceBindingA
     public static final Charset DEFAULT_CHARSET = StandardCharsets.UTF_8;
 
     @Nonnull
-    private final Supplier<Path> rootPathSupplier;
+    private final Path rootPath;
     @Nonnull
     private final Collection<ParsingStrategy> parsingStrategies;
 
     public SapServiceOperatorServiceBindingAccessor()
     {
-        this(() -> DEFAULT_ROOT_PATH, DEFAULT_PARSING_STRATEGIES);
+        this(DEFAULT_ROOT_PATH, DEFAULT_PARSING_STRATEGIES);
     }
 
-    public SapServiceOperatorServiceBindingAccessor( @Nonnull final Supplier<Path> rootPathSupplier,
+    public SapServiceOperatorServiceBindingAccessor( @Nonnull final Path rootPath,
                                                      @Nonnull final Collection<ParsingStrategy> parsingStrategies )
     {
-        this.rootPathSupplier = rootPathSupplier;
+        this.rootPath = rootPath;
         this.parsingStrategies = parsingStrategies;
     }
 
@@ -61,7 +61,6 @@ public class SapServiceOperatorServiceBindingAccessor implements ServiceBindingA
     public List<ServiceBinding> getServiceBindings( @Nonnull final ServiceBindingAccessorOptions options )
     {
         try {
-            final Path rootPath = rootPathSupplier.get();
             return Files.list(rootPath)
                         .filter(Files::isDirectory)
                         .flatMap(servicePath -> parseServiceBindings(servicePath, options))
