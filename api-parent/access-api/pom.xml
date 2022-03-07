@@ -16,7 +16,7 @@
     <artifactId>cloud-environment-java-access-api</artifactId>
 
     <dependencies>
-        <!-- Scope: Compie -->
+        <!-- Scope: Compile -->
         <dependency>
             <groupId>com.sap.cloud.environment.api</groupId>
             <artifactId>cloud-environment-java-core-api</artifactId>
