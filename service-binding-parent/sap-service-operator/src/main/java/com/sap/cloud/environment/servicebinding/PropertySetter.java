@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2022 SAP SE or an SAP affiliate company. All rights reserved.
+ */
+
 package com.sap.cloud.environment.servicebinding;
 
 import org.json.JSONArray;
@@ -22,7 +26,9 @@ interface PropertySetter
             if (maybeCredentials instanceof Map) {
                 credentials = (Map<String, Object>) maybeCredentials;
             } else {
-                throw new IllegalStateException(String.format("The '%s' property must be of type %s.", CREDENTIALS_KEY, Map.class.getSimpleName()));
+                throw new IllegalStateException(String.format("The '%s' property must be of type %s.",
+                                                              CREDENTIALS_KEY,
+                                                              Map.class.getSimpleName()));
             }
         }
 
@@ -48,12 +54,16 @@ interface PropertySetter
             } else if (value instanceof String) {
                 list = new JSONArray((String) value).toList();
             } else {
-                throw new IllegalStateException(String.format("The provided value '%s' cannot be converted to a %s.", value, List.class.getSimpleName()));
+                throw new IllegalStateException(String.format("The provided value '%s' cannot be converted to a %s.",
+                                                              value,
+                                                              List.class.getSimpleName()));
             }
 
             actualSetter.setProperty(binding, name, list);
         };
     }
 
-    void setProperty( @Nonnull final Map<String, Object> rawServiceBinding, @Nonnull final String propertyName, @Nonnull final Object propertyValue );
+    void setProperty( @Nonnull final Map<String, Object> rawServiceBinding,
+                      @Nonnull final String propertyName,
+                      @Nonnull final Object propertyValue );
 }

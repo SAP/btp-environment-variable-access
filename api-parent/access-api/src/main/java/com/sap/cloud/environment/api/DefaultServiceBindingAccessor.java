@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2022 SAP SE or an SAP affiliate company. All rights reserved.
+ */
+
 package com.sap.cloud.environment.api;
 
 import javax.annotation.Nonnull;
@@ -18,6 +22,11 @@ public final class DefaultServiceBindingAccessor
 
     static {
         instance = newDefaultInstance();
+    }
+
+    private DefaultServiceBindingAccessor()
+    {
+        throw new IllegalStateException("This utility class must not be instantiated.");
     }
 
     @Nonnull
@@ -49,15 +58,13 @@ public final class DefaultServiceBindingAccessor
     private static ServiceBindingAccessor newDefaultInstance()
     {
         final ClassLoader classLoader = DefaultServiceBindingAccessor.class.getClassLoader();
-        final ServiceLoader<ServiceBindingAccessor> serviceLoader = ServiceLoader.load(ServiceBindingAccessor.class, classLoader);
-        final Collection<ServiceBindingAccessor> accessors = StreamSupport.stream(serviceLoader.spliterator(), false).collect(Collectors.toList());
-        final ServiceBindingMerger bindingMerger = new ServiceBindingMerger(accessors, ServiceBindingMerger.KEEP_EVERYTHING);
+        final ServiceLoader<ServiceBindingAccessor> serviceLoader = ServiceLoader.load(ServiceBindingAccessor.class,
+                                                                                       classLoader);
+        final Collection<ServiceBindingAccessor> accessors = StreamSupport.stream(serviceLoader.spliterator(), false)
+                                                                          .collect(Collectors.toList());
+        final ServiceBindingMerger bindingMerger = new ServiceBindingMerger(accessors,
+                                                                            ServiceBindingMerger.KEEP_EVERYTHING);
 
         return new SimpleServiceBindingCache(bindingMerger);
-    }
-
-    private DefaultServiceBindingAccessor()
-    {
-        throw new IllegalStateException("This utility class must not be instantiated.");
     }
 }

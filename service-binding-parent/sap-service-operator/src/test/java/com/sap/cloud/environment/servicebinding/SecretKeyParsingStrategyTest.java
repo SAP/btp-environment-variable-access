@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2022 SAP SE or an SAP affiliate company. All rights reserved.
+ */
+
 package com.sap.cloud.environment.servicebinding;
 
 import org.junit.jupiter.api.Test;
@@ -7,6 +11,7 @@ import java.nio.file.Path;
 import java.util.List;
 
 import com.sap.cloud.environment.api.ServiceBinding;
+import com.sap.cloud.environment.api.ServiceBindingAccessorOptions;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -20,7 +25,10 @@ class SecretKeyParsingStrategyTest
 
         final SecretKeyParsingStrategy sut = SecretKeyParsingStrategy.newDefault();
 
-        final ServiceBinding serviceBinding = sut.parse("XSUAA", "my-xsuaa-binding", path);
+        final ServiceBinding serviceBinding = sut.parse("XSUAA",
+                                                        "my-xsuaa-binding",
+                                                        path,
+                                                        ServiceBindingAccessorOptions.NONE);
 
         assertThat(serviceBinding).isNotNull();
         assertThat(serviceBinding.getName().orElse("")).isEqualTo("my-xsuaa-binding");
@@ -28,7 +36,12 @@ class SecretKeyParsingStrategyTest
         assertThat(serviceBinding.getServicePlan().orElse("")).isEqualTo("my-plan");
         assertThat(serviceBinding.getTags()).isEmpty();
 
-        assertThat(serviceBinding.getCredentials()).containsOnlyKeys("domain", "domains", "clientid", "clientsecret", "url", "zone_uuid");
+        assertThat(serviceBinding.getCredentials()).containsOnlyKeys("domain",
+                                                                     "domains",
+                                                                     "clientid",
+                                                                     "clientsecret",
+                                                                     "url",
+                                                                     "zone_uuid");
         assertThat(serviceBinding.getCredentials()).containsEntry("domain", "my-trusted-domain");
         assertThat(serviceBinding.getCredentials().get("domains")).isInstanceOf(List.class);
         assertThat((List<Object>) serviceBinding.getCredentials().get("domains")).containsExactly("my-trusted-domain");
@@ -45,7 +58,10 @@ class SecretKeyParsingStrategyTest
 
         final SecretKeyParsingStrategy sut = SecretKeyParsingStrategy.newDefault();
 
-        final ServiceBinding serviceBinding = sut.parse("XSUAA", "my-xsuaa-binding", path);
+        final ServiceBinding serviceBinding = sut.parse("XSUAA",
+                                                        "my-xsuaa-binding",
+                                                        path,
+                                                        ServiceBindingAccessorOptions.NONE);
 
         assertThat(serviceBinding).isNull();
     }
@@ -57,7 +73,10 @@ class SecretKeyParsingStrategyTest
 
         final SecretKeyParsingStrategy sut = SecretKeyParsingStrategy.newDefault();
 
-        final ServiceBinding serviceBinding = sut.parse("XSUAA", "my-xsuaa-binding", path);
+        final ServiceBinding serviceBinding = sut.parse("XSUAA",
+                                                        "my-xsuaa-binding",
+                                                        path,
+                                                        ServiceBindingAccessorOptions.NONE);
 
         assertThat(serviceBinding).isNull();
     }

@@ -1,4 +1,11 @@
+/*
+ * Copyright (c) 2022 SAP SE or an SAP affiliate company. All rights reserved.
+ */
+
 package com.sap.cloud.environment.servicebinding;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -15,6 +22,7 @@ import java.util.stream.Collectors;
 
 import com.sap.cloud.environment.api.DefaultServiceBinding;
 import com.sap.cloud.environment.api.ServiceBinding;
+import com.sap.cloud.environment.api.ServiceBindingAccessorOptions;
 
 public final class DataParsingStrategy implements ParsingStrategy
 {
@@ -61,12 +69,6 @@ public final class DataParsingStrategy implements ParsingStrategy
     @Nonnull
     private final PropertySetter fallbackPropertySetter;
 
-    @Nonnull
-    public static DataParsingStrategy newDefault()
-    {
-        return new DataParsingStrategy(StandardCharsets.UTF_8, DEFAULT_PROPERTY_SETTERS, DEFAULT_FALLBACK_PROPERTY_SETTER);
-    }
-
     private DataParsingStrategy( @Nonnull final Charset charset,
                                  @Nonnull final Map<String, PropertySetter> propertySetters,
                                  @Nonnull final PropertySetter fallbackPropertySetter )
@@ -76,11 +78,24 @@ public final class DataParsingStrategy implements ParsingStrategy
         this.fallbackPropertySetter = fallbackPropertySetter;
     }
 
+    @Nonnull
+    public static DataParsingStrategy newDefault()
+    {
+        return new DataParsingStrategy(StandardCharsets.UTF_8,
+                                       DEFAULT_PROPERTY_SETTERS,
+                                       DEFAULT_FALLBACK_PROPERTY_SETTER);
+    }
+
     @Nullable
     @Override
-    public ServiceBinding parse( @Nonnull final String serviceName, @Nonnull final String bindingName, @Nonnull final Path bindingPath ) throws IOException
+    public ServiceBinding parse( @Nonnull final String serviceName,
+                                 @Nonnull final String bindingName,
+                                 @Nonnull final Path bindingPath,
+                                 @Nonnull final ServiceBindingAccessorOptions options ) throws IOException
     {
-        final List<Path> propertyFiles = Files.list(bindingPath).filter(Files::isRegularFile).collect(Collectors.toList());
+        final List<Path> propertyFiles = Files.list(bindingPath)
+                                              .filter(Files::isRegularFile)
+                                              .collect(Collectors.toList());
 
         if (propertyFiles.isEmpty()) {
             // service binding directory must contain at least one file
@@ -95,27 +110,31 @@ public final class DataParsingStrategy implements ParsingStrategy
                 continue;
             }
 
-            // TODO: consider checking whether the `fileContent` is a valid JSON object
-            //  --> in that case, return null since we do not expect to find any JSON objects in this service binding
+            try {
+                final JSONObject jsonContent = new JSONObject(fileContent);
+
+                // service binding must not contain a valid JSON object
+                return null;
+            } catch (final JSONException e) {
+                // ignore
+            }
 
             getPropertySetter(propertyName).setProperty(rawServiceBinding, propertyName, fileContent);
         }
 
-        if (rawServiceBinding.get(PropertySetter.CREDENTIALS_KEY) == null)
-        {
+        if (rawServiceBinding.get(PropertySetter.CREDENTIALS_KEY) == null) {
             // service bindings must contain credentials
             return null;
         }
 
-        return DefaultServiceBinding
-                .builder()
-                .copy(rawServiceBinding)
-                .withNameResolver(any -> bindingName)
-                .withServiceNameResolver(any -> serviceName)
-                .withServicePlanKey(PLAN_KEY)
-                .withTagsKey(TAGS_KEY)
-                .withCredentialsKey(PropertySetter.CREDENTIALS_KEY)
-                .build();
+        return DefaultServiceBinding.builder()
+                                    .copy(rawServiceBinding)
+                                    .withName(bindingName)
+                                    .withServiceName(serviceName)
+                                    .withServicePlanKey(PLAN_KEY)
+                                    .withTagsKey(TAGS_KEY)
+                                    .withCredentialsKey(PropertySetter.CREDENTIALS_KEY)
+                                    .build();
     }
 
     @Nonnull

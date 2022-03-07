@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 SAP SE or an SAP affiliate company. All rights reserved.
+ * Copyright (c) 2022 SAP SE or an SAP affiliate company. All rights reserved.
  */
 
 package com.sap.cloud.environment.api;
@@ -85,11 +85,6 @@ public final class TypedListView
         return getNumber(index).intValue();
     }
 
-    public double getDouble( final int index ) throws IndexOutOfBoundsException, ValueCastException
-    {
-        return getNumber(index).doubleValue();
-    }
-
     @Nonnull
     public Number getNumber( final int index ) throws IndexOutOfBoundsException, ValueCastException
     {
@@ -100,6 +95,11 @@ public final class TypedListView
         }
 
         throw new ValueCastException();
+    }
+
+    public double getDouble( final int index ) throws IndexOutOfBoundsException, ValueCastException
+    {
+        return getNumber(index).doubleValue();
     }
 
     @Nonnull

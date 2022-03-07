@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 SAP SE or an SAP affiliate company. All rights reserved.
+ * Copyright (c) 2022 SAP SE or an SAP affiliate company. All rights reserved.
  */
 
 package com.sap.cloud.environment.api;
@@ -27,8 +27,7 @@ public final class TypedMapView
     public static TypedMapView of( @Nonnull final ServiceBinding serviceBinding )
     {
         final Map<String, Object> properties = new TreeMap<>(String::compareToIgnoreCase);
-        for (final String key : serviceBinding.getKeys())
-        {
+        for (final String key : serviceBinding.getKeys()) {
             if (key == null || key.isEmpty()) {
                 continue;
             }
@@ -40,9 +39,9 @@ public final class TypedMapView
         return new TypedMapView(properties);
     }
 
-    private static void insertElement(@Nonnull final Map<String, Object> properties,
-                                      @Nonnull final String key,
-                                      @Nullable final Object value)
+    private static void insertElement( @Nonnull final Map<String, Object> properties,
+                                       @Nonnull final String key,
+                                       @Nullable final Object value )
     {
         if (value instanceof Map) {
             properties.put(key, fromRawMap(value));
@@ -123,11 +122,6 @@ public final class TypedMapView
         return getNumber(key).intValue();
     }
 
-    public double getDouble( @Nonnull final String key ) throws KeyNotFoundException, ValueCastException
-    {
-        return getNumber(key).doubleValue();
-    }
-
     @Nonnull
     public Number getNumber( @Nonnull final String key ) throws KeyNotFoundException, ValueCastException
     {
@@ -138,6 +132,11 @@ public final class TypedMapView
         }
 
         throw new ValueCastException();
+    }
+
+    public double getDouble( @Nonnull final String key ) throws KeyNotFoundException, ValueCastException
+    {
+        return getNumber(key).doubleValue();
     }
 
     @Nonnull

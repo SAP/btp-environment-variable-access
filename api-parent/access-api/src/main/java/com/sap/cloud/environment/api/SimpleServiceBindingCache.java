@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2022 SAP SE or an SAP affiliate company. All rights reserved.
+ */
+
 package com.sap.cloud.environment.api;
 
 import javax.annotation.Nonnull;
@@ -10,6 +14,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 import com.sap.cloud.environment.api.exception.ServiceBindingAccessException;
@@ -18,9 +23,14 @@ public class SimpleServiceBindingCache implements ServiceBindingAccessor
 {
     @Nonnull
     public static final Duration DEFAULT_CACHE_DURATION = Duration.ofMinutes(5L);
-
     @Nonnull
     public static final Supplier<LocalDateTime> DEFAULT_LOCAL_DATE_TIME_SUPPLIER = LocalDateTime::now;
+    @Nonnull
+    private static final String FORCE_RELOAD_OPTIONS_KEY = SimpleServiceBindingCache.class.getName() + ":FORCE_RELOAD";
+    @Nonnull
+    public static final Consumer<ServiceBindingAccessorOptions.Builder> FORCE_RELOAD = builder -> builder.withOption(
+            FORCE_RELOAD_OPTIONS_KEY,
+            true);
 
     @Nonnull
     private final ReadWriteLock accessLock = new ReentrantReadWriteLock();
@@ -51,18 +61,46 @@ public class SimpleServiceBindingCache implements ServiceBindingAccessor
 
     @Nonnull
     @Override
-    public List<ServiceBinding> getServiceBindings() throws ServiceBindingAccessException
+    public List<ServiceBinding> getServiceBindings( @Nonnull final ServiceBindingAccessorOptions options )
+            throws ServiceBindingAccessException
     {
         final LocalDateTime now = localDateTimeSupplier.get();
         if (now == null) {
-            throw new IllegalStateException(String.format("Unable to determine the current %s.", LocalDateTime.class.getSimpleName()));
+            throw new IllegalStateException(String.format("Unable to determine the current %s.",
+                                                          LocalDateTime.class.getSimpleName()));
         }
 
-        return Optional.ofNullable(tryRead(now)).orElse(renewCachedServiceBindings(now));
+        final boolean forceReload = options.<Boolean>getValue(FORCE_RELOAD_OPTIONS_KEY).orElse(false);
+
+        if (forceReload) {
+            return readOrUpdateCache(now, options);
+        }
+
+        return Optional.ofNullable(tryReadCache(now)).orElse(readOrUpdateCache(now, options));
+    }
+
+    @Nonnull
+    private List<ServiceBinding> readOrUpdateCache( @Nonnull final LocalDateTime now,
+                                                    @Nonnull final ServiceBindingAccessorOptions options )
+    {
+        accessLock.writeLock().lock();
+        try {
+            final boolean forceReload = options.<Boolean>getValue(FORCE_RELOAD_OPTIONS_KEY).orElse(false);
+
+            if (!forceReload && !isExpired(now)) {
+                return Objects.requireNonNull(cachedServiceBindings, "Cached Service Bindings must not be null.");
+            }
+
+            cachedServiceBindings = delegateAccessor.getServiceBindings(options);
+            lastCacheRenewal = now;
+            return cachedServiceBindings;
+        } finally {
+            accessLock.writeLock().unlock();
+        }
     }
 
     @Nullable
-    private List<ServiceBinding> tryRead( @Nonnull final Temporal now )
+    private List<ServiceBinding> tryReadCache( @Nonnull final Temporal now )
     {
         accessLock.readLock().lock();
         try {
@@ -84,23 +122,6 @@ public class SimpleServiceBindingCache implements ServiceBindingAccessor
 
         final Duration durationSinceLastCacheRenewal = Duration.between(lastCacheRenewal, now);
         return cacheDuration.minus(durationSinceLastCacheRenewal).isNegative();
-    }
-
-    @Nonnull
-    private List<ServiceBinding> renewCachedServiceBindings( @Nonnull final LocalDateTime now )
-    {
-        accessLock.writeLock().lock();
-        try {
-            if (!isExpired(now)) {
-                return Objects.requireNonNull(cachedServiceBindings, "Cached Service Bindings must not be null.");
-            }
-
-            cachedServiceBindings = delegateAccessor.getServiceBindings();
-            lastCacheRenewal = now;
-            return cachedServiceBindings;
-        } finally {
-            accessLock.writeLock().unlock();
-        }
     }
 
     public void invalidate()

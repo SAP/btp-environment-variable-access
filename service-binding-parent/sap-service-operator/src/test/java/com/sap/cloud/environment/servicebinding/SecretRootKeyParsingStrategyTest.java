@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2022 SAP SE or an SAP affiliate company. All rights reserved.
+ */
+
 package com.sap.cloud.environment.servicebinding;
 
 import org.junit.jupiter.api.Test;
@@ -6,6 +10,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 
 import com.sap.cloud.environment.api.ServiceBinding;
+import com.sap.cloud.environment.api.ServiceBindingAccessorOptions;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -18,7 +23,7 @@ class SecretRootKeyParsingStrategyTest
 
         final SecretRootKeyParsingStrategy sut = SecretRootKeyParsingStrategy.newDefault();
 
-        final ServiceBinding serviceBinding = sut.parse("service", "binding", path);
+        final ServiceBinding serviceBinding = sut.parse("service", "binding", path, ServiceBindingAccessorOptions.NONE);
 
         assertThat(serviceBinding).isNull();
     }
@@ -30,7 +35,7 @@ class SecretRootKeyParsingStrategyTest
 
         final SecretRootKeyParsingStrategy sut = SecretRootKeyParsingStrategy.newDefault();
 
-        final ServiceBinding serviceBinding = sut.parse("service", "binding", path);
+        final ServiceBinding serviceBinding = sut.parse("service", "binding", path, ServiceBindingAccessorOptions.NONE);
 
         assertThat(serviceBinding).isNull();
     }
@@ -42,7 +47,10 @@ class SecretRootKeyParsingStrategyTest
 
         final SecretRootKeyParsingStrategy sut = SecretRootKeyParsingStrategy.newDefault();
 
-        final ServiceBinding serviceBinding = sut.parse("XSUAA", "my-xsuaa-binding", path);
+        final ServiceBinding serviceBinding = sut.parse("XSUAA",
+                                                        "my-xsuaa-binding",
+                                                        path,
+                                                        ServiceBindingAccessorOptions.NONE);
 
         assertThat(serviceBinding).isNotNull();
         assertThat(serviceBinding.getName().orElse("")).isEqualTo("my-xsuaa-binding");

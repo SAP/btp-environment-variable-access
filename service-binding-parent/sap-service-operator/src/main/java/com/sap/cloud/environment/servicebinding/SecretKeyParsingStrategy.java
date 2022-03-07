@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2022 SAP SE or an SAP affiliate company. All rights reserved.
+ */
+
 package com.sap.cloud.environment.servicebinding;
 
 import org.json.JSONException;
@@ -17,6 +21,7 @@ import java.util.stream.Collectors;
 
 import com.sap.cloud.environment.api.DefaultServiceBinding;
 import com.sap.cloud.environment.api.ServiceBinding;
+import com.sap.cloud.environment.api.ServiceBindingAccessorOptions;
 
 public final class SecretKeyParsingStrategy implements ParsingStrategy
 {
@@ -26,22 +31,27 @@ public final class SecretKeyParsingStrategy implements ParsingStrategy
     @Nonnull
     private final Charset charset;
 
+    private SecretKeyParsingStrategy( @Nonnull final Charset charset )
+    {
+        this.charset = charset;
+    }
+
     @Nonnull
     public static SecretKeyParsingStrategy newDefault()
     {
         return new SecretKeyParsingStrategy(StandardCharsets.UTF_8);
     }
 
-    private SecretKeyParsingStrategy( @Nonnull final Charset charset )
-    {
-        this.charset = charset;
-    }
-
     @Nullable
     @Override
-    public ServiceBinding parse( @Nonnull final String serviceName, @Nonnull final String bindingName, @Nonnull final Path bindingPath ) throws IOException
+    public ServiceBinding parse( @Nonnull final String serviceName,
+                                 @Nonnull final String bindingName,
+                                 @Nonnull final Path bindingPath,
+                                 @Nonnull final ServiceBindingAccessorOptions options ) throws IOException
     {
-        final List<Path> propertyFiles = Files.list(bindingPath).filter(Files::isRegularFile).collect(Collectors.toList());
+        final List<Path> propertyFiles = Files.list(bindingPath)
+                                              .filter(Files::isRegularFile)
+                                              .collect(Collectors.toList());
 
         if (propertyFiles.isEmpty()) {
             // service binding directory must contain at least one json file
@@ -73,18 +83,17 @@ public final class SecretKeyParsingStrategy implements ParsingStrategy
             }
         }
 
-        if (!credentialsFound)
-        {
+        if (!credentialsFound) {
             // the service binding is expected to have credentials attached to it
             return null;
         }
 
         return DefaultServiceBinding.builder()
-                .copy(rawServiceBinding)
-                .withNameResolver(any -> bindingName)
-                .withServiceNameResolver(any -> serviceName)
-                .withCredentialsKey(PropertySetter.CREDENTIALS_KEY)
-                .withServicePlanKey(PLAN_KEY)
-                .build();
+                                    .copy(rawServiceBinding)
+                                    .withName(bindingName)
+                                    .withServiceName(serviceName)
+                                    .withServicePlanKey(PLAN_KEY)
+                                    .withCredentialsKey(PropertySetter.CREDENTIALS_KEY)
+                                    .build();
     }
 }

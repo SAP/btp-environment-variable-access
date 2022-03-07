@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2022 SAP SE or an SAP affiliate company. All rights reserved.
+ */
+
 package com.sap.cloud.environment.api;
 
 import javax.annotation.Nonnull;
@@ -8,36 +12,35 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.function.Function;
 
 public class DefaultServiceBinding implements ServiceBinding
 {
     @Nonnull
     private final Map<String, Object> map;
+    @Nullable
+    private final String name;
+    @Nullable
+    private final String serviceName;
+    @Nullable
+    private final String servicePlan;
     @Nonnull
-    private final Function<ServiceBinding, String> nameResolver;
+    private final List<String> tags;
     @Nonnull
-    private final Function<ServiceBinding, String> serviceNameResolver;
-    @Nonnull
-    private final Function<ServiceBinding, String> servicePlanResolver;
-    @Nonnull
-    private final Function<ServiceBinding, List<String>> tagsResolver;
-    @Nonnull
-    private final Function<ServiceBinding, Map<String, Object>> credentialsResolver;
+    private final Map<String, Object> credentials;
 
     DefaultServiceBinding( @Nonnull final Map<String, Object> map,
-                           @Nonnull final Function<ServiceBinding, String> nameResolver,
-                           @Nonnull final Function<ServiceBinding, String> serviceNameResolver,
-                           @Nonnull final Function<ServiceBinding, String> servicePlanResolver,
-                           @Nonnull final Function<ServiceBinding, List<String>> tagsResolver,
-                           @Nonnull final Function<ServiceBinding, Map<String, Object>> credentialsResolver )
+                           @Nullable final String name,
+                           @Nullable final String serviceName,
+                           @Nullable final String servicePlan,
+                           @Nonnull final List<String> tags,
+                           @Nonnull final Map<String, Object> credentials )
     {
         this.map = map;
-        this.nameResolver = nameResolver;
-        this.serviceNameResolver = serviceNameResolver;
-        this.servicePlanResolver = servicePlanResolver;
-        this.tagsResolver = tagsResolver;
-        this.credentialsResolver = credentialsResolver;
+        this.name = name;
+        this.serviceName = serviceName;
+        this.servicePlan = servicePlan;
+        this.tags = tags;
+        this.credentials = credentials;
     }
 
     @Nonnull
@@ -70,54 +73,35 @@ public class DefaultServiceBinding implements ServiceBinding
     @Override
     public Optional<String> getName()
     {
-        return Optional.ofNullable(nameResolver.apply(this));
+        return Optional.ofNullable(name);
     }
 
     @Nonnull
     @Override
     public Optional<String> getServiceName()
     {
-        return Optional.ofNullable(serviceNameResolver.apply(this));
+        return Optional.ofNullable(serviceName);
     }
 
     @Nonnull
     @Override
     public Optional<String> getServicePlan()
     {
-        return Optional.ofNullable(servicePlanResolver.apply(this));
+        return Optional.ofNullable(servicePlan);
     }
 
     @Nonnull
     @Override
     public List<String> getTags()
     {
-        @Nullable final List<String> maybeTags = tagsResolver.apply(this);
-
-        if (maybeTags == null) {
-            return Collections.emptyList();
-        }
-
-        return Collections.unmodifiableList(maybeTags);
+        return Collections.unmodifiableList(tags);
     }
 
     @Nonnull
     @Override
     public Map<String, Object> getCredentials()
     {
-        @Nullable final Map<String, Object> maybeCredentials = credentialsResolver.apply(this);
-
-        if (maybeCredentials == null) {
-            return Collections.emptyMap();
-        }
-
-        return Collections.unmodifiableMap(maybeCredentials);
-    }
-
-    @Nonnull
-    @Override
-    public Map<String, Object> copyToMap()
-    {
-        return DefaultServiceBindingBuilder.copyMap(map, Function.identity(), Function.identity());
+        return Collections.unmodifiableMap(credentials);
     }
 
     @Override
@@ -138,12 +122,9 @@ public class DefaultServiceBinding implements ServiceBinding
 
         final DefaultServiceBinding that = (DefaultServiceBinding) o;
 
-        return getName().equals(that.getName())
-                && getServiceName().equals(that.getServiceName())
-                && getServicePlan().equals(that.getServicePlan())
-                && getTags().equals(that.getTags())
-                && getCredentials().equals(that.getCredentials())
-                && map.equals(that.map);
+        return getName().equals(that.getName()) && getServiceName().equals(that.getServiceName()) && getServicePlan().equals(
+                that.getServicePlan()) && getTags().equals(that.getTags()) && getCredentials().equals(that.getCredentials()) && map.equals(
+                that.map);
     }
 
     public interface MapSelectionBuilder
@@ -155,34 +136,34 @@ public class DefaultServiceBinding implements ServiceBinding
     public interface TerminalBuilder
     {
         @Nonnull
+        TerminalBuilder withName( @Nonnull final String name );
+
+        @Nonnull
         TerminalBuilder withNameKey( @Nonnull final String key );
 
         @Nonnull
-        TerminalBuilder withNameResolver( @Nonnull final Function<ServiceBinding, String> resolver );
+        TerminalBuilder withServiceName( @Nonnull final String serviceName );
 
         @Nonnull
         TerminalBuilder withServiceNameKey( @Nonnull final String key );
 
         @Nonnull
-        TerminalBuilder withServiceNameResolver( @Nonnull final Function<ServiceBinding, String> resolver );
+        TerminalBuilder withServicePlan( @Nonnull final String servicePlan );
 
         @Nonnull
         TerminalBuilder withServicePlanKey( @Nonnull final String key );
 
         @Nonnull
-        TerminalBuilder withServicePlanResolver( @Nonnull final Function<ServiceBinding, String> resolver );
+        TerminalBuilder withTags( @Nonnull final Iterable<String> tags );
 
         @Nonnull
         TerminalBuilder withTagsKey( @Nonnull final String key );
 
         @Nonnull
-        TerminalBuilder withTagsResolver( @Nonnull final Function<ServiceBinding, List<String>> resolver );
+        TerminalBuilder withCredentials( @Nonnull final Map<String, Object> credentials );
 
         @Nonnull
         TerminalBuilder withCredentialsKey( @Nonnull final String key );
-
-        @Nonnull
-        TerminalBuilder withCredentialsResolver( @Nonnull final Function<ServiceBinding, Map<String, Object>> resolver );
 
         @Nonnull
         DefaultServiceBinding build();

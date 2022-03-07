@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 SAP SE or an SAP affiliate company. All rights reserved.
+ * Copyright (c) 2022 SAP SE or an SAP affiliate company. All rights reserved.
  */
 
 package com.sap.cloud.environment.api;
@@ -76,7 +76,8 @@ class TypedListViewTest
     @Test
     void createTransformsNestedMapToMapView()
     {
-        final TypedListView sut = TypedListView.fromList(Collections.singletonList(Collections.singletonMap("Key", "Value")));
+        final TypedListView sut = TypedListView.fromList(Collections.singletonList(Collections.singletonMap("Key",
+                                                                                                            "Value")));
 
         assertThat(sut.getMapView(0)).isNotNull();
         assertThat(sut.getMapView(0).getKeys()).containsExactlyInAnyOrder("Key");
@@ -96,8 +97,7 @@ class TypedListViewTest
     {
         final TypedListView sut = TypedListView.fromList(Collections.singletonList(true));
 
-        expectValueCastExceptionForAllBut(sut, 0,
-                                          TypedListView.class.getDeclaredMethod("getBoolean", int.class));
+        expectValueCastExceptionForAllBut(sut, 0, TypedListView.class.getDeclaredMethod("getBoolean", int.class));
     }
 
     private static void expectValueCastExceptionForAllBut( @Nonnull final TypedListView sut,
@@ -110,7 +110,8 @@ class TypedListViewTest
             if (expectedWorkingMethods.contains(typedAccessor)) {
                 assertThatNoException().isThrownBy(() -> typedAccessor.invoke(sut, index));
             } else {
-                assertThatThrownBy(() -> typedAccessor.invoke(sut, index)).hasCauseExactlyInstanceOf(ValueCastException.class);
+                assertThatThrownBy(() -> typedAccessor.invoke(sut,
+                                                              index)).hasCauseExactlyInstanceOf(ValueCastException.class);
             }
         }
     }
@@ -120,7 +121,8 @@ class TypedListViewTest
     {
         final TypedListView sut = TypedListView.fromList(Collections.singletonList(INTEGER));
 
-        expectValueCastExceptionForAllBut(sut, 0,
+        expectValueCastExceptionForAllBut(sut,
+                                          0,
                                           TypedListView.class.getDeclaredMethod("getInteger", int.class),
                                           TypedListView.class.getDeclaredMethod("getDouble", int.class),
                                           TypedListView.class.getDeclaredMethod("getNumber", int.class));
@@ -131,7 +133,8 @@ class TypedListViewTest
     {
         final TypedListView sut = TypedListView.fromList(Collections.singletonList(DOUBLE));
 
-        expectValueCastExceptionForAllBut(sut, 0,
+        expectValueCastExceptionForAllBut(sut,
+                                          0,
                                           TypedListView.class.getDeclaredMethod("getInteger", int.class),
                                           TypedListView.class.getDeclaredMethod("getDouble", int.class),
                                           TypedListView.class.getDeclaredMethod("getNumber", int.class));
@@ -140,9 +143,11 @@ class TypedListViewTest
     @Test
     void getNumber() throws NoSuchMethodException
     {
-        final TypedListView sut = TypedListView.fromList(Collections.singletonList(BigDecimal.valueOf(Long.MAX_VALUE, Integer.MAX_VALUE)));
+        final TypedListView sut = TypedListView.fromList(Collections.singletonList(BigDecimal.valueOf(Long.MAX_VALUE,
+                                                                                                      Integer.MAX_VALUE)));
 
-        expectValueCastExceptionForAllBut(sut, 0,
+        expectValueCastExceptionForAllBut(sut,
+                                          0,
                                           TypedListView.class.getDeclaredMethod("getInteger", int.class),
                                           TypedListView.class.getDeclaredMethod("getDouble", int.class),
                                           TypedListView.class.getDeclaredMethod("getNumber", int.class));
@@ -153,8 +158,7 @@ class TypedListViewTest
     {
         final TypedListView sut = TypedListView.fromList(Collections.singletonList("Value"));
 
-        expectValueCastExceptionForAllBut(sut, 0,
-                                          TypedListView.class.getDeclaredMethod("getString", int.class));
+        expectValueCastExceptionForAllBut(sut, 0, TypedListView.class.getDeclaredMethod("getString", int.class));
     }
 
     @Test
@@ -162,8 +166,7 @@ class TypedListViewTest
     {
         final TypedListView sut = TypedListView.fromList(Collections.singletonList(mock(TypedMapView.class)));
 
-        expectValueCastExceptionForAllBut(sut, 0,
-                                          TypedListView.class.getDeclaredMethod("getMapView", int.class));
+        expectValueCastExceptionForAllBut(sut, 0, TypedListView.class.getDeclaredMethod("getMapView", int.class));
     }
 
     @Test
@@ -171,7 +174,6 @@ class TypedListViewTest
     {
         final TypedListView sut = TypedListView.fromList(Collections.singletonList(mock(TypedListView.class)));
 
-        expectValueCastExceptionForAllBut(sut, 0,
-                                          TypedListView.class.getDeclaredMethod("getListView", int.class));
+        expectValueCastExceptionForAllBut(sut, 0, TypedListView.class.getDeclaredMethod("getListView", int.class));
     }
 }

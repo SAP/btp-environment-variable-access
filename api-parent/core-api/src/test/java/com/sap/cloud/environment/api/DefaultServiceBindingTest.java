@@ -1,5 +1,8 @@
-package com.sap.cloud.environment.api;
+/*
+ * Copyright (c) 2022 SAP SE or an SAP affiliate company. All rights reserved.
+ */
 
+package com.sap.cloud.environment.api;
 
 import org.junit.jupiter.api.Test;
 
@@ -15,7 +18,7 @@ import com.sap.cloud.environment.api.exception.UnsupportedPropertyTypeException;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-@SuppressWarnings("unchecked")
+@SuppressWarnings( "unchecked" )
 class DefaultServiceBindingTest
 {
     private static final byte BYTE = 42;
@@ -62,7 +65,12 @@ class DefaultServiceBindingTest
         assertThat(sut.get("Float").orElse(null)).isEqualTo(FLOAT);
         assertThat(sut.get("Double").orElse(null)).isEqualTo(DOUBLE);
         assertThat(sut.get("BigDecimal").orElse(null)).isEqualTo(BIG_DECIMAL);
-        assertThat((Iterable<Number>) sut.get("Numbers").orElse(null)).containsExactly(BYTE, INTEGER, LONG, FLOAT, DOUBLE, BIG_DECIMAL);
+        assertThat((Iterable<Number>) sut.get("Numbers").orElse(null)).containsExactly(BYTE,
+                                                                                       INTEGER,
+                                                                                       LONG,
+                                                                                       FLOAT,
+                                                                                       DOUBLE,
+                                                                                       BIG_DECIMAL);
     }
 
     @Test
@@ -101,7 +109,8 @@ class DefaultServiceBindingTest
         assertThat(actualMap.get("String")).isEqualTo("foo");
         assertThat(actualMap.get("Integer")).isEqualTo(INTEGER);
 
-        final Collection<Object> actualCollection = (Collection<Object>) sut.get("Collection").orElse(Collections.emptyList());
+        final Collection<Object> actualCollection = (Collection<Object>) sut.get("Collection")
+                                                                            .orElse(Collections.emptyList());
         assertThat(actualCollection).isNotNull();
         assertThat(actualCollection).containsExactly("foo", INTEGER);
     }
@@ -112,7 +121,8 @@ class DefaultServiceBindingTest
         final Map<String, Object> input = new HashMap<>();
         input.put("StringBuilder", new StringBuilder());
 
-        assertThatThrownBy(() -> DefaultServiceBinding.builder().copy(input)).isExactlyInstanceOf(UnsupportedPropertyTypeException.class);
+        assertThatThrownBy(() -> DefaultServiceBinding.builder().copy(input)).isExactlyInstanceOf(
+                UnsupportedPropertyTypeException.class);
     }
 
     @Test

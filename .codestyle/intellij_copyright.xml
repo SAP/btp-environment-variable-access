@@ -1,7 +1,12 @@
+<!--
+  ~ Copyright (c) 2022 SAP SE or an SAP affiliate company. All rights reserved.
+  -->
+
 <component name="CopyrightManager">
-  <copyright>
-    <option name="keyword" />
-    <option name="myName" value="SAP SE" />
-    <option name="notice" value="Copyright (c) &amp;#36;today.year SAP SE or an SAP affiliate company. All rights reserved." />
-  </copyright>
+    <copyright>
+        <option name="keyword"/>
+        <option name="myName" value="SAP SE"/>
+        <option name="notice"
+                value="Copyright (c) &amp;#36;today.year SAP SE or an SAP affiliate company. All rights reserved."/>
+    </copyright>
 </component>

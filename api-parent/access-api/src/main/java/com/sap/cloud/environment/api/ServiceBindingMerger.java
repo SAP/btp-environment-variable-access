@@ -1,30 +1,31 @@
+/*
+ * Copyright (c) 2022 SAP SE or an SAP affiliate company. All rights reserved.
+ */
+
 package com.sap.cloud.environment.api;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
-import java.util.stream.StreamSupport;
 
 public class ServiceBindingMerger implements ServiceBindingAccessor
 {
     @Nonnull
-    public static final KeySelector KEEP_EVERYTHING = binding -> binding;
+    public static final EqualityComparer KEEP_EVERYTHING = ( a, b ) -> false;
 
     @Nonnull
     private final Collection<ServiceBindingAccessor> accessors;
     @Nonnull
-    private final KeySelector keySelector;
+    private final EqualityComparer equalityComparer;
 
     public ServiceBindingMerger( @Nonnull final Collection<ServiceBindingAccessor> accessors,
-                                 @Nonnull final KeySelector keySelector )
+                                 @Nonnull final EqualityComparer equalityComparer )
     {
         this.accessors = new ArrayList<>(accessors);
-        this.keySelector = keySelector;
+        this.equalityComparer = equalityComparer;
     }
 
     @Nonnull
@@ -35,32 +36,33 @@ public class ServiceBindingMerger implements ServiceBindingAccessor
 
     @Nonnull
     @Override
-    public List<ServiceBinding> getServiceBindings()
+    public List<ServiceBinding> getServiceBindings( @Nonnull final ServiceBindingAccessorOptions options )
     {
-        return new ArrayList<>(mergeServiceBindings().values());
-    }
+        final List<ServiceBinding> mergedServiceBindings = new ArrayList<>();
+        accessors.stream()
+                 .map(accessor -> accessor.getServiceBindings(options))
+                 .flatMap(List::stream)
+                 .forEachOrdered(binding -> {
+                     if (contains(mergedServiceBindings, binding)) {
+                         return;
+                     }
 
-    private Map<Object, ServiceBinding> mergeServiceBindings()
-    {
-        final Map<Object, ServiceBinding> mergedServiceBindings = new HashMap<>();
-        accessors.stream().flatMap(accessor -> getKeyedServiceBindings(accessor).entrySet().stream()).forEachOrdered(entry -> mergedServiceBindings.putIfAbsent(entry.getKey(), entry.getValue()));
+                     mergedServiceBindings.add(binding);
+                 });
 
         return mergedServiceBindings;
     }
 
-    private Map<Object, ServiceBinding> getKeyedServiceBindings( @Nonnull final ServiceBindingAccessor accessor )
+    private boolean contains( @Nonnull final List<ServiceBinding> existingBindings,
+                              @Nonnull final ServiceBinding newBinding )
     {
-        final Map<Object, ServiceBinding> keyedServiceBindings = new HashMap<>();
-        accessor.getServiceBindings().stream().forEachOrdered(serviceBinding -> keyedServiceBindings.putIfAbsent(keySelector.selectKey(serviceBinding), serviceBinding));
-
-        return keyedServiceBindings;
+        return existingBindings.stream().anyMatch(contained -> equalityComparer.areEqual(contained, newBinding));
     }
 
     @FunctionalInterface
-    public interface KeySelector
+    public interface EqualityComparer
     {
-        @Nonnull
-        Object selectKey( @Nonnull final ServiceBinding serviceBinding );
+        boolean areEqual( @Nonnull final ServiceBinding a, @Nonnull final ServiceBinding b );
     }
 
     public interface InitialBuilder
@@ -75,7 +77,7 @@ public class ServiceBindingMerger implements ServiceBindingAccessor
         AccessorBuilder withAccessor( @Nonnull final ServiceBindingAccessor accessor );
 
         @Nonnull
-        TerminalBuilder andKeySelector( @Nonnull final KeySelector keySelector );
+        TerminalBuilder andKeySelector( @Nonnull final EqualityComparer equalityComparer );
     }
 
     public interface TerminalBuilder
@@ -89,7 +91,7 @@ public class ServiceBindingMerger implements ServiceBindingAccessor
         @Nonnull
         private final List<ServiceBindingAccessor> accessors = new ArrayList<>();
         @Nullable
-        private KeySelector keySelector;
+        private EqualityComparer equalityComparer;
 
         @Nonnull
         @Override
@@ -101,9 +103,9 @@ public class ServiceBindingMerger implements ServiceBindingAccessor
 
         @Nonnull
         @Override
-        public TerminalBuilder andKeySelector( @Nonnull final KeySelector keySelector )
+        public TerminalBuilder andKeySelector( @Nonnull final EqualityComparer equalityComparer )
         {
-            this.keySelector = keySelector;
+            this.equalityComparer = equalityComparer;
             return this;
         }
 
@@ -111,7 +113,9 @@ public class ServiceBindingMerger implements ServiceBindingAccessor
         @Override
         public ServiceBindingMerger build()
         {
-            return new ServiceBindingMerger(accessors, Objects.requireNonNull(keySelector, "The KeySelector must not be null!"));
+            return new ServiceBindingMerger(accessors,
+                                            Objects.requireNonNull(equalityComparer,
+                                                                   "The KeySelector must not be null!"));
         }
     }
 }

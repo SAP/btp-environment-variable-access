@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2022 SAP SE or an SAP affiliate company. All rights reserved.
+ */
+
 package com.sap.cloud.environment.servicebinding;
 
 import org.json.JSONException;
@@ -18,6 +22,7 @@ import java.util.stream.Collectors;
 
 import com.sap.cloud.environment.api.DefaultServiceBinding;
 import com.sap.cloud.environment.api.ServiceBinding;
+import com.sap.cloud.environment.api.ServiceBindingAccessorOptions;
 
 public final class SecretRootKeyParsingStrategy implements ParsingStrategy
 {
@@ -60,14 +65,6 @@ public final class SecretRootKeyParsingStrategy implements ParsingStrategy
     @Nonnull
     private final PropertySetter fallbackPropertySetter;
 
-    @Nonnull
-    public static SecretRootKeyParsingStrategy newDefault()
-    {
-        return new SecretRootKeyParsingStrategy(StandardCharsets.UTF_8,
-                                                DEFAULT_PROPERTY_SETTERS,
-                                                DEFAULT_FALLBACK_PROPERTY_SETTER);
-    }
-
     private SecretRootKeyParsingStrategy( @Nonnull final Charset charset,
                                           @Nonnull final Map<String, PropertySetter> propertySetters,
                                           @Nonnull final PropertySetter fallbackPropertySetter )
@@ -77,13 +74,24 @@ public final class SecretRootKeyParsingStrategy implements ParsingStrategy
         this.fallbackPropertySetter = fallbackPropertySetter;
     }
 
+    @Nonnull
+    public static SecretRootKeyParsingStrategy newDefault()
+    {
+        return new SecretRootKeyParsingStrategy(StandardCharsets.UTF_8,
+                                                DEFAULT_PROPERTY_SETTERS,
+                                                DEFAULT_FALLBACK_PROPERTY_SETTER);
+    }
+
     @Nullable
     @Override
     public ServiceBinding parse( @Nonnull final String serviceName,
                                  @Nonnull final String bindingName,
-                                 @Nonnull final Path bindingPath ) throws IOException
+                                 @Nonnull final Path bindingPath,
+                                 @Nonnull final ServiceBindingAccessorOptions options ) throws IOException
     {
-        final List<Path> propertyFiles = Files.list(bindingPath).filter(Files::isRegularFile).collect(Collectors.toList());
+        final List<Path> propertyFiles = Files.list(bindingPath)
+                                              .filter(Files::isRegularFile)
+                                              .collect(Collectors.toList());
 
         if (propertyFiles.isEmpty()) {
             // service binding directory must contain exactly one file
@@ -101,7 +109,8 @@ public final class SecretRootKeyParsingStrategy implements ParsingStrategy
             return null;
         }
 
-        @Nullable final Map<String, Object> parsedFileContent;
+        @Nullable
+        final Map<String, Object> parsedFileContent;
 
         try {
             parsedFileContent = new JSONObject(fileContent).toMap();
@@ -126,15 +135,14 @@ public final class SecretRootKeyParsingStrategy implements ParsingStrategy
             getPropertySetter(name).setProperty(rawServiceBinding, name, value);
         }
 
-        return DefaultServiceBinding
-                .builder()
-                .copy(rawServiceBinding)
-                .withNameResolver(any -> bindingName)
-                .withServiceNameResolver(any -> serviceName)
-                .withServicePlanKey(PLAN_KEY)
-                .withTagsKey(TAGS_KEY)
-                .withCredentialsKey(PropertySetter.CREDENTIALS_KEY)
-                .build();
+        return DefaultServiceBinding.builder()
+                                    .copy(rawServiceBinding)
+                                    .withName(bindingName)
+                                    .withServiceName(serviceName)
+                                    .withServicePlanKey(PLAN_KEY)
+                                    .withTagsKey(TAGS_KEY)
+                                    .withCredentialsKey(PropertySetter.CREDENTIALS_KEY)
+                                    .build();
 
     }
 

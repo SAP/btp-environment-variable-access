@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 SAP SE or an SAP affiliate company. All rights reserved.
+ * Copyright (c) 2022 SAP SE or an SAP affiliate company. All rights reserved.
  */
 
 package com.sap.cloud.environment.api;
@@ -98,8 +98,7 @@ class TypedMapViewTest
     {
         final TypedMapView sut = TypedMapView.fromMap(Collections.singletonMap("Key", true));
 
-        expectValueCastExceptionForAllBut(sut, "Key",
-                                          TypedMapView.class.getDeclaredMethod("getBoolean", String.class));
+        expectValueCastExceptionForAllBut(sut, "Key", TypedMapView.class.getDeclaredMethod("getBoolean", String.class));
     }
 
     private static void expectValueCastExceptionForAllBut( @Nonnull final TypedMapView sut,
@@ -112,7 +111,8 @@ class TypedMapViewTest
             if (expectedWorkingMethods.contains(typedAccessor)) {
                 assertThatNoException().isThrownBy(() -> typedAccessor.invoke(sut, key));
             } else {
-                assertThatThrownBy(() -> typedAccessor.invoke(sut, key)).hasCauseExactlyInstanceOf(ValueCastException.class);
+                assertThatThrownBy(() -> typedAccessor.invoke(sut,
+                                                              key)).hasCauseExactlyInstanceOf(ValueCastException.class);
             }
         }
     }
@@ -122,7 +122,8 @@ class TypedMapViewTest
     {
         final TypedMapView sut = TypedMapView.fromMap(Collections.singletonMap("Key", INTEGER));
 
-        expectValueCastExceptionForAllBut(sut, "Key",
+        expectValueCastExceptionForAllBut(sut,
+                                          "Key",
                                           TypedMapView.class.getDeclaredMethod("getInteger", String.class),
                                           TypedMapView.class.getDeclaredMethod("getDouble", String.class),
                                           TypedMapView.class.getDeclaredMethod("getNumber", String.class));
@@ -133,7 +134,8 @@ class TypedMapViewTest
     {
         final TypedMapView sut = TypedMapView.fromMap(Collections.singletonMap("Key", DOUBLE));
 
-        expectValueCastExceptionForAllBut(sut, "Key",
+        expectValueCastExceptionForAllBut(sut,
+                                          "Key",
                                           TypedMapView.class.getDeclaredMethod("getInteger", String.class),
                                           TypedMapView.class.getDeclaredMethod("getDouble", String.class),
                                           TypedMapView.class.getDeclaredMethod("getNumber", String.class));
@@ -142,9 +144,12 @@ class TypedMapViewTest
     @Test
     void getNumber() throws NoSuchMethodException
     {
-        final TypedMapView sut = TypedMapView.fromMap(Collections.singletonMap("Key", BigDecimal.valueOf(Long.MAX_VALUE, Integer.MAX_VALUE)));
+        final TypedMapView sut = TypedMapView.fromMap(Collections.singletonMap("Key",
+                                                                               BigDecimal.valueOf(Long.MAX_VALUE,
+                                                                                                  Integer.MAX_VALUE)));
 
-        expectValueCastExceptionForAllBut(sut, "Key",
+        expectValueCastExceptionForAllBut(sut,
+                                          "Key",
                                           TypedMapView.class.getDeclaredMethod("getNumber", String.class),
                                           TypedMapView.class.getDeclaredMethod("getInteger", String.class),
                                           TypedMapView.class.getDeclaredMethod("getDouble", String.class));
@@ -155,8 +160,7 @@ class TypedMapViewTest
     {
         final TypedMapView sut = TypedMapView.fromMap(Collections.singletonMap("Key", "Value"));
 
-        expectValueCastExceptionForAllBut(sut, "Key",
-                                          TypedMapView.class.getDeclaredMethod("getString", String.class));
+        expectValueCastExceptionForAllBut(sut, "Key", TypedMapView.class.getDeclaredMethod("getString", String.class));
     }
 
     @Test
@@ -164,8 +168,7 @@ class TypedMapViewTest
     {
         final TypedMapView sut = TypedMapView.fromMap(Collections.singletonMap("Key", mock(TypedMapView.class)));
 
-        expectValueCastExceptionForAllBut(sut, "Key",
-                                          TypedMapView.class.getDeclaredMethod("getMapView", String.class));
+        expectValueCastExceptionForAllBut(sut, "Key", TypedMapView.class.getDeclaredMethod("getMapView", String.class));
     }
 
     @Test
@@ -173,7 +176,8 @@ class TypedMapViewTest
     {
         final TypedMapView sut = TypedMapView.fromMap(Collections.singletonMap("Key", mock(TypedListView.class)));
 
-        expectValueCastExceptionForAllBut(sut, "Key",
+        expectValueCastExceptionForAllBut(sut,
+                                          "Key",
                                           TypedMapView.class.getDeclaredMethod("getListView", String.class));
     }
 }

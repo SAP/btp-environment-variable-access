@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 SAP SE or an SAP affiliate company. All rights reserved.
+ * Copyright (c) 2022 SAP SE or an SAP affiliate company. All rights reserved.
  */
 
 package com.sap.cloud.environment.api;
@@ -33,8 +33,4 @@ public interface ServiceBinding
 
     @Nonnull
     Map<String, Object> getCredentials();
-
-    // TODO: what's the use-case for this method?
-    @Nonnull
-    Map<String, Object> copyToMap();
 }
