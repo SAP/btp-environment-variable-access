@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 
 public class DefaultServiceBinding implements ServiceBinding
 {
@@ -51,9 +52,9 @@ public class DefaultServiceBinding implements ServiceBinding
 
     @Nonnull
     @Override
-    public List<String> getKeys()
+    public Set<String> getKeys()
     {
-        return new ArrayList<>(map.keySet());
+        return Collections.unmodifiableSet(map.keySet());
     }
 
     @Override

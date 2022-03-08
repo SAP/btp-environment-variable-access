@@ -8,11 +8,12 @@ import javax.annotation.Nonnull;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 
 public interface ServiceBinding
 {
     @Nonnull
-    List<String> getKeys();
+    Set<String> getKeys();
 
     boolean containsKey( @Nonnull final String key );
 
