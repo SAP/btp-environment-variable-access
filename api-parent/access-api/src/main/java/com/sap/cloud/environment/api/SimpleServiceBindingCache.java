@@ -24,7 +24,7 @@ public class SimpleServiceBindingCache implements ServiceBindingAccessor
     @Nonnull
     public static final Duration DEFAULT_CACHE_DURATION = Duration.ofMinutes(5L);
     @Nonnull
-    public static final Supplier<LocalDateTime> DEFAULT_LOCAL_DATE_TIME_SUPPLIER = LocalDateTime::now;
+    static final Supplier<LocalDateTime> DEFAULT_LOCAL_DATE_TIME_SUPPLIER = LocalDateTime::now;
     @Nonnull
     private static final String FORCE_RELOAD_OPTIONS_KEY = SimpleServiceBindingCache.class.getName() + ":FORCE_RELOAD";
     @Nonnull
@@ -51,8 +51,14 @@ public class SimpleServiceBindingCache implements ServiceBindingAccessor
     }
 
     public SimpleServiceBindingCache( @Nonnull final ServiceBindingAccessor delegateAccessor,
-                                      @Nonnull final Duration cacheDuration,
-                                      @Nonnull final Supplier<LocalDateTime> localDateTimeSupplier )
+                                      @Nonnull final Duration cacheDuration )
+    {
+        this(delegateAccessor, cacheDuration, DEFAULT_LOCAL_DATE_TIME_SUPPLIER);
+    }
+
+    SimpleServiceBindingCache( @Nonnull final ServiceBindingAccessor delegateAccessor,
+                               @Nonnull final Duration cacheDuration,
+                               @Nonnull final Supplier<LocalDateTime> localDateTimeSupplier )
     {
         this.delegateAccessor = delegateAccessor;
         this.cacheDuration = cacheDuration;
