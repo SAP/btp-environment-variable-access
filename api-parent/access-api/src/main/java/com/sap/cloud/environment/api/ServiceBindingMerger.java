@@ -29,12 +29,6 @@ public class ServiceBindingMerger implements ServiceBindingAccessor
     }
 
     @Nonnull
-    public static InitialBuilder builder()
-    {
-        return new Builder();
-    }
-
-    @Nonnull
     @Override
     public List<ServiceBinding> getServiceBindings( @Nonnull final ServiceBindingAccessorOptions options )
     {
@@ -63,59 +57,5 @@ public class ServiceBindingMerger implements ServiceBindingAccessor
     public interface EqualityComparer
     {
         boolean areEqual( @Nonnull final ServiceBinding a, @Nonnull final ServiceBinding b );
-    }
-
-    public interface InitialBuilder
-    {
-        @Nonnull
-        AccessorBuilder withAccessor( @Nonnull final ServiceBindingAccessor accessor );
-    }
-
-    public interface AccessorBuilder
-    {
-        @Nonnull
-        AccessorBuilder withAccessor( @Nonnull final ServiceBindingAccessor accessor );
-
-        @Nonnull
-        TerminalBuilder andKeySelector( @Nonnull final EqualityComparer equalityComparer );
-    }
-
-    public interface TerminalBuilder
-    {
-        @Nonnull
-        ServiceBindingMerger build();
-    }
-
-    private static class Builder implements InitialBuilder, AccessorBuilder, TerminalBuilder
-    {
-        @Nonnull
-        private final List<ServiceBindingAccessor> accessors = new ArrayList<>();
-        @Nullable
-        private EqualityComparer equalityComparer;
-
-        @Nonnull
-        @Override
-        public AccessorBuilder withAccessor( @Nonnull final ServiceBindingAccessor accessor )
-        {
-            accessors.add(accessor);
-            return this;
-        }
-
-        @Nonnull
-        @Override
-        public TerminalBuilder andKeySelector( @Nonnull final EqualityComparer equalityComparer )
-        {
-            this.equalityComparer = equalityComparer;
-            return this;
-        }
-
-        @Nonnull
-        @Override
-        public ServiceBindingMerger build()
-        {
-            return new ServiceBindingMerger(accessors,
-                                            Objects.requireNonNull(equalityComparer,
-                                                                   "The KeySelector must not be null!"));
-        }
     }
 }

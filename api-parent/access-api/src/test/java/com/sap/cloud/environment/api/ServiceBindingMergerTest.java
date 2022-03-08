@@ -40,26 +40,6 @@ class ServiceBindingMergerTest
         assertThat(mergedServiceBindings).containsExactlyInAnyOrder(serviceBinding1, serviceBinding2);
     }
 
-    @Nonnull
-    private static ServiceBinding serviceBinding( @Nonnull final String serviceType, @Nonnull final String plan )
-    {
-        final Map<String, Object> properties = new HashMap<>();
-        properties.put("type", serviceType);
-        properties.put("plan", plan);
-
-        // we add an additional (unique) property to make sure that service bindings with equal keys are not actually
-        // equal (in terms of object comparison)
-        // that way, we are able to test whether the merger considers the order in which the bindings are returned
-        properties.put("id", UUID.randomUUID().toString());
-
-        return DefaultServiceBinding.builder()
-                                    .copy(properties)
-                                    .withNameKey("id")
-                                    .withServiceNameKey("type")
-                                    .withServicePlanKey("plan")
-                                    .build();
-    }
-
     @Test
     void mergeSingleAccessorWithDuplicates()
     {
@@ -146,6 +126,26 @@ class ServiceBindingMergerTest
 
         verify(accessor1, times(1)).getServiceBindings(same(options));
         verify(accessor2, times(1)).getServiceBindings(same(options));
+    }
+
+    @Nonnull
+    private static ServiceBinding serviceBinding( @Nonnull final String serviceType, @Nonnull final String plan )
+    {
+        final Map<String, Object> properties = new HashMap<>();
+        properties.put("type", serviceType);
+        properties.put("plan", plan);
+
+        // we add an additional (unique) property to make sure that service bindings with equal keys are not actually
+        // equal (in terms of object comparison)
+        // that way, we are able to test whether the merger considers the order in which the bindings are returned
+        properties.put("id", UUID.randomUUID().toString());
+
+        return DefaultServiceBinding.builder()
+                                    .copy(properties)
+                                    .withNameKey("id")
+                                    .withServiceNameKey("type")
+                                    .withServicePlanKey("plan")
+                                    .build();
     }
 
     private enum ServiceTypeAndPlanComparer implements ServiceBindingMerger.EqualityComparer
