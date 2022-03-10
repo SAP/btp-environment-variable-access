@@ -6,8 +6,10 @@ package com.sap.cloud.environment.api;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
 
@@ -38,6 +40,12 @@ public final class TypedMapView
         }
 
         return new TypedMapView(properties);
+    }
+
+    @Nonnull
+    public static TypedMapView ofCredentials( @Nonnull final ServiceBinding serviceBinding )
+    {
+        return fromMap(serviceBinding.getCredentials());
     }
 
     private static void insertElement( @Nonnull final Map<String, Object> properties,
@@ -87,9 +95,9 @@ public final class TypedMapView
     }
 
     @Nonnull
-    public Iterable<String> getKeys()
+    public Set<String> getKeys()
     {
-        return map.keySet();
+        return Collections.unmodifiableSet(map.keySet());
     }
 
     public boolean getBoolean( @Nonnull final String key ) throws KeyNotFoundException, ValueCastException
