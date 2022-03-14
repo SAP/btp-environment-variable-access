@@ -22,7 +22,6 @@ import java.util.stream.Collectors;
 
 import com.sap.cloud.environment.api.DefaultServiceBinding;
 import com.sap.cloud.environment.api.ServiceBinding;
-import com.sap.cloud.environment.api.ServiceBindingAccessorOptions;
 
 public final class SecretRootKeyParsingStrategy implements ParsingStrategy
 {
@@ -86,8 +85,7 @@ public final class SecretRootKeyParsingStrategy implements ParsingStrategy
     @Override
     public ServiceBinding parse( @Nonnull final String serviceName,
                                  @Nonnull final String bindingName,
-                                 @Nonnull final Path bindingPath,
-                                 @Nonnull final ServiceBindingAccessorOptions options ) throws IOException
+                                 @Nonnull final Path bindingPath ) throws IOException
     {
         final List<Path> propertyFiles = Files.list(bindingPath)
                                               .filter(Files::isRegularFile)

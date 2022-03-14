@@ -18,13 +18,11 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import com.sap.cloud.environment.api.ServiceBinding;
 import com.sap.cloud.environment.api.ServiceBindingAccessor;
-import com.sap.cloud.environment.api.ServiceBindingAccessorOptions;
 import com.sap.cloud.environment.api.exception.ServiceBindingAccessException;
 
 public class SapServiceOperatorServiceBindingAccessor implements ServiceBindingAccessor
@@ -58,12 +56,12 @@ public class SapServiceOperatorServiceBindingAccessor implements ServiceBindingA
 
     @Nonnull
     @Override
-    public List<ServiceBinding> getServiceBindings( @Nonnull final ServiceBindingAccessorOptions options )
+    public List<ServiceBinding> getServiceBindings()
     {
         try {
             return Files.list(rootPath)
                         .filter(Files::isDirectory)
-                        .flatMap(servicePath -> parseServiceBindings(servicePath, options))
+                        .flatMap(servicePath -> parseServiceBindings(servicePath))
                         .collect(Collectors.toList());
         } catch (final SecurityException | IOException e) {
             throw new ServiceBindingAccessException("Unable to access service binding files.", e);
@@ -71,8 +69,7 @@ public class SapServiceOperatorServiceBindingAccessor implements ServiceBindingA
     }
 
     @Nonnull
-    private Stream<ServiceBinding> parseServiceBindings( @Nonnull final Path servicePath,
-                                                         @Nonnull final ServiceBindingAccessorOptions options )
+    private Stream<ServiceBinding> parseServiceBindings( @Nonnull final Path servicePath)
     {
         try {
             return Files.list(servicePath)
@@ -80,8 +77,7 @@ public class SapServiceOperatorServiceBindingAccessor implements ServiceBindingA
                         .map(bindingPath -> parsingStrategies.stream()
                                                              .map(strategy -> applyStrategy(strategy,
                                                                                             servicePath,
-                                                                                            bindingPath,
-                                                                                            options))
+                                                                                            bindingPath))
                                                              .filter(Objects::nonNull)
                                                              .findFirst())
                         .filter(Optional::isPresent)
@@ -95,14 +91,12 @@ public class SapServiceOperatorServiceBindingAccessor implements ServiceBindingA
     @Nullable
     private ServiceBinding applyStrategy( @Nonnull final ParsingStrategy strategy,
                                           @Nonnull final Path servicePath,
-                                          @Nonnull final Path bindingPath,
-                                          @Nonnull final ServiceBindingAccessorOptions options )
+                                          @Nonnull final Path bindingPath)
     {
         try {
             return strategy.parse(servicePath.getFileName().toString(),
                                   bindingPath.getFileName().toString(),
-                                  bindingPath,
-                                  options);
+                                  bindingPath);
         } catch (final IOException e) {
             return null;
         }

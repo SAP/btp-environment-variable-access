@@ -13,12 +13,5 @@ import com.sap.cloud.environment.api.exception.ServiceBindingAccessException;
 public interface ServiceBindingAccessor
 {
     @Nonnull
-    default List<ServiceBinding> getServiceBindings() throws ServiceBindingAccessException
-    {
-        return getServiceBindings(DefaultServiceBindingAccessor.getOptions());
-    }
-
-    @Nonnull
-    List<ServiceBinding> getServiceBindings( @Nonnull final ServiceBindingAccessorOptions options )
-            throws ServiceBindingAccessException;
+    List<ServiceBinding> getServiceBindings() throws ServiceBindingAccessException;
 }

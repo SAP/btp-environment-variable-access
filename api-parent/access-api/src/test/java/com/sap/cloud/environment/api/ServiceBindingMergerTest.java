@@ -31,7 +31,7 @@ class ServiceBindingMergerTest
         final ServiceBinding serviceBinding2 = serviceBinding("XSUAA", "application");
 
         final ServiceBindingAccessor accessor = mock(ServiceBindingAccessor.class);
-        when(accessor.getServiceBindings(any())).thenReturn(Arrays.asList(serviceBinding1, serviceBinding2));
+        when(accessor.getServiceBindings()).thenReturn(Arrays.asList(serviceBinding1, serviceBinding2));
 
         final ServiceBindingMerger sut = new ServiceBindingMerger(Collections.singleton(accessor),
                                                                   ServiceTypeAndPlanComparer.INSTANCE);
@@ -47,7 +47,7 @@ class ServiceBindingMergerTest
         final ServiceBinding serviceBinding2 = serviceBinding("XSUAA", "lite");
 
         final ServiceBindingAccessor accessor = mock(ServiceBindingAccessor.class);
-        when(accessor.getServiceBindings(any())).thenReturn(Arrays.asList(serviceBinding1, serviceBinding2));
+        when(accessor.getServiceBindings()).thenReturn(Arrays.asList(serviceBinding1, serviceBinding2));
 
         final ServiceBindingMerger sut = new ServiceBindingMerger(Collections.singleton(accessor),
                                                                   ServiceTypeAndPlanComparer.INSTANCE);
@@ -63,10 +63,10 @@ class ServiceBindingMergerTest
         final ServiceBinding serviceBinding2 = serviceBinding("XSUAA", "application");
 
         final ServiceBindingAccessor accessor1 = mock(ServiceBindingAccessor.class);
-        when(accessor1.getServiceBindings(any())).thenReturn(Collections.singletonList(serviceBinding1));
+        when(accessor1.getServiceBindings()).thenReturn(Collections.singletonList(serviceBinding1));
 
         final ServiceBindingAccessor accessor2 = mock(ServiceBindingAccessor.class);
-        when(accessor2.getServiceBindings(any())).thenReturn(Collections.singletonList(serviceBinding2));
+        when(accessor2.getServiceBindings()).thenReturn(Collections.singletonList(serviceBinding2));
 
         final ServiceBindingMerger sut = new ServiceBindingMerger(Arrays.asList(accessor1, accessor2),
                                                                   ServiceTypeAndPlanComparer.INSTANCE);
@@ -82,10 +82,10 @@ class ServiceBindingMergerTest
         final ServiceBinding serviceBinding2 = serviceBinding("XSUAA", "lite");
 
         final ServiceBindingAccessor accessor1 = mock(ServiceBindingAccessor.class);
-        when(accessor1.getServiceBindings(any())).thenReturn(Collections.singletonList(serviceBinding1));
+        when(accessor1.getServiceBindings()).thenReturn(Collections.singletonList(serviceBinding1));
 
         final ServiceBindingAccessor accessor2 = mock(ServiceBindingAccessor.class);
-        when(accessor2.getServiceBindings(any())).thenReturn(Collections.singletonList(serviceBinding2));
+        when(accessor2.getServiceBindings()).thenReturn(Collections.singletonList(serviceBinding2));
 
         final ServiceBindingMerger sut = new ServiceBindingMerger(Arrays.asList(accessor1, accessor2),
                                                                   ServiceTypeAndPlanComparer.INSTANCE);
@@ -100,32 +100,6 @@ class ServiceBindingMergerTest
         final ServiceBinding binding = serviceBinding("XSUAA", "lite");
 
         assertThat(ServiceBindingMerger.KEEP_EVERYTHING.areEqual(binding, binding)).isFalse();
-    }
-
-    @Test
-    void optionsArePassedDown()
-    {
-        final ServiceBindingAccessorOptions options = DefaultServiceBindingAccessorOptions.builder()
-                                                                                          .withOption("foo", "bar")
-                                                                                          .build();
-
-        final ServiceBinding serviceBinding1 = serviceBinding("XSUAA", "lite");
-        final ServiceBinding serviceBinding2 = serviceBinding("XSUAA", "plan");
-
-        final ServiceBindingAccessor accessor1 = mock(ServiceBindingAccessor.class);
-        when(accessor1.getServiceBindings(any())).thenReturn(Collections.singletonList(serviceBinding1));
-
-        final ServiceBindingAccessor accessor2 = mock(ServiceBindingAccessor.class);
-        when(accessor2.getServiceBindings(any())).thenReturn(Collections.singletonList(serviceBinding2));
-
-        final ServiceBindingMerger sut = new ServiceBindingMerger(Arrays.asList(accessor1, accessor2),
-                                                                  ServiceTypeAndPlanComparer.INSTANCE);
-
-        final List<ServiceBinding> mergedServiceBindings = sut.getServiceBindings(options);
-        assertThat(mergedServiceBindings).containsExactlyInAnyOrder(serviceBinding1, serviceBinding2);
-
-        verify(accessor1, times(1)).getServiceBindings(same(options));
-        verify(accessor2, times(1)).getServiceBindings(same(options));
     }
 
     @Nonnull

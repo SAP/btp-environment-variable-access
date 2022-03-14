@@ -15,12 +15,9 @@ public final class DefaultServiceBindingAccessor
 {
     @Nonnull
     private static ServiceBindingAccessor instance;
-    @Nonnull
-    private static ServiceBindingAccessorOptions options;
 
     static {
         instance = newDefaultInstance();
-        options = ServiceBindingAccessorOptions.NONE;
     }
 
     private DefaultServiceBindingAccessor()
@@ -55,20 +52,5 @@ public final class DefaultServiceBindingAccessor
                                                                             ServiceBindingMerger.KEEP_EVERYTHING);
 
         return new SimpleServiceBindingCache(bindingMerger);
-    }
-
-    @Nonnull
-    public static ServiceBindingAccessorOptions getOptions()
-    {
-        return options;
-    }
-
-    public static void setOptions( @Nullable final ServiceBindingAccessorOptions options )
-    {
-        if (options == null) {
-            DefaultServiceBindingAccessor.options = ServiceBindingAccessorOptions.NONE;
-        } else {
-            DefaultServiceBindingAccessor.options = options;
-        }
     }
 }

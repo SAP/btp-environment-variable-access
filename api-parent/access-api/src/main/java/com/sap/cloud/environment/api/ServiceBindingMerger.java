@@ -28,11 +28,11 @@ public class ServiceBindingMerger implements ServiceBindingAccessor
 
     @Nonnull
     @Override
-    public List<ServiceBinding> getServiceBindings( @Nonnull final ServiceBindingAccessorOptions options )
+    public List<ServiceBinding> getServiceBindings()
     {
         final List<ServiceBinding> mergedServiceBindings = new ArrayList<>();
         accessors.stream()
-                 .map(accessor -> accessor.getServiceBindings(options))
+                 .map(ServiceBindingAccessor::getServiceBindings)
                  .flatMap(List::stream)
                  .forEachOrdered(binding -> {
                      if (contains(mergedServiceBindings, binding)) {

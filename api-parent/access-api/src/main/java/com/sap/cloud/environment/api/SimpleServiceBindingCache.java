@@ -14,7 +14,6 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
-import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 import com.sap.cloud.environment.api.exception.ServiceBindingAccessException;
@@ -25,12 +24,6 @@ public class SimpleServiceBindingCache implements ServiceBindingAccessor
     public static final Duration DEFAULT_CACHE_DURATION = Duration.ofMinutes(5L);
     @Nonnull
     static final Supplier<LocalDateTime> DEFAULT_LOCAL_DATE_TIME_SUPPLIER = LocalDateTime::now;
-    @Nonnull
-    private static final String FORCE_RELOAD_OPTIONS_KEY = SimpleServiceBindingCache.class.getName() + ":FORCE_RELOAD";
-    @Nonnull
-    public static final Consumer<ServiceBindingAccessorOptions.Builder> FORCE_RELOAD = builder -> builder.withOption(
-            FORCE_RELOAD_OPTIONS_KEY,
-            true);
 
     @Nonnull
     private final ReadWriteLock accessLock = new ReentrantReadWriteLock();
@@ -67,8 +60,7 @@ public class SimpleServiceBindingCache implements ServiceBindingAccessor
 
     @Nonnull
     @Override
-    public List<ServiceBinding> getServiceBindings( @Nonnull final ServiceBindingAccessorOptions options )
-            throws ServiceBindingAccessException
+    public List<ServiceBinding> getServiceBindings() throws ServiceBindingAccessException
     {
         final LocalDateTime now = localDateTimeSupplier.get();
         if (now == null) {
@@ -76,28 +68,19 @@ public class SimpleServiceBindingCache implements ServiceBindingAccessor
                                                           LocalDateTime.class.getSimpleName()));
         }
 
-        final boolean forceReload = options.<Boolean>getValue(FORCE_RELOAD_OPTIONS_KEY).orElse(false);
-
-        if (forceReload) {
-            return readOrUpdateCache(now, options);
-        }
-
-        return Optional.ofNullable(tryReadCache(now)).orElse(readOrUpdateCache(now, options));
+        return Optional.ofNullable(tryReadCache(now)).orElse(readOrUpdateCache(now));
     }
 
     @Nonnull
-    private List<ServiceBinding> readOrUpdateCache( @Nonnull final LocalDateTime now,
-                                                    @Nonnull final ServiceBindingAccessorOptions options )
+    private List<ServiceBinding> readOrUpdateCache( @Nonnull final LocalDateTime now )
     {
         accessLock.writeLock().lock();
         try {
-            final boolean forceReload = options.<Boolean>getValue(FORCE_RELOAD_OPTIONS_KEY).orElse(false);
-
-            if (!forceReload && !isExpired(now)) {
+            if (!isExpired(now)) {
                 return Objects.requireNonNull(cachedServiceBindings, "Cached Service Bindings must not be null.");
             }
 
-            cachedServiceBindings = delegateAccessor.getServiceBindings(options);
+            cachedServiceBindings = delegateAccessor.getServiceBindings();
             lastCacheRenewal = now;
             return cachedServiceBindings;
         } finally {

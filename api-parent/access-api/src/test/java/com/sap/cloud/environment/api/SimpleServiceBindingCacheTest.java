@@ -24,12 +24,6 @@ import java.util.function.Supplier;
 import com.sap.cloud.environment.api.exception.ServiceBindingAccessException;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.same;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 class SimpleServiceBindingCacheTest
 {
@@ -104,46 +98,6 @@ class SimpleServiceBindingCacheTest
     }
 
     @Test
-    void cacheRespectsForceReloadOption()
-    {
-        final CountingServiceBindingAccessor accessor = new CountingServiceBindingAccessor(FIRST_SERVICE_BINDING,
-                                                                                           SECOND_SERVICE_BINDING);
-        final ManualTimeSupplier timeSupplier = new ManualTimeSupplier();
-
-        final SimpleServiceBindingCache sut = new SimpleServiceBindingCache(accessor, ONE_SECOND, timeSupplier);
-
-        assertThat(sut.getServiceBindings()).containsExactly(FIRST_SERVICE_BINDING);
-        assertThat(accessor.getNumberOfAccesses()).isEqualTo(1);
-
-        final ServiceBindingAccessorOptions options = DefaultServiceBindingAccessorOptions.builder()
-                                                                                          .withOption(
-                                                                                                  SimpleServiceBindingCache.FORCE_RELOAD)
-                                                                                          .build();
-
-        assertThat(sut.getServiceBindings(options)).containsExactly(SECOND_SERVICE_BINDING);
-        assertThat(accessor.getNumberOfAccesses()).isEqualTo(2);
-    }
-
-    @Test
-    void optionsArePassedDown()
-    {
-        final ServiceBindingAccessorOptions options = DefaultServiceBindingAccessorOptions.builder()
-                                                                                          .withOption("foo", "bar")
-                                                                                          .build();
-
-        final ServiceBindingAccessor accessor = mock(ServiceBindingAccessor.class);
-        when(accessor.getServiceBindings(any())).thenReturn(Collections.emptyList());
-
-        final ManualTimeSupplier timeSupplier = new ManualTimeSupplier();
-
-        final SimpleServiceBindingCache sut = new SimpleServiceBindingCache(accessor, ONE_SECOND, timeSupplier);
-
-        assertThat(sut.getServiceBindings(options)).isEmpty();
-
-        verify(accessor, times(1)).getServiceBindings(same(options));
-    }
-
-    @Test
     void cacheIsThreadSafe() throws ExecutionException, InterruptedException
     {
         final CountingServiceBindingAccessor accessor = new CountingServiceBindingAccessor(FIRST_SERVICE_BINDING,
@@ -156,7 +110,7 @@ class SimpleServiceBindingCacheTest
         try {
             final Collection<Future<List<ServiceBinding>>> firstFutures = new ArrayList<>(8);
             for (int i = 0; i < 8; ++i) {
-                firstFutures.add(executorService.submit(() -> sut.getServiceBindings()));
+                firstFutures.add(executorService.submit(sut::getServiceBindings));
             }
 
             for (final Future<List<ServiceBinding>> future : firstFutures) {
@@ -169,7 +123,7 @@ class SimpleServiceBindingCacheTest
 
             final Collection<Future<List<ServiceBinding>>> secondFutures = new ArrayList<>(8);
             for (int i = 0; i < 8; ++i) {
-                secondFutures.add(executorService.submit(() -> sut.getServiceBindings()));
+                secondFutures.add(executorService.submit(sut::getServiceBindings));
             }
 
             for (final Future<List<ServiceBinding>> future : secondFutures) {
@@ -205,8 +159,7 @@ class SimpleServiceBindingCacheTest
 
         @Nonnull
         @Override
-        public List<ServiceBinding> getServiceBindings( @Nonnull final ServiceBindingAccessorOptions options )
-                throws ServiceBindingAccessException
+        public List<ServiceBinding> getServiceBindings() throws ServiceBindingAccessException
         {
             if (serviceBindings.isEmpty()) {
                 return Collections.emptyList();

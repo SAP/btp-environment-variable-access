@@ -11,7 +11,6 @@ import java.nio.file.Path;
 import java.util.List;
 
 import com.sap.cloud.environment.api.ServiceBinding;
-import com.sap.cloud.environment.api.ServiceBindingAccessorOptions;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -25,10 +24,7 @@ class SecretKeyParsingStrategyTest
 
         final SecretKeyParsingStrategy sut = SecretKeyParsingStrategy.newDefault();
 
-        final ServiceBinding serviceBinding = sut.parse("XSUAA",
-                                                        "my-xsuaa-binding",
-                                                        path,
-                                                        ServiceBindingAccessorOptions.NONE);
+        final ServiceBinding serviceBinding = sut.parse("XSUAA", "my-xsuaa-binding", path);
 
         assertThat(serviceBinding).isNotNull();
         assertThat(serviceBinding.getName().orElse("")).isEqualTo("my-xsuaa-binding");
@@ -58,10 +54,7 @@ class SecretKeyParsingStrategyTest
 
         final SecretKeyParsingStrategy sut = SecretKeyParsingStrategy.newDefault();
 
-        final ServiceBinding serviceBinding = sut.parse("XSUAA",
-                                                        "my-xsuaa-binding",
-                                                        path,
-                                                        ServiceBindingAccessorOptions.NONE);
+        final ServiceBinding serviceBinding = sut.parse("XSUAA", "my-xsuaa-binding", path);
 
         assertThat(serviceBinding).isNull();
     }
@@ -73,10 +66,7 @@ class SecretKeyParsingStrategyTest
 
         final SecretKeyParsingStrategy sut = SecretKeyParsingStrategy.newDefault();
 
-        final ServiceBinding serviceBinding = sut.parse("XSUAA",
-                                                        "my-xsuaa-binding",
-                                                        path,
-                                                        ServiceBindingAccessorOptions.NONE);
+        final ServiceBinding serviceBinding = sut.parse("XSUAA", "my-xsuaa-binding", path);
 
         assertThat(serviceBinding).isNull();
     }

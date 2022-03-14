@@ -11,7 +11,6 @@ import java.nio.file.Path;
 import java.util.List;
 
 import com.sap.cloud.environment.api.ServiceBinding;
-import com.sap.cloud.environment.api.ServiceBindingAccessorOptions;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -25,10 +24,7 @@ class DataParsingStrategyTest
 
         final DataParsingStrategy sut = DataParsingStrategy.newDefault();
 
-        final ServiceBinding serviceBinding = sut.parse("XSUAA",
-                                                        "my-xsuaa-binding",
-                                                        path,
-                                                        ServiceBindingAccessorOptions.NONE);
+        final ServiceBinding serviceBinding = sut.parse("XSUAA", "my-xsuaa-binding", path);
 
         assertThat(serviceBinding).isNotNull();
 
@@ -58,10 +54,7 @@ class DataParsingStrategyTest
 
         final DataParsingStrategy sut = DataParsingStrategy.newDefault();
 
-        final ServiceBinding serviceBinding = sut.parse("XSUAA",
-                                                        "my-xsuaa-binding",
-                                                        path,
-                                                        ServiceBindingAccessorOptions.NONE);
+        final ServiceBinding serviceBinding = sut.parse("XSUAA", "my-xsuaa-binding", path);
 
         assertThat(serviceBinding).isNull();
     }

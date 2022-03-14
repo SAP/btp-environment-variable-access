@@ -10,7 +10,6 @@ import java.io.IOException;
 import java.nio.file.Path;
 
 import com.sap.cloud.environment.api.ServiceBinding;
-import com.sap.cloud.environment.api.ServiceBindingAccessorOptions;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -23,7 +22,7 @@ class SecretRootKeyParsingStrategyTest
 
         final SecretRootKeyParsingStrategy sut = SecretRootKeyParsingStrategy.newDefault();
 
-        final ServiceBinding serviceBinding = sut.parse("service", "binding", path, ServiceBindingAccessorOptions.NONE);
+        final ServiceBinding serviceBinding = sut.parse("service", "binding", path);
 
         assertThat(serviceBinding).isNull();
     }
@@ -35,7 +34,7 @@ class SecretRootKeyParsingStrategyTest
 
         final SecretRootKeyParsingStrategy sut = SecretRootKeyParsingStrategy.newDefault();
 
-        final ServiceBinding serviceBinding = sut.parse("service", "binding", path, ServiceBindingAccessorOptions.NONE);
+        final ServiceBinding serviceBinding = sut.parse("service", "binding", path);
 
         assertThat(serviceBinding).isNull();
     }
@@ -47,10 +46,7 @@ class SecretRootKeyParsingStrategyTest
 
         final SecretRootKeyParsingStrategy sut = SecretRootKeyParsingStrategy.newDefault();
 
-        final ServiceBinding serviceBinding = sut.parse("XSUAA",
-                                                        "my-xsuaa-binding",
-                                                        path,
-                                                        ServiceBindingAccessorOptions.NONE);
+        final ServiceBinding serviceBinding = sut.parse("XSUAA", "my-xsuaa-binding", path);
 
         assertThat(serviceBinding).isNotNull();
         assertThat(serviceBinding.getName().orElse("")).isEqualTo("my-xsuaa-binding");

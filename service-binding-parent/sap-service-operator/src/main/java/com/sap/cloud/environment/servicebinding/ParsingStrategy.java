@@ -10,7 +10,6 @@ import java.io.IOException;
 import java.nio.file.Path;
 
 import com.sap.cloud.environment.api.ServiceBinding;
-import com.sap.cloud.environment.api.ServiceBindingAccessorOptions;
 
 @FunctionalInterface
 public interface ParsingStrategy
@@ -18,6 +17,5 @@ public interface ParsingStrategy
     @Nullable
     ServiceBinding parse( @Nonnull final String serviceName,
                           @Nonnull final String bindingName,
-                          @Nonnull final Path bindingPath,
-                          @Nonnull final ServiceBindingAccessorOptions options ) throws IOException;
+                          @Nonnull final Path bindingPath ) throws IOException;
 }
