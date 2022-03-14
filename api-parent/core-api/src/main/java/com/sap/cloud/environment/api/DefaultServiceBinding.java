@@ -6,7 +6,6 @@ package com.sap.cloud.environment.api;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -17,7 +16,7 @@ import java.util.Set;
 public class DefaultServiceBinding implements ServiceBinding
 {
     @Nonnull
-    private final Map<String, Object> map;
+    private final Map<String, Object> properties;
     @Nullable
     private final String name;
     @Nullable
@@ -29,14 +28,14 @@ public class DefaultServiceBinding implements ServiceBinding
     @Nonnull
     private final Map<String, Object> credentials;
 
-    DefaultServiceBinding( @Nonnull final Map<String, Object> map,
+    DefaultServiceBinding( @Nonnull final Map<String, Object> properties,
                            @Nullable final String name,
                            @Nullable final String serviceName,
                            @Nullable final String servicePlan,
                            @Nonnull final List<String> tags,
                            @Nonnull final Map<String, Object> credentials )
     {
-        this.map = map;
+        this.properties = properties;
         this.name = name;
         this.serviceName = serviceName;
         this.servicePlan = servicePlan;
@@ -54,20 +53,20 @@ public class DefaultServiceBinding implements ServiceBinding
     @Override
     public Set<String> getKeys()
     {
-        return Collections.unmodifiableSet(map.keySet());
+        return Collections.unmodifiableSet(properties.keySet());
     }
 
     @Override
     public boolean containsKey( @Nonnull final String key )
     {
-        return map.containsKey(key);
+        return properties.containsKey(key);
     }
 
     @Nonnull
     @Override
     public Optional<Object> get( @Nonnull final String key )
     {
-        return Optional.ofNullable(map.get(key));
+        return Optional.ofNullable(properties.get(key));
     }
 
     @Nonnull
@@ -108,7 +107,7 @@ public class DefaultServiceBinding implements ServiceBinding
     @Override
     public int hashCode()
     {
-        return Objects.hash(getName(), getServiceName(), getServicePlan(), getTags(), getCredentials(), map);
+        return Objects.hash(getName(), getServiceName(), getServicePlan(), getTags(), getCredentials(), properties);
     }
 
     @Override
@@ -123,9 +122,12 @@ public class DefaultServiceBinding implements ServiceBinding
 
         final DefaultServiceBinding that = (DefaultServiceBinding) o;
 
-        return getName().equals(that.getName()) && getServiceName().equals(that.getServiceName()) && getServicePlan().equals(
-                that.getServicePlan()) && getTags().equals(that.getTags()) && getCredentials().equals(that.getCredentials()) && map.equals(
-                that.map);
+        return getName().equals(that.getName())
+               && getServiceName().equals(that.getServiceName())
+               && getServicePlan().equals(that.getServicePlan())
+               && getTags().equals(that.getTags())
+               && getCredentials().equals(that.getCredentials())
+               && properties.equals(that.properties);
     }
 
     public interface MapSelectionBuilder

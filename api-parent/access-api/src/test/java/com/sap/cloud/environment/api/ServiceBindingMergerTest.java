@@ -15,11 +15,7 @@ import java.util.Map;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.same;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 class ServiceBindingMergerTest
@@ -34,7 +30,7 @@ class ServiceBindingMergerTest
         when(accessor.getServiceBindings()).thenReturn(Arrays.asList(serviceBinding1, serviceBinding2));
 
         final ServiceBindingMerger sut = new ServiceBindingMerger(Collections.singleton(accessor),
-                                                                  ServiceTypeAndPlanComparer.INSTANCE);
+                                                                  ServiceNameAndPlanComparer.INSTANCE);
 
         final List<ServiceBinding> mergedServiceBindings = sut.getServiceBindings();
         assertThat(mergedServiceBindings).containsExactlyInAnyOrder(serviceBinding1, serviceBinding2);
@@ -50,7 +46,7 @@ class ServiceBindingMergerTest
         when(accessor.getServiceBindings()).thenReturn(Arrays.asList(serviceBinding1, serviceBinding2));
 
         final ServiceBindingMerger sut = new ServiceBindingMerger(Collections.singleton(accessor),
-                                                                  ServiceTypeAndPlanComparer.INSTANCE);
+                                                                  ServiceNameAndPlanComparer.INSTANCE);
 
         final List<ServiceBinding> mergedServiceBindings = sut.getServiceBindings();
         assertThat(mergedServiceBindings).containsExactlyInAnyOrder(serviceBinding1);
@@ -69,7 +65,7 @@ class ServiceBindingMergerTest
         when(accessor2.getServiceBindings()).thenReturn(Collections.singletonList(serviceBinding2));
 
         final ServiceBindingMerger sut = new ServiceBindingMerger(Arrays.asList(accessor1, accessor2),
-                                                                  ServiceTypeAndPlanComparer.INSTANCE);
+                                                                  ServiceNameAndPlanComparer.INSTANCE);
 
         final List<ServiceBinding> mergedServiceBindings = sut.getServiceBindings();
         assertThat(mergedServiceBindings).containsExactlyInAnyOrder(serviceBinding1, serviceBinding2);
@@ -88,7 +84,7 @@ class ServiceBindingMergerTest
         when(accessor2.getServiceBindings()).thenReturn(Collections.singletonList(serviceBinding2));
 
         final ServiceBindingMerger sut = new ServiceBindingMerger(Arrays.asList(accessor1, accessor2),
-                                                                  ServiceTypeAndPlanComparer.INSTANCE);
+                                                                  ServiceNameAndPlanComparer.INSTANCE);
 
         final List<ServiceBinding> mergedServiceBindings = sut.getServiceBindings();
         assertThat(mergedServiceBindings).containsExactlyInAnyOrder(serviceBinding1);
@@ -122,7 +118,7 @@ class ServiceBindingMergerTest
                                     .build();
     }
 
-    private enum ServiceTypeAndPlanComparer implements ServiceBindingMerger.EqualityComparer
+    private enum ServiceNameAndPlanComparer implements ServiceBindingMerger.EqualityComparer
     {
         INSTANCE;
 
