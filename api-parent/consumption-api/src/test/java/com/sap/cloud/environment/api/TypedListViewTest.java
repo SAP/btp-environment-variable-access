@@ -15,6 +15,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import com.sap.cloud.environment.api.exception.ValueCastException;
 
@@ -175,5 +176,16 @@ class TypedListViewTest
         final TypedListView sut = TypedListView.fromList(Collections.singletonList(mock(TypedListView.class)));
 
         expectValueCastExceptionForAllBut(sut, 0, TypedListView.class.getDeclaredMethod("getListView", int.class));
+    }
+
+    @Test
+    void getItems()
+    {
+        List<Object> primitiveValues = PRIMITIVE_VALUES.stream().collect(Collectors.toList());
+        primitiveValues.add("Value2");
+
+        final TypedListView sut = TypedListView.fromList(primitiveValues);
+        List<String> stringList = sut.getItems(String.class);
+        assertThat(stringList).hasSize(2).contains("Value").contains("Value2");
     }
 }

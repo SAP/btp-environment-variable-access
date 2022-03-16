@@ -9,6 +9,7 @@ import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import com.sap.cloud.environment.api.exception.ValueCastException;
 
@@ -136,5 +137,14 @@ public final class TypedListView
         }
 
         throw new ValueCastException();
+    }
+
+    @Nonnull
+    public <T> List<T> getItems( @Nonnull final Class<? extends T> listType )
+    {
+        return list.stream()
+                   .filter(item -> item != null && item.getClass() == listType)
+                   .map(item -> (T) item)
+                   .collect(Collectors.toList());
     }
 }

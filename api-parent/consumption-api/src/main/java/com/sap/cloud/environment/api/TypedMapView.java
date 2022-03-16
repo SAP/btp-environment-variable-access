@@ -9,6 +9,7 @@ import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.stream.Collectors;
 
 import com.sap.cloud.environment.api.exception.KeyNotFoundException;
 import com.sap.cloud.environment.api.exception.ValueCastException;
@@ -173,5 +174,14 @@ public final class TypedMapView
         }
 
         throw new ValueCastException();
+    }
+
+
+    public <T> Map<String, T> getEntries( @Nonnull final Class<? extends T> mapType )
+    {
+        return map.entrySet()
+                  .stream()
+                  .filter(e -> e.getValue() != null && e.getValue().getClass() == mapType)
+                  .collect(Collectors.toMap(e -> e.getKey(), e -> (T) e.getValue()));
     }
 }

@@ -180,4 +180,17 @@ class TypedMapViewTest
                                           "Key",
                                           TypedMapView.class.getDeclaredMethod("getListView", String.class));
     }
+
+    @Test
+    void getEntries()
+    {
+        Map<String, Object> primitiveValues = Collections.synchronizedMap(PRIMITIVE_VALUES);
+        primitiveValues.put("String2", "Value2");
+
+        final TypedMapView sut = TypedMapView.fromMap(primitiveValues);
+        Map<String, String> stringMap = sut.getEntries(String.class);
+        assertThat(stringMap).hasSize(2);
+        assertThat(stringMap.get("String")).isEqualTo("Value");
+        assertThat(stringMap.get("String2")).isEqualTo("Value2");
+    }
 }
