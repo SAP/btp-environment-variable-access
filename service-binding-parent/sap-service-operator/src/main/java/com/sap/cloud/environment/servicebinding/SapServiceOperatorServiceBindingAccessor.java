@@ -69,7 +69,7 @@ public class SapServiceOperatorServiceBindingAccessor implements ServiceBindingA
     }
 
     @Nonnull
-    private Stream<ServiceBinding> parseServiceBindings( @Nonnull final Path servicePath)
+    private Stream<ServiceBinding> parseServiceBindings( @Nonnull final Path servicePath )
     {
         try {
             return Files.list(servicePath)
@@ -91,7 +91,7 @@ public class SapServiceOperatorServiceBindingAccessor implements ServiceBindingA
     @Nullable
     private ServiceBinding applyStrategy( @Nonnull final ParsingStrategy strategy,
                                           @Nonnull final Path servicePath,
-                                          @Nonnull final Path bindingPath)
+                                          @Nonnull final Path bindingPath )
     {
         try {
             return strategy.parse(servicePath.getFileName().toString(),
