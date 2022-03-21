@@ -160,10 +160,7 @@ In all above cases, the service credentials are accessible to the application li
 
 ```java
 ServiceBindingAccessor accessor = DefaultServiceBindingAccessor.getInstance();
-ServiceBinding binding = getServiceBindings()
-                            .stream()
-                            .filter(b -> "some-instance".equals(b.getName().orElse(null)))
-                            .collect(Collectors.toList()).get(0); // assumes there is one service binding found
+ServiceBinding binding = accessor.getServiceBinding("some-instance"); // throws IllegalStateException RT Exception in case it finds 0 or multiple
 String plan = binding.getServicePlan().orElse(null);
 Map<String, Object> credentials = binding.getCredentials();
 ```
@@ -184,10 +181,10 @@ Include the following dependency in your ``pom.xml`` to consume service bindings
 ### Service Lookup via Name
 
 ```java
-ServiceBinding bindings = DefaultServiceBindingAccessor.getInstance().getServiceBindings().stream()
-                                .filter(b -> "some-instance".equals(b.getName().orElse(null)))
-                                .collect(Collectors.toList()).get(0); // assumes there is one service binding found 
+ServiceBinding binding = DefaultServiceBindingAccessor.getInstance().getServiceBinding("some-instance"); 
 ```
+
+> NOTE: ``getServiceBinding()`` throws an `IllegalStateException` runtime exception in case there is either no service matching or multiple services found with the same name.
 
 ### Service Lookup via Service Name and Plan
 
@@ -196,7 +193,7 @@ ServiceBindingAccessor accessor = DefaultServiceBindingAccessor.getInstance();
 
 List<ServiceBinding> bindings = accessor.getServiceBindings().stream()
                 .filter(b -> "identity".equalsIgnoreCase(b.getServiceName().orElse(null))
-                       && "application".equalsIgnoreCase(b.getServicePlan().orElse(null)))
+                        && "application".equalsIgnoreCase(b.getServicePlan().orElse(null)))
                 .collect(Collectors.toList()); // There should never be two
 
 if (bindings.isEmpty()) {
