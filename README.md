@@ -160,7 +160,7 @@ In all above cases, the service credentials are accessible to the application li
 
 ```java
 ServiceBindingAccessor accessor = DefaultServiceBindingAccessor.getInstance();
-ServiceBinding binding = accessor.getServiceBinding("some-instance"); // throws IllegalStateException RT Exception in case it finds 0 or multiple
+ServiceBinding binding = accessor.getServiceBinding("some-instance"); // throws IllegalStateException in case it finds not exactly one
 String plan = binding.getServicePlan().orElse(null);
 Map<String, Object> credentials = binding.getCredentials();
 ```
