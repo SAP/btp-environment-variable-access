@@ -29,6 +29,8 @@ public class SapServiceOperatorServiceBindingAccessor implements ServiceBindingA
 {
     @Nonnull
     public static final Path DEFAULT_ROOT_PATH = Paths.get("/etc/secrets/sapbtp");
+    public static final String K8S_CONFIG_PATH = "K8S_CONFIG_PATH";
+
     @Nonnull
     public static final Collection<ParsingStrategy> DEFAULT_PARSING_STRATEGIES = Collections.unmodifiableCollection(
             Arrays.asList(SecretRootKeyParsingStrategy.newDefault(),
@@ -44,7 +46,7 @@ public class SapServiceOperatorServiceBindingAccessor implements ServiceBindingA
 
     public SapServiceOperatorServiceBindingAccessor()
     {
-        this(DEFAULT_ROOT_PATH, DEFAULT_PARSING_STRATEGIES);
+        this(resolveServiceConfigurationPath(), DEFAULT_PARSING_STRATEGIES);
     }
 
     public SapServiceOperatorServiceBindingAccessor( @Nonnull final Path rootPath,
@@ -100,5 +102,14 @@ public class SapServiceOperatorServiceBindingAccessor implements ServiceBindingA
         } catch (final IOException e) {
             return null;
         }
+    }
+
+    private static Path resolveServiceConfigurationPath()
+    {
+        String customConfigurationPath = System.getenv(K8S_CONFIG_PATH);
+        if (customConfigurationPath == null || customConfigurationPath.isEmpty()) {
+            return DEFAULT_ROOT_PATH;
+        }
+        return Paths.get(customConfigurationPath);
     }
 }
