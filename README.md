@@ -176,9 +176,16 @@ Map<String, Object> credentials = binding.getCredentials();
 Include the following dependency in your ``pom.xml`` to consume service bindings created by the [SAP BTP Service Operator](https://github.com/SAP/sap-btp-service-operator) (K8s):
 
 ```xml
-<groupId>com.sap.cloud.environment.servicebinding</groupId>
-<artifactId>sap-service-operator</artifactId>
-<version>${sap.cloud.env.servicebinding.version}</version>
+<dependency>
+    <groupId>com.sap.cloud.environment.servicebinding</groupId>
+    <artifactId>cloud-environment-java-sap-service-operator</artifactId>
+    <version>${sap.cloud.env.servicebinding.version}</version>
+</dependency>
+<dependency> <!-- optional if using TypedMapView etc. -->
+    <groupId>com.sap.cloud.environment.api</groupId>
+    <artifactId>cloud-environment-java-consumption-api</artifactId>
+    <version>${sap.cloud.env.servicebinding.version}</version>
+</dependency>
 ```
 
 ### Service Lookup via Name
