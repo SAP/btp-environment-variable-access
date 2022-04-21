@@ -43,12 +43,6 @@ public class SimpleServiceBindingCache implements ServiceBindingAccessor
         this(delegateAccessor, DEFAULT_CACHE_DURATION, DEFAULT_LOCAL_DATE_TIME_SUPPLIER);
     }
 
-    public SimpleServiceBindingCache( @Nonnull final ServiceBindingAccessor delegateAccessor,
-                                      @Nonnull final Duration cacheDuration )
-    {
-        this(delegateAccessor, cacheDuration, DEFAULT_LOCAL_DATE_TIME_SUPPLIER);
-    }
-
     SimpleServiceBindingCache( @Nonnull final ServiceBindingAccessor delegateAccessor,
                                @Nonnull final Duration cacheDuration,
                                @Nonnull final Supplier<LocalDateTime> localDateTimeSupplier )
@@ -56,6 +50,12 @@ public class SimpleServiceBindingCache implements ServiceBindingAccessor
         this.delegateAccessor = delegateAccessor;
         this.cacheDuration = cacheDuration;
         this.localDateTimeSupplier = localDateTimeSupplier;
+    }
+
+    public SimpleServiceBindingCache( @Nonnull final ServiceBindingAccessor delegateAccessor,
+                                      @Nonnull final Duration cacheDuration )
+    {
+        this(delegateAccessor, cacheDuration, DEFAULT_LOCAL_DATE_TIME_SUPPLIER);
     }
 
     @Nonnull
@@ -69,6 +69,21 @@ public class SimpleServiceBindingCache implements ServiceBindingAccessor
         }
 
         return Optional.ofNullable(tryReadCache(now)).orElse(readOrUpdateCache(now));
+    }
+
+    @Nullable
+    private List<ServiceBinding> tryReadCache( @Nonnull final Temporal now )
+    {
+        accessLock.readLock().lock();
+        try {
+            if (isExpired(now)) {
+                return null;
+            }
+
+            return cachedServiceBindings;
+        } finally {
+            accessLock.readLock().unlock();
+        }
     }
 
     @Nonnull
@@ -85,21 +100,6 @@ public class SimpleServiceBindingCache implements ServiceBindingAccessor
             return cachedServiceBindings;
         } finally {
             accessLock.writeLock().unlock();
-        }
-    }
-
-    @Nullable
-    private List<ServiceBinding> tryReadCache( @Nonnull final Temporal now )
-    {
-        accessLock.readLock().lock();
-        try {
-            if (isExpired(now)) {
-                return null;
-            }
-
-            return cachedServiceBindings;
-        } finally {
-            accessLock.readLock().unlock();
         }
     }
 

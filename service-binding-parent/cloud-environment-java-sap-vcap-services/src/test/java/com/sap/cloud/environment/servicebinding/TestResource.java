@@ -5,8 +5,10 @@
 package com.sap.cloud.environment.servicebinding;
 
 import javax.annotation.Nonnull;
+import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
@@ -15,6 +17,19 @@ public final class TestResource
     private TestResource()
     {
         throw new IllegalStateException("This utility class must not be initialized.");
+    }
+
+    @Nonnull
+    public static String read( @Nonnull final Class<?> testClass, @Nonnull final String fileName )
+    {
+        final Path resourcePath = get(testClass, fileName);
+        try {
+            return String.join("\n", Files.readAllLines(resourcePath));
+        } catch (final IOException e) {
+            throw new AssertionError(String.format("Unable to read test resource content from '%s/%s.'",
+                                                   testClass.getSimpleName(),
+                                                   fileName));
+        }
     }
 
     @Nonnull

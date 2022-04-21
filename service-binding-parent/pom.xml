@@ -18,6 +18,7 @@
 
     <modules>
         <module>sap-service-operator</module>
+        <module>cloud-environment-java-sap-vcap-services</module>
     </modules>
 
 </project>

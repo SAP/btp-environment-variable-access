@@ -39,6 +39,11 @@
                 <artifactId>cloud-environment-java-sap-service-operator</artifactId>
                 <version>${cloud-environment.version}</version>
             </dependency>
+            <dependency>
+                <groupId>com.sap.cloud.environment.servicebinding</groupId>
+                <artifactId>cloud-environment-java-sap-vcap-services</artifactId>
+                <version>${cloud-environment.version}</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
