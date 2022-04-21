@@ -14,11 +14,7 @@ import java.util.stream.StreamSupport;
 public final class DefaultServiceBindingAccessor
 {
     @Nonnull
-    private static ServiceBindingAccessor instance;
-
-    static {
-        instance = newDefaultInstance();
-    }
+    private static ServiceBindingAccessor instance = newDefaultInstance();
 
     private DefaultServiceBindingAccessor()
     {

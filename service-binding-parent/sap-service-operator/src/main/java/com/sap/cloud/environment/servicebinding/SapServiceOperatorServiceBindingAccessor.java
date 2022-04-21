@@ -61,7 +61,7 @@ public class SapServiceOperatorServiceBindingAccessor implements ServiceBindingA
         try {
             return Files.list(rootPath)
                         .filter(Files::isDirectory)
-                        .flatMap(servicePath -> parseServiceBindings(servicePath))
+                        .flatMap(this::parseServiceBindings)
                         .collect(Collectors.toList());
         } catch (final SecurityException | IOException e) {
             throw new ServiceBindingAccessException("Unable to access service binding files.", e);
