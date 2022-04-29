@@ -1,0 +1,36 @@
+{
+    "xsuaa": [
+        {
+            "name": "xsuaa-binding-1",
+            "plan": "lite",
+            "tags": ["xsuaa-binding-1-tag-1", "xsuaa-binding-1-tag-2"],
+            "credentials": {
+                "uri": "https://xsuaa-1.domain.com",
+                "clientid": "xsuaa-clientid-1",
+                "clientsecret": "xsuaa-clientsecret-1"
+            }
+        },
+        {
+            "name": "xsuaa-binding-2",
+            "plan": "application",
+            "tags": ["xsuaa-binding-2-tag-1", "xsuaa-binding-2-tag-2"],
+            "credentials": {
+                "uri": "https://xsuaa-2.domain.com",
+                "clientid": "xsuaa-clientid-2",
+                "clientsecret": "xsuaa-clientsecret-2"
+            }
+        }
+    ],
+    "destination": [
+        {
+            "name": "destination-binding-1",
+            "plan": "broker",
+            "tags": ["destination-binding-1-tag-1", "destination-binding-1-tag-2"],
+            "credentials": {
+                "uri": "https://destination-1.domain.com",
+                "clientid": "destination-clientid-1",
+                "clientsecret": "destination-clientsecret-1"
+            }
+        }
+    ]
+}
