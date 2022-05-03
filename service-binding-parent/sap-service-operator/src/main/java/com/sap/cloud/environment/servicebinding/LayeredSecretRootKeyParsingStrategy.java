@@ -24,7 +24,7 @@ import java.util.stream.Collectors;
 import com.sap.cloud.environment.api.DefaultServiceBinding;
 import com.sap.cloud.environment.api.ServiceBinding;
 
-public final class SecretRootKeyParsingStrategy implements ParsingStrategy
+public final class LayeredSecretRootKeyParsingStrategy implements LayeredParsingStrategy
 {
     @Nonnull
     private static final String PLAN_KEY = "plan";
@@ -42,18 +42,18 @@ public final class SecretRootKeyParsingStrategy implements ParsingStrategy
     private static final String TAGS_KEY = "tags";
 
     @Nonnull
-    private static final Map<String, PropertySetter> DEFAULT_PROPERTY_SETTERS;
+    private static final Map<String, LayeredPropertySetter> DEFAULT_PROPERTY_SETTERS;
 
     @Nonnull
-    private static final PropertySetter DEFAULT_FALLBACK_PROPERTY_SETTER = PropertySetter.TO_CREDENTIALS;
+    private static final LayeredPropertySetter DEFAULT_FALLBACK_PROPERTY_SETTER = LayeredPropertySetter.TO_CREDENTIALS;
 
     static {
-        final Map<String, PropertySetter> defaultPropertySetters = new HashMap<>();
-        defaultPropertySetters.put(PLAN_KEY, PropertySetter.TO_ROOT);
-        defaultPropertySetters.put(INSTANCE_GUID_KEY, PropertySetter.TO_ROOT);
-        defaultPropertySetters.put(INSTANCE_NAME_KEY, PropertySetter.TO_ROOT);
-        defaultPropertySetters.put(LABEL_KEY, PropertySetter.TO_ROOT);
-        defaultPropertySetters.put(TAGS_KEY, PropertySetter.TO_ROOT);
+        final Map<String, LayeredPropertySetter> defaultPropertySetters = new HashMap<>();
+        defaultPropertySetters.put(PLAN_KEY, LayeredPropertySetter.TO_ROOT);
+        defaultPropertySetters.put(INSTANCE_GUID_KEY, LayeredPropertySetter.TO_ROOT);
+        defaultPropertySetters.put(INSTANCE_NAME_KEY, LayeredPropertySetter.TO_ROOT);
+        defaultPropertySetters.put(LABEL_KEY, LayeredPropertySetter.TO_ROOT);
+        defaultPropertySetters.put(TAGS_KEY, LayeredPropertySetter.TO_ROOT);
 
         DEFAULT_PROPERTY_SETTERS = Collections.unmodifiableMap(defaultPropertySetters);
     }
@@ -61,13 +61,13 @@ public final class SecretRootKeyParsingStrategy implements ParsingStrategy
     @Nonnull
     private final Charset charset;
     @Nonnull
-    private final Map<String, PropertySetter> propertySetters;
+    private final Map<String, LayeredPropertySetter> propertySetters;
     @Nonnull
-    private final PropertySetter fallbackPropertySetter;
+    private final LayeredPropertySetter fallbackPropertySetter;
 
-    private SecretRootKeyParsingStrategy( @Nonnull final Charset charset,
-                                          @Nonnull final Map<String, PropertySetter> propertySetters,
-                                          @Nonnull final PropertySetter fallbackPropertySetter )
+    private LayeredSecretRootKeyParsingStrategy( @Nonnull final Charset charset,
+                                                 @Nonnull final Map<String, LayeredPropertySetter> propertySetters,
+                                                 @Nonnull final LayeredPropertySetter fallbackPropertySetter )
     {
         this.charset = charset;
         this.propertySetters = propertySetters;
@@ -75,11 +75,11 @@ public final class SecretRootKeyParsingStrategy implements ParsingStrategy
     }
 
     @Nonnull
-    public static SecretRootKeyParsingStrategy newDefault()
+    public static LayeredSecretRootKeyParsingStrategy newDefault()
     {
-        return new SecretRootKeyParsingStrategy(StandardCharsets.UTF_8,
-                                                DEFAULT_PROPERTY_SETTERS,
-                                                DEFAULT_FALLBACK_PROPERTY_SETTER);
+        return new LayeredSecretRootKeyParsingStrategy(StandardCharsets.UTF_8,
+                                                       DEFAULT_PROPERTY_SETTERS,
+                                                       DEFAULT_FALLBACK_PROPERTY_SETTER);
     }
 
     @Nonnull
@@ -140,13 +140,13 @@ public final class SecretRootKeyParsingStrategy implements ParsingStrategy
                                                                           .withServiceName(serviceName)
                                                                           .withServicePlanKey(PLAN_KEY)
                                                                           .withTagsKey(TAGS_KEY)
-                                                                          .withCredentialsKey(PropertySetter.CREDENTIALS_KEY)
+                                                                          .withCredentialsKey(LayeredPropertySetter.CREDENTIALS_KEY)
                                                                           .build();
         return Optional.of(serviceBinding);
     }
 
     @Nonnull
-    private PropertySetter getPropertySetter( @Nonnull final String propertyName )
+    private LayeredPropertySetter getPropertySetter( @Nonnull final String propertyName )
     {
         return propertySetters.getOrDefault(propertyName, fallbackPropertySetter);
     }

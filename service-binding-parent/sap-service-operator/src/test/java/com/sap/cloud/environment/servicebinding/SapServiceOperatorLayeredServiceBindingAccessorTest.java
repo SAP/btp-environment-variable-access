@@ -14,15 +14,16 @@ import com.sap.cloud.environment.api.ServiceBinding;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-class SapServiceOperatorServiceBindingAccessorTest
+class SapServiceOperatorLayeredServiceBindingAccessorTest
 {
     @Test
     void parseMixedBindings()
     {
-        final Path path = TestResource.get(SapServiceOperatorServiceBindingAccessorTest.class, "MixedBindings");
+        final Path path = TestResource.get(SapServiceOperatorLayeredServiceBindingAccessorTest.class, "MixedBindings");
 
-        final SapServiceOperatorServiceBindingAccessor sut = new SapServiceOperatorServiceBindingAccessor(path,
-                                                                                                          SapServiceOperatorServiceBindingAccessor.DEFAULT_PARSING_STRATEGIES);
+        final SapServiceOperatorLayeredServiceBindingAccessor sut = new SapServiceOperatorLayeredServiceBindingAccessor(
+                path,
+                SapServiceOperatorLayeredServiceBindingAccessor.DEFAULT_PARSING_STRATEGIES);
 
         final List<ServiceBinding> serviceBindings = sut.getServiceBindings();
 
@@ -108,10 +109,11 @@ class SapServiceOperatorServiceBindingAccessorTest
     @Test
     void parseIgnoresInvalidBindings()
     {
-        final Path path = TestResource.get(SapServiceOperatorServiceBindingAccessorTest.class, "InvalidBinding");
+        final Path path = TestResource.get(SapServiceOperatorLayeredServiceBindingAccessorTest.class, "InvalidBinding");
 
-        final SapServiceOperatorServiceBindingAccessor sut = new SapServiceOperatorServiceBindingAccessor(path,
-                                                                                                          SapServiceOperatorServiceBindingAccessor.DEFAULT_PARSING_STRATEGIES);
+        final SapServiceOperatorLayeredServiceBindingAccessor sut = new SapServiceOperatorLayeredServiceBindingAccessor(
+                path,
+                SapServiceOperatorLayeredServiceBindingAccessor.DEFAULT_PARSING_STRATEGIES);
 
         final List<ServiceBinding> serviceBindings = sut.getServiceBindings();
 

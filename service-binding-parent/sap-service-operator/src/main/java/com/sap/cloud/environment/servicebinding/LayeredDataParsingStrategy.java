@@ -23,7 +23,7 @@ import java.util.stream.Collectors;
 import com.sap.cloud.environment.api.DefaultServiceBinding;
 import com.sap.cloud.environment.api.ServiceBinding;
 
-public final class DataParsingStrategy implements ParsingStrategy
+public final class LayeredDataParsingStrategy implements LayeredParsingStrategy
 {
     @Nonnull
     private static final String PLAN_KEY = "plan";
@@ -44,19 +44,19 @@ public final class DataParsingStrategy implements ParsingStrategy
     private static final String DOMAINS_KEY = "domains";
 
     @Nonnull
-    private static final Map<String, PropertySetter> DEFAULT_PROPERTY_SETTERS;
+    private static final Map<String, LayeredPropertySetter> DEFAULT_PROPERTY_SETTERS;
 
     @Nonnull
-    private static final PropertySetter DEFAULT_FALLBACK_PROPERTY_SETTER = PropertySetter.TO_CREDENTIALS;
+    private static final LayeredPropertySetter DEFAULT_FALLBACK_PROPERTY_SETTER = LayeredPropertySetter.TO_CREDENTIALS;
 
     static {
-        final Map<String, PropertySetter> defaultPropertySetters = new HashMap<>();
-        defaultPropertySetters.put(PLAN_KEY, PropertySetter.TO_ROOT);
-        defaultPropertySetters.put(INSTANCE_GUID_KEY, PropertySetter.TO_ROOT);
-        defaultPropertySetters.put(INSTANCE_NAME_KEY, PropertySetter.TO_ROOT);
-        defaultPropertySetters.put(LABEL_KEY, PropertySetter.TO_ROOT);
-        defaultPropertySetters.put(TAGS_KEY, PropertySetter.asList(PropertySetter.TO_ROOT));
-        defaultPropertySetters.put(DOMAINS_KEY, PropertySetter.asList(PropertySetter.TO_CREDENTIALS));
+        final Map<String, LayeredPropertySetter> defaultPropertySetters = new HashMap<>();
+        defaultPropertySetters.put(PLAN_KEY, LayeredPropertySetter.TO_ROOT);
+        defaultPropertySetters.put(INSTANCE_GUID_KEY, LayeredPropertySetter.TO_ROOT);
+        defaultPropertySetters.put(INSTANCE_NAME_KEY, LayeredPropertySetter.TO_ROOT);
+        defaultPropertySetters.put(LABEL_KEY, LayeredPropertySetter.TO_ROOT);
+        defaultPropertySetters.put(TAGS_KEY, LayeredPropertySetter.asList(LayeredPropertySetter.TO_ROOT));
+        defaultPropertySetters.put(DOMAINS_KEY, LayeredPropertySetter.asList(LayeredPropertySetter.TO_CREDENTIALS));
 
         DEFAULT_PROPERTY_SETTERS = Collections.unmodifiableMap(defaultPropertySetters);
     }
@@ -64,13 +64,13 @@ public final class DataParsingStrategy implements ParsingStrategy
     @Nonnull
     private final Charset charset;
     @Nonnull
-    private final Map<String, PropertySetter> propertySetters;
+    private final Map<String, LayeredPropertySetter> propertySetters;
     @Nonnull
-    private final PropertySetter fallbackPropertySetter;
+    private final LayeredPropertySetter fallbackPropertySetter;
 
-    private DataParsingStrategy( @Nonnull final Charset charset,
-                                 @Nonnull final Map<String, PropertySetter> propertySetters,
-                                 @Nonnull final PropertySetter fallbackPropertySetter )
+    private LayeredDataParsingStrategy( @Nonnull final Charset charset,
+                                        @Nonnull final Map<String, LayeredPropertySetter> propertySetters,
+                                        @Nonnull final LayeredPropertySetter fallbackPropertySetter )
     {
         this.charset = charset;
         this.propertySetters = propertySetters;
@@ -78,11 +78,11 @@ public final class DataParsingStrategy implements ParsingStrategy
     }
 
     @Nonnull
-    public static DataParsingStrategy newDefault()
+    public static LayeredDataParsingStrategy newDefault()
     {
-        return new DataParsingStrategy(StandardCharsets.UTF_8,
-                                       DEFAULT_PROPERTY_SETTERS,
-                                       DEFAULT_FALLBACK_PROPERTY_SETTER);
+        return new LayeredDataParsingStrategy(StandardCharsets.UTF_8,
+                                              DEFAULT_PROPERTY_SETTERS,
+                                              DEFAULT_FALLBACK_PROPERTY_SETTER);
     }
 
     @Nonnull
@@ -120,7 +120,7 @@ public final class DataParsingStrategy implements ParsingStrategy
             getPropertySetter(propertyName).setProperty(rawServiceBinding, propertyName, fileContent);
         }
 
-        if (rawServiceBinding.get(PropertySetter.CREDENTIALS_KEY) == null) {
+        if (rawServiceBinding.get(LayeredPropertySetter.CREDENTIALS_KEY) == null) {
             // service bindings must contain credentials
             return Optional.empty();
         }
@@ -131,13 +131,13 @@ public final class DataParsingStrategy implements ParsingStrategy
                                                                           .withServiceName(serviceName)
                                                                           .withServicePlanKey(PLAN_KEY)
                                                                           .withTagsKey(TAGS_KEY)
-                                                                          .withCredentialsKey(PropertySetter.CREDENTIALS_KEY)
+                                                                          .withCredentialsKey(LayeredPropertySetter.CREDENTIALS_KEY)
                                                                           .build();
         return Optional.of(serviceBinding);
     }
 
     @Nonnull
-    private PropertySetter getPropertySetter( @Nonnull final String propertyName )
+    private LayeredPropertySetter getPropertySetter( @Nonnull final String propertyName )
     {
         return propertySetters.getOrDefault(propertyName, fallbackPropertySetter);
     }

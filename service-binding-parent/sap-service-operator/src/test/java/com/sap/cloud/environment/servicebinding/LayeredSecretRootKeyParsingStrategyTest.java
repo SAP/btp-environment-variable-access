@@ -14,14 +14,14 @@ import com.sap.cloud.environment.api.ServiceBinding;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-class SecretRootKeyParsingStrategyTest
+class LayeredSecretRootKeyParsingStrategyTest
 {
     @Test
     void multipleFilesLeadToEmptyResult() throws IOException
     {
-        final Path path = TestResource.get(SecretRootKeyParsingStrategyTest.class, "MultipleFiles");
+        final Path path = TestResource.get(LayeredSecretRootKeyParsingStrategyTest.class, "MultipleFiles");
 
-        final SecretRootKeyParsingStrategy sut = SecretRootKeyParsingStrategy.newDefault();
+        final LayeredSecretRootKeyParsingStrategy sut = LayeredSecretRootKeyParsingStrategy.newDefault();
 
         final Optional<ServiceBinding> serviceBinding = sut.parse("service", "binding", path);
 
@@ -31,9 +31,9 @@ class SecretRootKeyParsingStrategyTest
     @Test
     void fileWithoutJsonLeadsToEmptyResult() throws IOException
     {
-        final Path path = TestResource.get(SecretRootKeyParsingStrategyTest.class, "NotAJsonFile");
+        final Path path = TestResource.get(LayeredSecretRootKeyParsingStrategyTest.class, "NotAJsonFile");
 
-        final SecretRootKeyParsingStrategy sut = SecretRootKeyParsingStrategy.newDefault();
+        final LayeredSecretRootKeyParsingStrategy sut = LayeredSecretRootKeyParsingStrategy.newDefault();
 
         final Optional<ServiceBinding> serviceBinding = sut.parse("service", "binding", path);
 
@@ -43,9 +43,9 @@ class SecretRootKeyParsingStrategyTest
     @Test
     void parseValidBinding() throws IOException
     {
-        final Path path = TestResource.get(SecretRootKeyParsingStrategyTest.class, "ValidBinding");
+        final Path path = TestResource.get(LayeredSecretRootKeyParsingStrategyTest.class, "ValidBinding");
 
-        final SecretRootKeyParsingStrategy sut = SecretRootKeyParsingStrategy.newDefault();
+        final LayeredSecretRootKeyParsingStrategy sut = LayeredSecretRootKeyParsingStrategy.newDefault();
 
         final ServiceBinding serviceBinding = sut.parse("XSUAA", "my-xsuaa-binding", path).orElse(null);
 

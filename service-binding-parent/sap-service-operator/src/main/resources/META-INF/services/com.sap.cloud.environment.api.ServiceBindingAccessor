@@ -2,4 +2,4 @@
 # Copyright (c) 2022 SAP SE or an SAP affiliate company. All rights reserved.
 #
 
-com.sap.cloud.environment.servicebinding.SapServiceOperatorServiceBindingAccessor
+com.sap.cloud.environment.servicebinding.SapServiceOperatorLayeredServiceBindingAccessor

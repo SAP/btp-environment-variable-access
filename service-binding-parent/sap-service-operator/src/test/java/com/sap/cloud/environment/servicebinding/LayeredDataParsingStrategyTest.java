@@ -15,15 +15,15 @@ import com.sap.cloud.environment.api.ServiceBinding;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-class DataParsingStrategyTest
+class LayeredDataParsingStrategyTest
 {
     @Test
     @SuppressWarnings( "unchecked" )
     void parseValidBinding() throws IOException
     {
-        final Path path = TestResource.get(DataParsingStrategyTest.class, "ValidBinding");
+        final Path path = TestResource.get(LayeredDataParsingStrategyTest.class, "ValidBinding");
 
-        final DataParsingStrategy sut = DataParsingStrategy.newDefault();
+        final LayeredDataParsingStrategy sut = LayeredDataParsingStrategy.newDefault();
 
         final ServiceBinding serviceBinding = sut.parse("XSUAA", "my-xsuaa-binding", path).orElse(null);
 
@@ -51,9 +51,9 @@ class DataParsingStrategyTest
     @Test
     void parseWithoutCredentialsLeadsToEmptyResult() throws IOException
     {
-        final Path path = TestResource.get(DataParsingStrategyTest.class, "NoCredentials");
+        final Path path = TestResource.get(LayeredDataParsingStrategyTest.class, "NoCredentials");
 
-        final DataParsingStrategy sut = DataParsingStrategy.newDefault();
+        final LayeredDataParsingStrategy sut = LayeredDataParsingStrategy.newDefault();
 
         final Optional<ServiceBinding> serviceBinding;
         serviceBinding = sut.parse("XSUAA", "my-xsuaa-binding", path);

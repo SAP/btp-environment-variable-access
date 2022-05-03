@@ -12,7 +12,7 @@ import java.util.Optional;
 import com.sap.cloud.environment.api.ServiceBinding;
 
 @FunctionalInterface
-public interface ParsingStrategy
+public interface LayeredParsingStrategy
 {
     @Nonnull
     Optional<ServiceBinding> parse( @Nonnull final String serviceName,

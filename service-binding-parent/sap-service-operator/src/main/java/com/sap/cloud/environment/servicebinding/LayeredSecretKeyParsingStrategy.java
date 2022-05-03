@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
 import com.sap.cloud.environment.api.DefaultServiceBinding;
 import com.sap.cloud.environment.api.ServiceBinding;
 
-public final class SecretKeyParsingStrategy implements ParsingStrategy
+public final class LayeredSecretKeyParsingStrategy implements LayeredParsingStrategy
 {
     @Nonnull
     private static final String PLAN_KEY = "plan";
@@ -30,15 +30,15 @@ public final class SecretKeyParsingStrategy implements ParsingStrategy
     @Nonnull
     private final Charset charset;
 
-    private SecretKeyParsingStrategy( @Nonnull final Charset charset )
+    private LayeredSecretKeyParsingStrategy( @Nonnull final Charset charset )
     {
         this.charset = charset;
     }
 
     @Nonnull
-    public static SecretKeyParsingStrategy newDefault()
+    public static LayeredSecretKeyParsingStrategy newDefault()
     {
-        return new SecretKeyParsingStrategy(StandardCharsets.UTF_8);
+        return new LayeredSecretKeyParsingStrategy(StandardCharsets.UTF_8);
     }
 
     @Nonnull
@@ -74,7 +74,7 @@ public final class SecretKeyParsingStrategy implements ParsingStrategy
                 }
 
                 credentialsFound = true;
-                rawServiceBinding.put(PropertySetter.CREDENTIALS_KEY, parsedCredentials);
+                rawServiceBinding.put(LayeredPropertySetter.CREDENTIALS_KEY, parsedCredentials);
             } catch (final JSONException e) {
                 // property is not a valid json object --> it cannot be the credentials object
                 rawServiceBinding.put(propertyName, fileContent);
@@ -91,7 +91,7 @@ public final class SecretKeyParsingStrategy implements ParsingStrategy
                                                                           .withName(bindingName)
                                                                           .withServiceName(serviceName)
                                                                           .withServicePlanKey(PLAN_KEY)
-                                                                          .withCredentialsKey(PropertySetter.CREDENTIALS_KEY)
+                                                                          .withCredentialsKey(LayeredPropertySetter.CREDENTIALS_KEY)
                                                                           .build();
         return Optional.of(serviceBinding);
     }
