@@ -1,0 +1,27 @@
+{
+    "$schema": "https://sap.com/schemas/service-bindings",
+    "metaDataProperties": [
+        {
+            "name": "type",
+            "sourceName": "type.txt",
+            "format": "text"
+        },
+        {
+            "name": "tags",
+            "sourceName": "tags.json",
+            "format": "json"
+        }
+    ],
+    "credentialProperties": [
+        {
+            "name": "container1",
+            "format": "json",
+            "container": true
+        },
+        {
+            "name": "container2",
+            "format": "json",
+            "container": true
+        }
+    ]
+}

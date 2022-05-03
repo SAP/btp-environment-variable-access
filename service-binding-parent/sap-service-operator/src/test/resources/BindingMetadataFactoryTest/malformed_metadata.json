@@ -1,0 +1,29 @@
+{
+    "$schema": "https://sap.com/schemas/service-bindings",
+    "metaDataProperties": [
+        {
+            "name": "this property has no 'format' field"
+        },
+        {
+            "format": "this property has no 'name' field"
+        },
+        {
+            "name": "type",
+            "sourceName": "type.txt",
+            "format": "text"
+        }
+    ],
+    "credentialProperties": [
+        {
+            "name": "this property has no 'format' field"
+        },
+        {
+            "format": "this property has no 'name' field"
+        },
+        {
+            "name": "user",
+            "sourceName": "user.secret",
+            "format": "text"
+        }
+    ]
+}
