@@ -18,6 +18,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import com.sap.cloud.environment.api.DefaultServiceBinding;
@@ -81,11 +82,11 @@ public final class SecretRootKeyParsingStrategy implements ParsingStrategy
                                                 DEFAULT_FALLBACK_PROPERTY_SETTER);
     }
 
-    @Nullable
+    @Nonnull
     @Override
-    public ServiceBinding parse( @Nonnull final String serviceName,
-                                 @Nonnull final String bindingName,
-                                 @Nonnull final Path bindingPath ) throws IOException
+    public Optional<ServiceBinding> parse( @Nonnull final String serviceName,
+                                           @Nonnull final String bindingName,
+                                           @Nonnull final Path bindingPath ) throws IOException
     {
         final List<Path> propertyFiles = Files.list(bindingPath)
                                               .filter(Files::isRegularFile)
@@ -93,18 +94,18 @@ public final class SecretRootKeyParsingStrategy implements ParsingStrategy
 
         if (propertyFiles.isEmpty()) {
             // service binding directory must contain exactly one file
-            return null;
+            return Optional.empty();
         }
 
         if (propertyFiles.size() > 1) {
             // service binding directory must contain exactly one file
-            return null;
+            return Optional.empty();
         }
 
         final String fileContent = String.join("\n", Files.readAllLines(propertyFiles.get(0), charset));
 
         if (fileContent.isEmpty()) {
-            return null;
+            return Optional.empty();
         }
 
         @Nullable
@@ -113,12 +114,12 @@ public final class SecretRootKeyParsingStrategy implements ParsingStrategy
         try {
             parsedFileContent = new JSONObject(fileContent).toMap();
         } catch (final JSONException e) {
-            return null;
+            return Optional.empty();
         }
 
         if (parsedFileContent == null) {
             // the property file must contain a Json structure
-            return null;
+            return Optional.empty();
         }
 
         final Map<String, Object> rawServiceBinding = new HashMap<>();
@@ -133,15 +134,15 @@ public final class SecretRootKeyParsingStrategy implements ParsingStrategy
             getPropertySetter(name).setProperty(rawServiceBinding, name, value);
         }
 
-        return DefaultServiceBinding.builder()
-                                    .copy(rawServiceBinding)
-                                    .withName(bindingName)
-                                    .withServiceName(serviceName)
-                                    .withServicePlanKey(PLAN_KEY)
-                                    .withTagsKey(TAGS_KEY)
-                                    .withCredentialsKey(PropertySetter.CREDENTIALS_KEY)
-                                    .build();
-
+        final DefaultServiceBinding serviceBinding = DefaultServiceBinding.builder()
+                                                                          .copy(rawServiceBinding)
+                                                                          .withName(bindingName)
+                                                                          .withServiceName(serviceName)
+                                                                          .withServicePlanKey(PLAN_KEY)
+                                                                          .withTagsKey(TAGS_KEY)
+                                                                          .withCredentialsKey(PropertySetter.CREDENTIALS_KEY)
+                                                                          .build();
+        return Optional.of(serviceBinding);
     }
 
     @Nonnull

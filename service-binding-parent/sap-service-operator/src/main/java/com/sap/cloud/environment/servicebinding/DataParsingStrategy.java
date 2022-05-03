@@ -8,7 +8,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
@@ -18,6 +17,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import com.sap.cloud.environment.api.DefaultServiceBinding;
@@ -85,11 +85,11 @@ public final class DataParsingStrategy implements ParsingStrategy
                                        DEFAULT_FALLBACK_PROPERTY_SETTER);
     }
 
-    @Nullable
+    @Nonnull
     @Override
-    public ServiceBinding parse( @Nonnull final String serviceName,
-                                 @Nonnull final String bindingName,
-                                 @Nonnull final Path bindingPath ) throws IOException
+    public Optional<ServiceBinding> parse( @Nonnull final String serviceName,
+                                           @Nonnull final String bindingName,
+                                           @Nonnull final Path bindingPath ) throws IOException
     {
         final List<Path> propertyFiles = Files.list(bindingPath)
                                               .filter(Files::isRegularFile)
@@ -97,7 +97,7 @@ public final class DataParsingStrategy implements ParsingStrategy
 
         if (propertyFiles.isEmpty()) {
             // service binding directory must contain at least one file
-            return null;
+            return Optional.empty();
         }
 
         final Map<String, Object> rawServiceBinding = new HashMap<>();
@@ -112,7 +112,7 @@ public final class DataParsingStrategy implements ParsingStrategy
                 final JSONObject jsonContent = new JSONObject(fileContent);
 
                 // service binding must not contain a valid JSON object
-                return null;
+                return Optional.empty();
             } catch (final JSONException e) {
                 // ignore
             }
@@ -122,17 +122,18 @@ public final class DataParsingStrategy implements ParsingStrategy
 
         if (rawServiceBinding.get(PropertySetter.CREDENTIALS_KEY) == null) {
             // service bindings must contain credentials
-            return null;
+            return Optional.empty();
         }
 
-        return DefaultServiceBinding.builder()
-                                    .copy(rawServiceBinding)
-                                    .withName(bindingName)
-                                    .withServiceName(serviceName)
-                                    .withServicePlanKey(PLAN_KEY)
-                                    .withTagsKey(TAGS_KEY)
-                                    .withCredentialsKey(PropertySetter.CREDENTIALS_KEY)
-                                    .build();
+        final DefaultServiceBinding serviceBinding = DefaultServiceBinding.builder()
+                                                                          .copy(rawServiceBinding)
+                                                                          .withName(bindingName)
+                                                                          .withServiceName(serviceName)
+                                                                          .withServicePlanKey(PLAN_KEY)
+                                                                          .withTagsKey(TAGS_KEY)
+                                                                          .withCredentialsKey(PropertySetter.CREDENTIALS_KEY)
+                                                                          .build();
+        return Optional.of(serviceBinding);
     }
 
     @Nonnull

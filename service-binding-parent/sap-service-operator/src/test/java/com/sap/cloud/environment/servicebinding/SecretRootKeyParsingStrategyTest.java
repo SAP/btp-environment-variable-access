@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.Optional;
 
 import com.sap.cloud.environment.api.ServiceBinding;
 
@@ -16,27 +17,27 @@ import static org.assertj.core.api.Assertions.assertThat;
 class SecretRootKeyParsingStrategyTest
 {
     @Test
-    void multipleFilesLeadToNull() throws IOException
+    void multipleFilesLeadToEmptyResult() throws IOException
     {
         final Path path = TestResource.get(SecretRootKeyParsingStrategyTest.class, "MultipleFiles");
 
         final SecretRootKeyParsingStrategy sut = SecretRootKeyParsingStrategy.newDefault();
 
-        final ServiceBinding serviceBinding = sut.parse("service", "binding", path);
+        final Optional<ServiceBinding> serviceBinding = sut.parse("service", "binding", path);
 
-        assertThat(serviceBinding).isNull();
+        assertThat(serviceBinding.isPresent()).isFalse();
     }
 
     @Test
-    void fileWithoutJsonLeadsToNull() throws IOException
+    void fileWithoutJsonLeadsToEmptyResult() throws IOException
     {
         final Path path = TestResource.get(SecretRootKeyParsingStrategyTest.class, "NotAJsonFile");
 
         final SecretRootKeyParsingStrategy sut = SecretRootKeyParsingStrategy.newDefault();
 
-        final ServiceBinding serviceBinding = sut.parse("service", "binding", path);
+        final Optional<ServiceBinding> serviceBinding = sut.parse("service", "binding", path);
 
-        assertThat(serviceBinding).isNull();
+        assertThat(serviceBinding.isPresent()).isFalse();
     }
 
     @Test
@@ -46,7 +47,7 @@ class SecretRootKeyParsingStrategyTest
 
         final SecretRootKeyParsingStrategy sut = SecretRootKeyParsingStrategy.newDefault();
 
-        final ServiceBinding serviceBinding = sut.parse("XSUAA", "my-xsuaa-binding", path);
+        final ServiceBinding serviceBinding = sut.parse("XSUAA", "my-xsuaa-binding", path).orElse(null);
 
         assertThat(serviceBinding).isNotNull();
         assertThat(serviceBinding.getName().orElse("")).isEqualTo("my-xsuaa-binding");

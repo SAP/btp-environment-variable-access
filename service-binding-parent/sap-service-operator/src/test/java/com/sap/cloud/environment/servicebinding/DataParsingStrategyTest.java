@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Test;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.List;
+import java.util.Optional;
 
 import com.sap.cloud.environment.api.ServiceBinding;
 
@@ -24,7 +25,7 @@ class DataParsingStrategyTest
 
         final DataParsingStrategy sut = DataParsingStrategy.newDefault();
 
-        final ServiceBinding serviceBinding = sut.parse("XSUAA", "my-xsuaa-binding", path);
+        final ServiceBinding serviceBinding = sut.parse("XSUAA", "my-xsuaa-binding", path).orElse(null);
 
         assertThat(serviceBinding).isNotNull();
 
@@ -48,14 +49,15 @@ class DataParsingStrategyTest
     }
 
     @Test
-    void parseWithoutCredentialsLeadsToNull() throws IOException
+    void parseWithoutCredentialsLeadsToEmptyResult() throws IOException
     {
         final Path path = TestResource.get(DataParsingStrategyTest.class, "NoCredentials");
 
         final DataParsingStrategy sut = DataParsingStrategy.newDefault();
 
-        final ServiceBinding serviceBinding = sut.parse("XSUAA", "my-xsuaa-binding", path);
+        final Optional<ServiceBinding> serviceBinding;
+        serviceBinding = sut.parse("XSUAA", "my-xsuaa-binding", path);
 
-        assertThat(serviceBinding).isNull();
+        assertThat(serviceBinding.isPresent()).isFalse();
     }
 }

@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Test;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.List;
+import java.util.Optional;
 
 import com.sap.cloud.environment.api.ServiceBinding;
 
@@ -24,7 +25,7 @@ class SecretKeyParsingStrategyTest
 
         final SecretKeyParsingStrategy sut = SecretKeyParsingStrategy.newDefault();
 
-        final ServiceBinding serviceBinding = sut.parse("XSUAA", "my-xsuaa-binding", path);
+        final ServiceBinding serviceBinding = sut.parse("XSUAA", "my-xsuaa-binding", path).orElse(null);
 
         assertThat(serviceBinding).isNotNull();
         assertThat(serviceBinding.getName().orElse("")).isEqualTo("my-xsuaa-binding");
@@ -48,26 +49,26 @@ class SecretKeyParsingStrategyTest
     }
 
     @Test
-    void parsingTwoJsonFilesLeadsToNull() throws IOException
+    void parsingTwoJsonFilesLeadsEmptyResult() throws IOException
     {
         final Path path = TestResource.get(SecretKeyParsingStrategyTest.class, "TwoJsonFiles");
 
         final SecretKeyParsingStrategy sut = SecretKeyParsingStrategy.newDefault();
 
-        final ServiceBinding serviceBinding = sut.parse("XSUAA", "my-xsuaa-binding", path);
+        final Optional<ServiceBinding> serviceBinding = sut.parse("XSUAA", "my-xsuaa-binding", path);
 
-        assertThat(serviceBinding).isNull();
+        assertThat(serviceBinding.isPresent()).isFalse();
     }
 
     @Test
-    void parsingNoJsonFileLeadsToNull() throws IOException
+    void parsingNoJsonFileLeadsEmptyResult() throws IOException
     {
         final Path path = TestResource.get(SecretKeyParsingStrategyTest.class, "NoJsonFile");
 
         final SecretKeyParsingStrategy sut = SecretKeyParsingStrategy.newDefault();
 
-        final ServiceBinding serviceBinding = sut.parse("XSUAA", "my-xsuaa-binding", path);
+        final Optional<ServiceBinding> serviceBinding = sut.parse("XSUAA", "my-xsuaa-binding", path);
 
-        assertThat(serviceBinding).isNull();
+        assertThat(serviceBinding.isPresent()).isFalse();
     }
 }
