@@ -142,6 +142,10 @@ public class SapServiceOperatorServiceBindingIoAccessor implements ServiceBindin
         for (final BindingProperty credentialProperty : bindingMetadata.getCredentialProperties()) {
             addProperty(rawCredentials, rootDirectory, credentialProperty);
         }
+        if (rawCredentials.isEmpty()) {
+            // bindings must always have credentials
+            return Optional.empty();
+        }
 
         final String credentialsKey = generateNewKey(rawServiceBinding);
         rawServiceBinding.put(credentialsKey, rawCredentials);

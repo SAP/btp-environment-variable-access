@@ -7,6 +7,7 @@ package com.sap.cloud.environment.servicebinding;
 
 import org.junit.jupiter.api.Test;
 
+import javax.annotation.Nonnull;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.function.Function;
@@ -49,7 +50,8 @@ class SapServiceOperatorServiceBindingIoAccessorTest
     @Test
     void parseMixedServiceBindings()
     {
-        final Path rootDirectory = TestResource.get(SapServiceOperatorServiceBindingIoAccessorTest.class);
+        final Path rootDirectory = TestResource.get(SapServiceOperatorServiceBindingIoAccessorTest.class,
+                                                    "ValidMixedBindings");
 
         final Function<String, String> reader = mock(Function.class);
         when(reader.apply(eq("SERVICE_BINDING_ROOT"))).thenReturn(rootDirectory.toString());
@@ -61,7 +63,33 @@ class SapServiceOperatorServiceBindingIoAccessorTest
 
         assertThat(serviceBindings.size()).isEqualTo(2);
 
-        // assert data binding has been parsed
+        assertContainsDataXsuaaBinding(serviceBindings);
+        assertContainsSecretKeyXsuaaBinding(serviceBindings);
+    }
+
+    @SuppressWarnings( "unchecked" )
+    @Test
+    void brokenBindingsAreIgnored()
+    {
+        final Path rootDirectory = TestResource.get(SapServiceOperatorServiceBindingIoAccessorTest.class,
+                                                    "PartiallyValidMixedBindings");
+
+        final Function<String, String> reader = mock(Function.class);
+        when(reader.apply(eq("SERVICE_BINDING_ROOT"))).thenReturn(rootDirectory.toString());
+
+        final SapServiceOperatorServiceBindingIoAccessor sut = new SapServiceOperatorServiceBindingIoAccessor(reader,
+                                                                                                              SapServiceOperatorServiceBindingIoAccessor.DEFAULT_CHARSET);
+
+        final List<ServiceBinding> serviceBindings = sut.getServiceBindings();
+
+        assertThat(serviceBindings.size()).isEqualTo(2);
+
+        assertContainsDataXsuaaBinding(serviceBindings);
+        assertContainsSecretKeyXsuaaBinding(serviceBindings);
+    }
+
+    private static void assertContainsDataXsuaaBinding( @Nonnull final List<ServiceBinding> serviceBindings )
+    {
         final List<ServiceBinding> dataBinding = serviceBindings.stream()
                                                                 .filter(binding -> "data-xsuaa-binding".equals(binding.getName()
                                                                                                                       .orElse(null)))
@@ -81,8 +109,10 @@ class SapServiceOperatorServiceBindingIoAccessorTest
         assertThat(dataXsuaaBinding.getCredentials().get("domains")).asList()
                                                                     .containsExactlyInAnyOrder("data-xsuaa-domain-1",
                                                                                                "data-xsuaa-domain-2");
+    }
 
-        // assert secret key binding has been parsed
+    private static void assertContainsSecretKeyXsuaaBinding( @Nonnull final List<ServiceBinding> serviceBindings )
+    {
         final List<ServiceBinding> secretKeyXsuaaBindings = serviceBindings.stream()
                                                                            .filter(binding -> "secret-key-xsuaa-binding".equals(
                                                                                    binding.getName().orElse(null)))

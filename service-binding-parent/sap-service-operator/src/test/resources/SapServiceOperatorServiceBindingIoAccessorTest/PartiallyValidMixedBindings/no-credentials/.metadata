@@ -1,0 +1,28 @@
+{
+    "$schema": "https://sap.com/schemas/service-bindings",
+    "metaDataProperties": [
+        {
+            "name": "type",
+            "sourceName": "label",
+            "format": "text"
+        },
+        {
+            "name": "tags",
+            "format": "json"
+        },
+        {
+            "name": "plan",
+            "format": "text"
+        },
+        {
+            "name": "instance_guid",
+            "format": "text"
+        },
+        {
+            "name": "instance_name",
+            "format": "text"
+        }
+    ],
+    "credentialProperties": [
+    ]
+}
