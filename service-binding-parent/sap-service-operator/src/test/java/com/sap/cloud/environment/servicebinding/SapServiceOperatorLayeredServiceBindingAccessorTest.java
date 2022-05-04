@@ -17,6 +17,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 class SapServiceOperatorLayeredServiceBindingAccessorTest
 {
     @Test
+    void defaultConstructorExists()
+    {
+        assertThat(new SapServiceOperatorLayeredServiceBindingAccessor()).isNotNull();
+    }
+
+    @Test
     void parseMixedBindings()
     {
         final Path path = TestResource.get(SapServiceOperatorLayeredServiceBindingAccessorTest.class, "MixedBindings");

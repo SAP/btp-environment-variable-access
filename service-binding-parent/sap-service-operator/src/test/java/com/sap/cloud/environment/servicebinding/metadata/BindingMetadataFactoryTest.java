@@ -18,7 +18,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 class BindingMetadataFactoryTest
 {
     @Nonnull
-    private static final BindingProperty TYPE_PROPERTY = BindingProperty.text("type", "type.txt");
+    private static final BindingProperty TYPE_PROPERTY = BindingProperty.text("label", "label.txt");
     @Nonnull
     private static final BindingProperty TAGS_PROPERTY = BindingProperty.json("tags", "tags.json");
 

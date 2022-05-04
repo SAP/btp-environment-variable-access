@@ -6,7 +6,7 @@ package com.sap.cloud.environment.servicebinding.metadata;
 
 import javax.annotation.Nonnull;
 
-enum PropertyFormat
+public enum PropertyFormat
 {
     TEXT("text"),
     JSON("json");

@@ -36,21 +36,23 @@ public final class TestResource
     @Nonnull
     public static Path get( @Nonnull final Class<?> testClass, @Nonnull final String fileName )
     {
+        return Paths.get(get(testClass).toString(), fileName);
+    }
+
+    @Nonnull
+    public static Path get( @Nonnull final Class<?> testClass )
+    {
         final URL url = testClass.getClassLoader().getResource(testClass.getSimpleName());
         if (url == null) {
-            throw new AssertionError(String.format("Unable to load test source from '%s/%s'",
-                                                   testClass.getSimpleName(),
-                                                   fileName));
+            throw new AssertionError(String.format("Unable to load test resource directory '%s'",
+                                                   testClass.getSimpleName()));
         }
 
-        final String rootFolder;
         try {
-            rootFolder = Paths.get(url.toURI()).toString();
-            return Paths.get(rootFolder, fileName);
+            return Paths.get(url.toURI());
         } catch (final URISyntaxException e) {
-            throw new AssertionError(String.format("Unable to load test resource from '%s/%s'",
-                                                   testClass.getSimpleName(),
-                                                   fileName), e);
+            throw new AssertionError(String.format("Unable to load test resource directory '%s'",
+                                                   testClass.getSimpleName()), e);
         }
     }
 }

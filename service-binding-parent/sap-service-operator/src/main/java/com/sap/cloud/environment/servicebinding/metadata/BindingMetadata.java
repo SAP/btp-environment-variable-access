@@ -10,7 +10,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-class BindingMetadata
+public class BindingMetadata
 {
     @Nonnull
     private final List<BindingProperty> metadataProperties;
