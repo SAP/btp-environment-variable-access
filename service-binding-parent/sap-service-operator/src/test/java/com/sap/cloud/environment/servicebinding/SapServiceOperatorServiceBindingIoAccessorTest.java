@@ -29,37 +29,41 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-class SapServiceOperatorServiceBindingIoAccessorTest {
+class SapServiceOperatorServiceBindingIoAccessorTest
+{
     @Test
-    void defaultConstructorExists() {
+    void defaultConstructorExists()
+    {
         assertThat(new SapServiceOperatorServiceBindingIoAccessor()).isNotNull();
     }
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings( "unchecked" )
     @Test
-    void getServiceBindingsReadsEnvironmentVariable() {
+    void getServiceBindingsReadsEnvironmentVariable()
+    {
         final Function<String, String> reader = mock(Function.class);
         when(reader.apply(any())).thenReturn(null);
 
         final SapServiceOperatorServiceBindingIoAccessor sut = new SapServiceOperatorServiceBindingIoAccessor(reader,
-                SapServiceOperatorServiceBindingIoAccessor.DEFAULT_CHARSET);
+                                                                                                              SapServiceOperatorServiceBindingIoAccessor.DEFAULT_CHARSET);
 
         sut.getServiceBindings();
 
         verify(reader, times(1)).apply(eq("SERVICE_BINDING_ROOT"));
     }
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings( "unchecked" )
     @Test
-    void parseMixedServiceBindings() {
+    void parseMixedServiceBindings()
+    {
         final Path rootDirectory = TestResource.get(SapServiceOperatorServiceBindingIoAccessorTest.class,
-                "ValidMixedBindings");
+                                                    "ValidMixedBindings");
 
         final Function<String, String> reader = mock(Function.class);
         when(reader.apply(eq("SERVICE_BINDING_ROOT"))).thenReturn(rootDirectory.toString());
 
         final SapServiceOperatorServiceBindingIoAccessor sut = new SapServiceOperatorServiceBindingIoAccessor(reader,
-                SapServiceOperatorServiceBindingIoAccessor.DEFAULT_CHARSET);
+                                                                                                              SapServiceOperatorServiceBindingIoAccessor.DEFAULT_CHARSET);
 
         final List<ServiceBinding> serviceBindings = sut.getServiceBindings();
 
@@ -69,17 +73,18 @@ class SapServiceOperatorServiceBindingIoAccessorTest {
         assertContainsSecretKeyXsuaaBinding(serviceBindings);
     }
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings( "unchecked" )
     @Test
-    void brokenBindingsAreIgnored() {
+    void brokenBindingsAreIgnored()
+    {
         final Path rootDirectory = TestResource.get(SapServiceOperatorServiceBindingIoAccessorTest.class,
-                "PartiallyValidMixedBindings");
+                                                    "PartiallyValidMixedBindings");
 
         final Function<String, String> reader = mock(Function.class);
         when(reader.apply(eq("SERVICE_BINDING_ROOT"))).thenReturn(rootDirectory.toString());
 
         final SapServiceOperatorServiceBindingIoAccessor sut = new SapServiceOperatorServiceBindingIoAccessor(reader,
-                SapServiceOperatorServiceBindingIoAccessor.DEFAULT_CHARSET);
+                                                                                                              SapServiceOperatorServiceBindingIoAccessor.DEFAULT_CHARSET);
 
         final List<ServiceBinding> serviceBindings = sut.getServiceBindings();
 
@@ -89,39 +94,40 @@ class SapServiceOperatorServiceBindingIoAccessorTest {
         assertContainsSecretKeyXsuaaBinding(serviceBindings);
     }
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings( "unchecked" )
     @Test
-    void emptyJsonPropertyIsIgnored(@Nonnull @TempDir final Path rootDirectory) {
+    void emptyJsonPropertyIsIgnored( @Nonnull @TempDir final Path rootDirectory )
+    {
         // setup file system
         final Path bindingRoot = rootDirectory.resolve("binding");
         write(bindingRoot.resolve(".metadata"),
-                "{\n" +
-                        "    \"metaDataProperties\": [\n" +
-                        "        {\n" +
-                        "            \"name\": \"type\",\n" +
-                        "            \"format\": \"text\"\n" +
-                        "        },\n" +
-                        "        {\n" +
-                        "            \"name\": \"empty_text\",\n" +
-                        "            \"format\": \"text\"\n" +
-                        "        },\n" +
-                        "        {\n" +
-                        "            \"name\": \"empty_json\",\n" +
-                        "            \"format\": \"json\"\n" +
-                        "        },\n" +
-                        "        {\n" +
-                        "            \"name\": \"empty_container\",\n" +
-                        "            \"format\": \"json\",\n" +
-                        "            \"container\": true\n" +
-                        "        }\n" +
-                        "    ],\n" +
-                        "    \"credentialProperties\": [\n" +
-                        "        {\n" +
-                        "            \"name\": \"token\",\n" +
-                        "            \"format\": \"text\"\n" +
-                        "        }\n" +
-                        "    ]\n" +
-                        "}");
+              "{\n"
+              + "    \"metaDataProperties\": [\n"
+              + "        {\n"
+              + "            \"name\": \"type\",\n"
+              + "            \"format\": \"text\"\n"
+              + "        },\n"
+              + "        {\n"
+              + "            \"name\": \"empty_text\",\n"
+              + "            \"format\": \"text\"\n"
+              + "        },\n"
+              + "        {\n"
+              + "            \"name\": \"empty_json\",\n"
+              + "            \"format\": \"json\"\n"
+              + "        },\n"
+              + "        {\n"
+              + "            \"name\": \"empty_container\",\n"
+              + "            \"format\": \"json\",\n"
+              + "            \"container\": true\n"
+              + "        }\n"
+              + "    ],\n"
+              + "    \"credentialProperties\": [\n"
+              + "        {\n"
+              + "            \"name\": \"token\",\n"
+              + "            \"format\": \"text\"\n"
+              + "        }\n"
+              + "    ]\n"
+              + "}");
         write(bindingRoot.resolve("type"), "xsuaa");
         write(bindingRoot.resolve("empty_text"), "");
         write(bindingRoot.resolve("empty_json"), "");
@@ -134,7 +140,7 @@ class SapServiceOperatorServiceBindingIoAccessorTest {
 
         // setup subject under test
         final SapServiceOperatorServiceBindingIoAccessor sut = new SapServiceOperatorServiceBindingIoAccessor(reader,
-                SapServiceOperatorServiceBindingIoAccessor.DEFAULT_CHARSET);
+                                                                                                              SapServiceOperatorServiceBindingIoAccessor.DEFAULT_CHARSET);
 
         final List<ServiceBinding> serviceBindings = sut.getServiceBindings();
 
@@ -153,39 +159,40 @@ class SapServiceOperatorServiceBindingIoAccessorTest {
     }
 
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings( "unchecked" )
     @Test
-    void missingPropertyIsIgnored(@Nonnull @TempDir final Path rootDirectory) {
+    void missingPropertyIsIgnored( @Nonnull @TempDir final Path rootDirectory )
+    {
         // setup file system
         final Path bindingRoot = rootDirectory.resolve("binding");
         write(bindingRoot.resolve(".metadata"),
-                "{\n" +
-                        "    \"metaDataProperties\": [\n" +
-                        "        {\n" +
-                        "            \"name\": \"type\",\n" +
-                        "            \"format\": \"text\"\n" +
-                        "        },\n" +
-                        "        {\n" +
-                        "            \"name\": \"missing_text\",\n" +
-                        "            \"format\": \"text\"\n" +
-                        "        },\n" +
-                        "        {\n" +
-                        "            \"name\": \"missing_json\",\n" +
-                        "            \"format\": \"json\"\n" +
-                        "        },\n" +
-                        "        {\n" +
-                        "            \"name\": \"missing_container\",\n" +
-                        "            \"format\": \"json\",\n" +
-                        "            \"container\": true\n" +
-                        "        }\n" +
-                        "    ],\n" +
-                        "    \"credentialProperties\": [\n" +
-                        "        {\n" +
-                        "            \"name\": \"token\",\n" +
-                        "            \"format\": \"text\"\n" +
-                        "        }\n" +
-                        "    ]\n" +
-                        "}");
+              "{\n"
+              + "    \"metaDataProperties\": [\n"
+              + "        {\n"
+              + "            \"name\": \"type\",\n"
+              + "            \"format\": \"text\"\n"
+              + "        },\n"
+              + "        {\n"
+              + "            \"name\": \"missing_text\",\n"
+              + "            \"format\": \"text\"\n"
+              + "        },\n"
+              + "        {\n"
+              + "            \"name\": \"missing_json\",\n"
+              + "            \"format\": \"json\"\n"
+              + "        },\n"
+              + "        {\n"
+              + "            \"name\": \"missing_container\",\n"
+              + "            \"format\": \"json\",\n"
+              + "            \"container\": true\n"
+              + "        }\n"
+              + "    ],\n"
+              + "    \"credentialProperties\": [\n"
+              + "        {\n"
+              + "            \"name\": \"token\",\n"
+              + "            \"format\": \"text\"\n"
+              + "        }\n"
+              + "    ]\n"
+              + "}");
         write(bindingRoot.resolve("type"), "xsuaa");
         write(bindingRoot.resolve("token"), "auth-token");
 
@@ -199,7 +206,7 @@ class SapServiceOperatorServiceBindingIoAccessorTest {
 
         // setup subject under test
         final SapServiceOperatorServiceBindingIoAccessor sut = new SapServiceOperatorServiceBindingIoAccessor(reader,
-                SapServiceOperatorServiceBindingIoAccessor.DEFAULT_CHARSET);
+                                                                                                              SapServiceOperatorServiceBindingIoAccessor.DEFAULT_CHARSET);
 
         final List<ServiceBinding> serviceBindings = sut.getServiceBindings();
 
@@ -217,36 +224,37 @@ class SapServiceOperatorServiceBindingIoAccessorTest {
         assertThat(serviceBinding.get("empty_container")).isEmpty();
     }
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings( "unchecked" )
     @Test
-    void invalidContainerIsIgnored(@Nonnull @TempDir final Path rootDirectory) {
+    void invalidContainerIsIgnored( @Nonnull @TempDir final Path rootDirectory )
+    {
         // setup file system
         final Path bindingRoot = rootDirectory.resolve("binding");
         write(bindingRoot.resolve(".metadata"),
-                "{\n" +
-                        "    \"metaDataProperties\": [\n" +
-                        "        {\n" +
-                        "            \"name\": \"type\",\n" +
-                        "            \"format\": \"text\"\n" +
-                        "        },\n" +
-                        "        {\n" +
-                        "            \"name\": \"list_container\",\n" +
-                        "            \"format\": \"json\",\n" +
-                        "            \"container\": true\n" +
-                        "        },\n" +
-                        "        {\n" +
-                        "            \"name\": \"int_container\",\n" +
-                        "            \"format\": \"json\",\n" +
-                        "            \"container\": true\n" +
-                        "        }\n" +
-                        "    ],\n" +
-                        "    \"credentialProperties\": [\n" +
-                        "        {\n" +
-                        "            \"name\": \"token\",\n" +
-                        "            \"format\": \"text\"\n" +
-                        "        }\n" +
-                        "    ]\n" +
-                        "}");
+              "{\n"
+              + "    \"metaDataProperties\": [\n"
+              + "        {\n"
+              + "            \"name\": \"type\",\n"
+              + "            \"format\": \"text\"\n"
+              + "        },\n"
+              + "        {\n"
+              + "            \"name\": \"list_container\",\n"
+              + "            \"format\": \"json\",\n"
+              + "            \"container\": true\n"
+              + "        },\n"
+              + "        {\n"
+              + "            \"name\": \"int_container\",\n"
+              + "            \"format\": \"json\",\n"
+              + "            \"container\": true\n"
+              + "        }\n"
+              + "    ],\n"
+              + "    \"credentialProperties\": [\n"
+              + "        {\n"
+              + "            \"name\": \"token\",\n"
+              + "            \"format\": \"text\"\n"
+              + "        }\n"
+              + "    ]\n"
+              + "}");
         write(bindingRoot.resolve("type"), "xsuaa");
         write(bindingRoot.resolve("list_container"), "[\"element 1\", \"element 2\"]");
         write(bindingRoot.resolve("int_container"), "1337");
@@ -258,7 +266,7 @@ class SapServiceOperatorServiceBindingIoAccessorTest {
 
         // setup subject under test
         final SapServiceOperatorServiceBindingIoAccessor sut = new SapServiceOperatorServiceBindingIoAccessor(reader,
-                SapServiceOperatorServiceBindingIoAccessor.DEFAULT_CHARSET);
+                                                                                                              SapServiceOperatorServiceBindingIoAccessor.DEFAULT_CHARSET);
 
         final List<ServiceBinding> serviceBindings = sut.getServiceBindings();
 
@@ -276,30 +284,31 @@ class SapServiceOperatorServiceBindingIoAccessorTest {
     }
 
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings( "unchecked" )
     @Test
-    void propertyWithUnknownFormatIsIgnored(@Nonnull @TempDir final Path rootDirectory) {
+    void propertyWithUnknownFormatIsIgnored( @Nonnull @TempDir final Path rootDirectory )
+    {
         // setup file system
         final Path bindingRoot = rootDirectory.resolve("binding");
         write(bindingRoot.resolve(".metadata"),
-                "{\n" +
-                        "    \"metaDataProperties\": [\n" +
-                        "        {\n" +
-                        "            \"name\": \"type\",\n" +
-                        "            \"format\": \"text\"\n" +
-                        "        },\n" +
-                        "        {\n" +
-                        "            \"name\": \"unknown_property\",\n" +
-                        "            \"format\": \"unknown\"\n" +
-                        "        }\n" +
-                        "    ],\n" +
-                        "    \"credentialProperties\": [\n" +
-                        "        {\n" +
-                        "            \"name\": \"token\",\n" +
-                        "            \"format\": \"text\"\n" +
-                        "        }\n" +
-                        "    ]\n" +
-                        "}");
+              "{\n"
+              + "    \"metaDataProperties\": [\n"
+              + "        {\n"
+              + "            \"name\": \"type\",\n"
+              + "            \"format\": \"text\"\n"
+              + "        },\n"
+              + "        {\n"
+              + "            \"name\": \"unknown_property\",\n"
+              + "            \"format\": \"unknown\"\n"
+              + "        }\n"
+              + "    ],\n"
+              + "    \"credentialProperties\": [\n"
+              + "        {\n"
+              + "            \"name\": \"token\",\n"
+              + "            \"format\": \"text\"\n"
+              + "        }\n"
+              + "    ]\n"
+              + "}");
         write(bindingRoot.resolve("type"), "xsuaa");
         write(bindingRoot.resolve("unknown_property"), "some value");
         write(bindingRoot.resolve("token"), "auth-token");
@@ -310,7 +319,7 @@ class SapServiceOperatorServiceBindingIoAccessorTest {
 
         // setup subject under test
         final SapServiceOperatorServiceBindingIoAccessor sut = new SapServiceOperatorServiceBindingIoAccessor(reader,
-                SapServiceOperatorServiceBindingIoAccessor.DEFAULT_CHARSET);
+                                                                                                              SapServiceOperatorServiceBindingIoAccessor.DEFAULT_CHARSET);
 
         final List<ServiceBinding> serviceBindings = sut.getServiceBindings();
 
@@ -326,11 +335,12 @@ class SapServiceOperatorServiceBindingIoAccessorTest {
         assertThat(serviceBinding.get("unknown_property")).isEmpty();
     }
 
-    private static void assertContainsDataXsuaaBinding(@Nonnull final List<ServiceBinding> serviceBindings) {
+    private static void assertContainsDataXsuaaBinding( @Nonnull final List<ServiceBinding> serviceBindings )
+    {
         final List<ServiceBinding> dataBinding = serviceBindings.stream()
-                .filter(binding -> "data-xsuaa-binding".equals(binding.getName()
-                        .orElse(null)))
-                .collect(Collectors.toList());
+                                                                .filter(binding -> "data-xsuaa-binding".equals(binding.getName()
+                                                                                                                      .orElse(null)))
+                                                                .collect(Collectors.toList());
         assertThat(dataBinding.size()).isEqualTo(1);
 
         final ServiceBinding dataXsuaaBinding = dataBinding.get(0);
@@ -344,15 +354,16 @@ class SapServiceOperatorServiceBindingIoAccessorTest {
         assertThat(dataXsuaaBinding.getCredentials().get("clientid")).isEqualTo("data-xsuaa-clientid");
         assertThat(dataXsuaaBinding.getCredentials().get("clientsecret")).isEqualTo("data-xsuaa-clientsecret");
         assertThat(dataXsuaaBinding.getCredentials().get("domains")).asList()
-                .containsExactlyInAnyOrder("data-xsuaa-domain-1",
-                        "data-xsuaa-domain-2");
+                                                                    .containsExactlyInAnyOrder("data-xsuaa-domain-1",
+                                                                                               "data-xsuaa-domain-2");
     }
 
-    private static void assertContainsSecretKeyXsuaaBinding(@Nonnull final List<ServiceBinding> serviceBindings) {
+    private static void assertContainsSecretKeyXsuaaBinding( @Nonnull final List<ServiceBinding> serviceBindings )
+    {
         final List<ServiceBinding> secretKeyXsuaaBindings = serviceBindings.stream()
-                .filter(binding -> "secret-key-xsuaa-binding".equals(
-                        binding.getName().orElse(null)))
-                .collect(Collectors.toList());
+                                                                           .filter(binding -> "secret-key-xsuaa-binding".equals(
+                                                                                   binding.getName().orElse(null)))
+                                                                           .collect(Collectors.toList());
 
         assertThat(secretKeyXsuaaBindings.size()).isEqualTo(1);
 
@@ -361,7 +372,7 @@ class SapServiceOperatorServiceBindingIoAccessorTest {
         assertThat(secretKeyBinding.getServiceName().orElse(null)).isEqualTo("xsuaa");
         assertThat(secretKeyBinding.getServicePlan().orElse(null)).isEqualTo("lite");
         assertThat(secretKeyBinding.getTags()).containsExactlyInAnyOrder("secret-key-xsuaa-tag-1",
-                "secret-key-xsuaa-tag-2");
+                                                                         "secret-key-xsuaa-tag-2");
         assertThat(secretKeyBinding.get("instance_guid").orElse(null)).isEqualTo("secret-key-xsuaa-instance-guid");
         assertThat(secretKeyBinding.get("instance_name").orElse(null)).isEqualTo("secret-key-xsuaa-instance-name");
         assertThat(secretKeyBinding.getCredentials()).isNotEmpty();
@@ -371,11 +382,12 @@ class SapServiceOperatorServiceBindingIoAccessorTest {
         assertThat(secretKeyBinding.getCredentials().get("zone_uuid")).isEqualTo("secret-key-xsuaa-zone-uuid");
         assertThat(secretKeyBinding.getCredentials().get("domain")).isEqualTo("secret-key-xsuaa-domain-1");
         assertThat(secretKeyBinding.getCredentials().get("domains")).asList()
-                .containsExactlyInAnyOrder(
-                        "secret-key-xsuaa-domain-1");
+                                                                    .containsExactlyInAnyOrder(
+                                                                            "secret-key-xsuaa-domain-1");
     }
 
-    private static void write(@Nonnull final Path filePath, @Nonnull final String content) {
+    private static void write( @Nonnull final Path filePath, @Nonnull final String content )
+    {
         try {
             if (!Files.exists(filePath.getParent())) {
                 Files.createDirectories(filePath.getParent());
