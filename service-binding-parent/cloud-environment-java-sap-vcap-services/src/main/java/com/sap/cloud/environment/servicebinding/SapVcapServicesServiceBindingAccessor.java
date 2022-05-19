@@ -4,7 +4,6 @@
 
 package com.sap.cloud.environment.servicebinding;
 
-import com.sun.istack.internal.NotNull;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -26,7 +25,7 @@ public class SapVcapServicesServiceBindingAccessor implements ServiceBindingAcce
     @Nonnull
     public static final Function<String, String> DEFAULT_ENVIRONMENT_VARIABLE_READER = System::getenv;
 
-    @NotNull
+    @Nonnull
     private static final String VCAP_SERVICES = "VCAP_SERVICES";
 
     @Nonnull

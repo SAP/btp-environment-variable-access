@@ -8,7 +8,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
@@ -17,12 +16,13 @@ import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import com.sap.cloud.environment.api.DefaultServiceBinding;
 import com.sap.cloud.environment.api.ServiceBinding;
 
-public final class SecretKeyParsingStrategy implements ParsingStrategy
+public final class LayeredSecretKeyParsingStrategy implements LayeredParsingStrategy
 {
     @Nonnull
     private static final String PLAN_KEY = "plan";
@@ -30,22 +30,22 @@ public final class SecretKeyParsingStrategy implements ParsingStrategy
     @Nonnull
     private final Charset charset;
 
-    private SecretKeyParsingStrategy( @Nonnull final Charset charset )
+    private LayeredSecretKeyParsingStrategy( @Nonnull final Charset charset )
     {
         this.charset = charset;
     }
 
     @Nonnull
-    public static SecretKeyParsingStrategy newDefault()
+    public static LayeredSecretKeyParsingStrategy newDefault()
     {
-        return new SecretKeyParsingStrategy(StandardCharsets.UTF_8);
+        return new LayeredSecretKeyParsingStrategy(StandardCharsets.UTF_8);
     }
 
-    @Nullable
+    @Nonnull
     @Override
-    public ServiceBinding parse( @Nonnull final String serviceName,
-                                 @Nonnull final String bindingName,
-                                 @Nonnull final Path bindingPath ) throws IOException
+    public Optional<ServiceBinding> parse( @Nonnull final String serviceName,
+                                           @Nonnull final String bindingName,
+                                           @Nonnull final Path bindingPath ) throws IOException
     {
         final List<Path> propertyFiles = Files.list(bindingPath)
                                               .filter(Files::isRegularFile)
@@ -53,7 +53,7 @@ public final class SecretKeyParsingStrategy implements ParsingStrategy
 
         if (propertyFiles.isEmpty()) {
             // service binding directory must contain at least one json file
-            return null;
+            return Optional.empty();
         }
 
         final Map<String, Object> rawServiceBinding = new HashMap<>();
@@ -70,11 +70,11 @@ public final class SecretKeyParsingStrategy implements ParsingStrategy
 
                 if (credentialsFound) {
                     // we expect exactly one valid json object in this service binding
-                    return null;
+                    return Optional.empty();
                 }
 
                 credentialsFound = true;
-                rawServiceBinding.put(PropertySetter.CREDENTIALS_KEY, parsedCredentials);
+                rawServiceBinding.put(LayeredPropertySetter.CREDENTIALS_KEY, parsedCredentials);
             } catch (final JSONException e) {
                 // property is not a valid json object --> it cannot be the credentials object
                 rawServiceBinding.put(propertyName, fileContent);
@@ -83,15 +83,16 @@ public final class SecretKeyParsingStrategy implements ParsingStrategy
 
         if (!credentialsFound) {
             // the service binding is expected to have credentials attached to it
-            return null;
+            return Optional.empty();
         }
 
-        return DefaultServiceBinding.builder()
-                                    .copy(rawServiceBinding)
-                                    .withName(bindingName)
-                                    .withServiceName(serviceName)
-                                    .withServicePlanKey(PLAN_KEY)
-                                    .withCredentialsKey(PropertySetter.CREDENTIALS_KEY)
-                                    .build();
+        final DefaultServiceBinding serviceBinding = DefaultServiceBinding.builder()
+                                                                          .copy(rawServiceBinding)
+                                                                          .withName(bindingName)
+                                                                          .withServiceName(serviceName)
+                                                                          .withServicePlanKey(PLAN_KEY)
+                                                                          .withCredentialsKey(LayeredPropertySetter.CREDENTIALS_KEY)
+                                                                          .build();
+        return Optional.of(serviceBinding);
     }
 }

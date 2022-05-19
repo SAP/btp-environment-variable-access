@@ -3,7 +3,10 @@
         {
             "name": "xsuaa-binding-1",
             "plan": "lite",
-            "tags": ["xsuaa-binding-1-tag-1", "xsuaa-binding-1-tag-2"],
+            "tags": [
+                "xsuaa-binding-1-tag-1",
+                "xsuaa-binding-1-tag-2"
+            ],
             "credentials": {
                 "uri": "https://xsuaa-1.domain.com",
                 "clientid": "xsuaa-clientid-1",

@@ -12,14 +12,14 @@ import java.util.List;
 import java.util.Map;
 
 @FunctionalInterface
-interface PropertySetter
+interface LayeredPropertySetter
 {
     @Nonnull
     String CREDENTIALS_KEY = "credentials";
 
     @Nonnull
     @SuppressWarnings( "unchecked" )
-    PropertySetter TO_CREDENTIALS = ( binding, name, value ) -> {
+    LayeredPropertySetter TO_CREDENTIALS = ( binding, name, value ) -> {
         Map<String, Object> credentials = null;
         if (binding.containsKey(CREDENTIALS_KEY)) {
             final Object maybeCredentials = binding.get(CREDENTIALS_KEY);
@@ -41,11 +41,11 @@ interface PropertySetter
     };
 
     @Nonnull
-    PropertySetter TO_ROOT = Map::put;
+    LayeredPropertySetter TO_ROOT = Map::put;
 
     @Nonnull
     @SuppressWarnings( "unchecked" )
-    static PropertySetter asList( @Nonnull final PropertySetter actualSetter )
+    static LayeredPropertySetter asList( @Nonnull final LayeredPropertySetter actualSetter )
     {
         return ( binding, name, value ) -> {
             final List<Object> list;

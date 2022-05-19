@@ -1,0 +1,9 @@
+{
+    "plan": "lite",
+    "tags": [
+        "tag-1",
+        "tag-2"
+    ],
+    "clientid": "client-id",
+    "clientsecret": "client-secret"
+}
