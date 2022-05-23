@@ -19,7 +19,7 @@ public interface ServiceBindingAccessor
     @Nonnull
     default ServiceBinding getServiceBindingByName( @Nonnull final String name )
     {
-        List<ServiceBinding> serviceByName = getServiceBindings().stream()
+        final List<ServiceBinding> serviceByName = getServiceBindings().stream()
                                                                  .filter(b -> name.equals(b.getName().orElse(null)))
                                                                  .collect(Collectors.toList());
 
