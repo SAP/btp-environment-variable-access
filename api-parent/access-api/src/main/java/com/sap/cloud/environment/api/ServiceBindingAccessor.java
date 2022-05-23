@@ -24,9 +24,9 @@ public interface ServiceBindingAccessor
                                                                  .collect(Collectors.toList());
 
         if (serviceByName.isEmpty()) {
-            throw new IllegalStateException("There exists no service binding of name: " + name);
+            throw new IllegalStateException("There is no service binding with name '" + name + "'");
         } else if (serviceByName.size() > 1) {
-            throw new IllegalStateException("Found multiple service bindings of name: " + name);
+            throw new IllegalStateException("There are multiple service binding with name '" + name + "'");
         }
         return serviceByName.get(0);
     }
