@@ -184,7 +184,7 @@ Include the following dependency in your ``pom.xml`` to consume service bindings
 ServiceBinding binding = DefaultServiceBindingAccessor.getInstance().getServiceBindingByName("some-instance"); 
 ```
 
-> NOTE: ``getServiceBinding()`` throws an `IllegalStateException` runtime exception in case there is either no service matching or multiple services found with the same name.
+> NOTE: ``getServiceBindingByName(String)`` throws an `IllegalStateException` runtime exception in case there is either no service matching or multiple services found with the same name.
 
 ### Service Lookup via Service Name and Plan
 
