@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.sap.cloud.environment</groupId>
-    <artifactId>cloud-environment-java-bom</artifactId>
+    <artifactId>java-bom</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <packaging>pom</packaging>
 
@@ -23,7 +23,7 @@
             <!-- Scope: Import -->
             <dependency>
                 <groupId>com.sap.cloud.environment</groupId>
-                <artifactId>cloud-environment-java-modules-bom</artifactId>
+                <artifactId>java-modules-bom</artifactId>
                 <version>${cloud-environment.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
