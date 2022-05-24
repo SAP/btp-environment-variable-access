@@ -6,10 +6,10 @@
 
     <parent>
         <groupId>com.sap.cloud.environment.api</groupId>
-        <artifactId>cloud-environment-java-api-parent</artifactId>
+        <artifactId>java-api-parent</artifactId>
         <version>0.0.1-SNAPSHOT</version>
     </parent>
-    <artifactId>cloud-environment-java-core-api</artifactId>
+    <artifactId>java-core-api</artifactId>
 
     <dependencies>
         <!-- Scope: Compile -->

@@ -4,21 +4,21 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <artifactId>cloud-environment-java-service-binding-parent</artifactId>
+        <artifactId>java-service-binding-parent</artifactId>
         <groupId>com.sap.cloud.environment.servicebinding</groupId>
         <version>0.0.1-SNAPSHOT</version>
     </parent>
-    <artifactId>cloud-environment-java-sap-vcap-services</artifactId>
+    <artifactId>java-sap-vcap-services</artifactId>
 
     <dependencies>
         <!-- Scope: Compile -->
         <dependency>
             <groupId>com.sap.cloud.environment.api</groupId>
-            <artifactId>cloud-environment-java-core-api</artifactId>
+            <artifactId>java-core-api</artifactId>
         </dependency>
         <dependency>
             <groupId>com.sap.cloud.environment.api</groupId>
-            <artifactId>cloud-environment-java-access-api</artifactId>
+            <artifactId>java-access-api</artifactId>
         </dependency>
         <dependency>
             <groupId>com.google.code.findbugs</groupId>
