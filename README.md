@@ -44,7 +44,7 @@ described [here](https://github.com/SAP/sap-btp-service-operator#using-the-sap-b
 
 Upon creation of the binding, a Kubernetes secret (by default with the same name as the binding) is created containing credentials, configurations and certificates. This secret can then be mounted to the pod as a volume.
 
-The following *deployment.yml* file shows how the secret of a `xsuaa` service instance binding `xsuaa-service-binding` 
+The following extract from *deployment.yml* file shows how the secret of a `xsuaa` service instance binding `xsuaa-service-binding` 
 is mounted as volume to an application container:
 
 ```yml
