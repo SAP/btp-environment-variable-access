@@ -1,52 +1,15 @@
-# SAP Repository Template
-
-Default templates for SAP open source repositories, including LICENSE, .reuse/dep5, Code of Conduct, etc... All repositories on github.com/SAP will be created based on this template.
-
-## To-Do
-
-In case you are the maintainer of a new SAP open source project, these are the steps to do with the template files:
-
-- Enter the correct metadata for the REUSE tool. See our [wiki page](https://wiki.wdf.sap.corp/wiki/display/ospodocs/Using+the+Reuse+Tool+of+FSFE+for+Copyright+and+License+Information) for details how
-
-# Our new open source project
-
-## About this project
-
-*Insert a short description of your project here...*
-
-## Requirements and Setup
-
-*Insert a short description what is required to get your project running...*
-
-## Support, Feedback, Contributing
-
-This project is open to feature requests/suggestions, bug reports etc. via [GitHub issues](https://github.com/SAP/btp-environment-variable-access/issues). Contribution and feedback are encouraged and always welcome. For more information about how to contribute, the project structure, as well as additional contribution information, see our [Contribution Guidelines](CONTRIBUTING.md).
-
-## Code of Conduct
-
-We as members, contributors, and leaders pledge to make participation in our community a harassment-free experience for everyone. By participating in this project, you agree to abide by its [Code of Conduct](CODE_OF_CONDUCT.md) at all times.
-
-## Licensing
-
-Copyright 2022 SAP SE or an SAP affiliate company and BTP Environment for Java contributors. Please see our [LICENSE](LICENSE) for copyright and license information. Detailed information including third-party components and their licensing/copyright information is available [via the REUSE tool](https://api.reuse.software/info/github.com/SAP/btp-environment-variable-access).
-
-
-***
 # BTP Environment for Java
 
-Utility for easily reading application configurations for bound services in the SAP Business Technology Platform Cloud
-Foundry and Kubernetes (K8S) environment.
+Utility for easily reading application configurations for bound services in the SAP Business Technology Platform Cloud Foundry and Kubernetes (K8S) environment.
+
 
 ## Cloud Foundry Specifics
 
-Cloud Foundry provides application configurations via environment variables. The properties of the bound services are
-in [VCAP_SERVICES](http://docs.cloudfoundry.org/devguide/deploy-apps/environment-variable.html#VCAP-SERVICES)
-environment variable.
+Cloud Foundry provides application configurations via environment variables. In the Cloud Foundry environment, [VCAP_SERVICES](http://docs.cloudfoundry.org/devguide/deploy-apps/environment-variable.html#VCAP-SERVICES) environment variable holds the configuration properties of the bound services.
 
-### Service Binding
+#### Service Binding
 
-In Cloud Foundry you bind a service instance to your application either via a deployment descriptor or with a command
-like this:
+In Cloud Foundry you bind a service instance to your application either via a deployment descriptor or with a command like this:
 
 ```sh
 cf bind-service <app-name> <service-name>
@@ -54,42 +17,35 @@ cf bind-service <app-name> <service-name>
 
 ## Kubernetes Specifics
 
-Kubernetes offers several ways of handling application configurations for bound services and certificates. btp-env-java
-library expects that such configurations are handled as Kubernetes Secrets and mounted as files to the pod at a specific
-path. This path can be provided by the application developer, but the default is `/etc/secrets/sapbtp`. From there,
-btp-env-java library assumes that the directory structure is the
+Kubernetes offers several ways of handling application configurations for bound services and certificates. BTP Environment client library for Java expects that such configuration is handled as Kubernetes Secrets and mounted as files to the pod at a specific
+path. This path can be provided by the application developer, but the default is `/etc/secrets/sapbtp`. From there, BTP Environment client library for Java assumes that the directory structure is the
 following `/etc/secrets/sapbtp/<service-name>/<instance-name>`. Here `<service-name>` and `<instance-name>` are both
 directories and the latter contains the credentials/configurations for the service instance as
 files. [SAP BTP service operator](https://github.com/SAP/sap-btp-service-operator) supports several ways 
 on how secret files are organized.
 
-For example, the following folder structure:
+For example, the below folder structure resembles two instances of service `xsuaa`, `application` and `broker`, each with their own configurations and one instance of service `servicemanager` called `my-instance` with its configuration.
 
 ```sh
 /etc/
     /secrets/
             /sapbtp/
                  /xsuaa/
-                 |    /application/
-                 |    /broker/
+                       /application/
+                       /broker/
                  /servicemanager/
                        /my-instance/
 ```
 
-Resembles two instances of service `xsuaa` - `application` and `broker` each with their own configurations and one
-instance of service `servicemanager` called `my-instance` with its configuration.
-
-### Service Binding
+#### Service Binding
 
 In Kubernetes you can create and bind to a service instance using the SAP BTP Service Operator as
 described [here](https://github.com/SAP/sap-btp-service-operator#using-the-sap-btp-service-operator).
 
-Upon creation of the binding, the Service Catalog will create a Kubernetes secret (by default with the same name as the
-binding) containing credentials, configurations and certificates. This secret can then be mounted to the pod as a
-volume.
+Upon creation of the binding, a Kubernetes secret (by default with the same name as the binding) is created containing credentials, configurations and certificates. This secret can then be mounted to the pod as a volume.
 
-The following *deployment.yml* file shows how a `xsuaa` service instance and binding `xsuaa-service-binding` 
-is created with Service Catalog:
+The following *deployment.yml* file shows how the secret of a `xsuaa` service instance binding `xsuaa-service-binding` 
+is mounted as volume to an application container:
 
 ```yml
 ...
@@ -102,17 +58,15 @@ is created with Service Catalog:
              containerPort: 8080
          volumeMounts:
            - name: xsuaa
-             mountPath: "/etc/secrets/sapbtp/xsuaa/application"
+             mountPath: "/etc/secrets/sapbtp/xsuaa/authn"
              readOnly: true
      volumes:
-       - name: xsuaa
+       - name: authn
          secret:
            secretName: xsuaa-service-binding
 ```
 
-Of course, you can also create Kubernetes secrets directly with `kubectl` and mount them to the pod. As long as the
-mount path follows the `<root-path>/<service-name>/<instance-name>` pattern, btp-env-java library will be able to
-discover the bound services configurations.
+Of course, you can also create Kubernetes secrets directly with `kubectl` and mount them to the pod. As long as the mount path follows the `<root-path>/<service-name>/<instance-name>` pattern, BTP Environment client library is able to discover the bound services configurations.
 
 **Note**: The library attempts to parse property values which are either stored flat, i.e. metadata and credential properties are located next to each other (DataParsingStrategy):
 ```
@@ -127,7 +81,7 @@ discover the bound services configurations.
                                   /url
 ```
 
-Or, alternatively metadata is stored flat, but the credential properties are stored in one json file (SecretKeyParsing):
+Or, alternatively metadata is stored flat, but the credential properties are stored in one json file (SecretKeyParsingStrategy):
 
 ```
 /etc/
@@ -140,7 +94,7 @@ Or, alternatively metadata is stored flat, but the credential properties are sto
                                   /tags
 ```
 
-Or, similar to Cloud Foundry ```VCAP_SERVICES``` metadata as well as the credential properties are stored in one json file (SecretRootKeyParsing):
+Or, similar to Cloud Foundry ```VCAP_SERVICES``` metadata as well as the credential properties are stored in one json file (SecretRootKeyParsingStrategy):
 ```
 /etc/
     /secrets/
@@ -163,7 +117,11 @@ Map<String, Object> credentials = binding.getCredentials();
 ```
 
 
-## Usage
+## Requirements and Setup
+
+### Requirements
+- Java 8 or 11
+- Maven 3.8.1 or later
 
 ### Maven Dependencies
 
@@ -172,12 +130,12 @@ Include the following dependency in your ``pom.xml`` to consume service bindings
 ```xml
 <dependency>
     <groupId>com.sap.cloud.environment.servicebinding</groupId>
-    <artifactId>cloud-environment-java-sap-service-operator</artifactId>
+    <artifactId>java-sap-service-operator</artifactId>
     <version>${sap.cloud.env.servicebinding.version}</version>
 </dependency>
 <dependency> <!-- optional if using TypedMapView etc. -->
     <groupId>com.sap.cloud.environment.api</groupId>
-    <artifactId>cloud-environment-java-consumption-api</artifactId>
+    <artifactId>java-consumption-api</artifactId>
     <version>${sap.cloud.env.servicebinding.version}</version>
 </dependency>
 ```
@@ -256,34 +214,28 @@ The access of ``domains`` looks like:
 List<String> domainsList = credentialsTyped.getListView("domains").getItems(String.class);
 ```
 
-
 ### User-Provided Service Instances
 
 While this package can look up any kind of bound service instances, you should be aware
 that [User-Provided Service Instances](https://docs.cloudfoundry.org/devguide/services/user-provided.html) have less
 properties than managed service instances and no tags.
 
+## Support, Feedback, Contributing
 
-## Contributors
+This project is open to feature requests/suggestions, bug reports etc. via [GitHub issues](https://github.com/SAP/btp-environment-variable-access/issues). Contribution and feedback are encouraged and always welcome. For more information about how to contribute, the project structure, as well as additional contribution information, see our [Contribution Guidelines](CONTRIBUTING.md).
 
-- SAP Cloud SDK (Johannes)
-    - **johannes.schneider03@sap.com**
-    - christoph.schubert@sap.com
+## Code of Conduct
 
-- SAP Cloud Security
-    - nena.raab@sap.com
-    - liga.ozolina@sap.com
+We as members, contributors, and leaders pledge to make participation in our community a harassment-free experience for everyone. By participating in this project, you agree to abide by its [Code of Conduct](CODE_OF_CONDUCT.md) at all times.
 
-## Stakeholders
+## Licensing
 
-- marc.becker@sap.com
-- matthia.braun@sap.com
-- frank.stephan@sap.com
+Copyright 2022 SAP SE or an SAP affiliate company and BTP Environment for Java contributors. Please see our [LICENSE](LICENSE) for copyright and license information. Detailed information including third-party components and their licensing/copyright information is available [via the REUSE tool](https://api.reuse.software/info/github.com/SAP/btp-environment-variable-access).
 
-## Specifications
+## Further References
 
-- https://github.com/openservicebrokerapi/servicebroker/blob/master/spec.md#body-11
+- Specification<br>
+  https://github.com/openservicebrokerapi/servicebroker/blob/master/spec.md#body-11
+- API / Java Doc<br>
+  TODO
 
-## API / Java Doc
-
-- TODO
