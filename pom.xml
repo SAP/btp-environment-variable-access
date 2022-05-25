@@ -3,7 +3,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.sap.cloud.environment</groupId>
+    <groupId>com.sap.cloud.environment.servicebinding</groupId>
     <artifactId>java-parent</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <packaging>pom</packaging>
@@ -25,7 +25,8 @@
         <module>api-parent</module>
         <module>bom</module>
         <module>modules-bom</module>
-        <module>service-binding-parent</module>
+        <module>sap-service-operator</module>
+        <module>sap-vcap-services</module>
     </modules>
 
     <dependencyManagement>

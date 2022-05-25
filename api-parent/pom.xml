@@ -5,11 +5,11 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>com.sap.cloud.environment</groupId>
+        <groupId>com.sap.cloud.environment.servicebinding</groupId>
         <artifactId>java-parent</artifactId>
         <version>0.0.1-SNAPSHOT</version>
     </parent>
-    <groupId>com.sap.cloud.environment.api</groupId>
+    <groupId>com.sap.cloud.environment.servicebinding.api</groupId>
     <artifactId>java-api-parent</artifactId>
     <packaging>pom</packaging>
 
