@@ -134,7 +134,7 @@ Include the following dependency in your ``pom.xml`` to consume service bindings
     <version>${sap.cloud.env.servicebinding.version}</version>
 </dependency>
 <dependency> <!-- optional if using TypedMapView etc. -->
-    <groupId>com.sap.cloud.environment.api</groupId>
+    <groupId>com.sap.cloud.environment.servicebinding.api</groupId>
     <artifactId>java-consumption-api</artifactId>
     <version>${sap.cloud.env.servicebinding.version}</version>
 </dependency>
