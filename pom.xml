@@ -116,19 +116,18 @@
                     </execution>
                 </executions>
             </plugin>
-            <plugin>
+            <!--plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-gpg-plugin</artifactId>
                 <version>${maven-gpg-plugin.version}</version>
                 <executions>
                     <execution>
                         <id>sign-artifacts</id>
-                        <!--phase>verify</phase-->
+                        <phase>verify</phase>
                         <goals>
                             <goal>sign</goal>
                         </goals>
                         <configuration>
-                            <!-- GPG keyname var set in the settings.xml maven file -->
                             <keyname>${gpg.keyname}</keyname>
                             <gpgArguments>
                                 <arg>--pinentry-mode</arg>
@@ -137,7 +136,7 @@
                         </configuration>
                     </execution>
                 </executions>
-            </plugin>
+            </plugin-->
             <plugin>
                 <groupId>org.sonatype.plugins</groupId>
                 <artifactId>nexus-staging-maven-plugin</artifactId>
