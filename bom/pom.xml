@@ -22,7 +22,7 @@
         <dependencies>
             <!-- Scope: Import -->
             <dependency>
-                <groupId>com.sap.cloud.environment</groupId>
+                <groupId>com.sap.cloud.environment.servicebinding</groupId>
                 <artifactId>java-modules-bom</artifactId>
                 <version>${cloud-environment.version}</version>
                 <type>pom</type>
