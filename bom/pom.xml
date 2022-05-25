@@ -5,25 +5,25 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.sap.cloud.environment</groupId>
-    <artifactId>cloud-environment-java-bom</artifactId>
+    <artifactId>java-bom</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <properties>
         <cloud-environment.version>0.0.1-SNAPSHOT</cloud-environment.version>
         <jsr305.version>3.0.2</jsr305.version>
-        <org.json.version>20211205</org.json.version>
-        <junit-jupiter.version>5.7.1</junit-jupiter.version>
-        <assertj-core.version>3.18.1</assertj-core.version>
-        <mockito-core.version>3.12.3</mockito-core.version>
+        <org.json.version>20220320</org.json.version>
+        <junit-jupiter.version>5.8.2</junit-jupiter.version>
+        <assertj-core.version>3.22.0</assertj-core.version>
+        <mockito-core.version>4.5.1</mockito-core.version>
     </properties>
 
     <dependencyManagement>
         <dependencies>
             <!-- Scope: Import -->
             <dependency>
-                <groupId>com.sap.cloud.environment</groupId>
-                <artifactId>cloud-environment-java-modules-bom</artifactId>
+                <groupId>com.sap.cloud.environment.servicebinding</groupId>
+                <artifactId>java-modules-bom</artifactId>
                 <version>${cloud-environment.version}</version>
                 <type>pom</type>
                 <scope>import</scope>

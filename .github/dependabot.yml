@@ -8,4 +8,5 @@ updates:
       timezone: Etc/UCT
     reviewers:
       - "nenaraab"
+      - "Johannes-Schneider"
     open-pull-requests-limit: 10
