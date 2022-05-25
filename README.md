@@ -1,4 +1,4 @@
-# BTP Environment for Java
+# BTP Environment Service Binding Access for Java
 
 Utility for easily reading application configurations for bound services in the SAP Business Technology Platform Cloud Foundry and Kubernetes (K8S) environment.
 
