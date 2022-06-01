@@ -5,7 +5,7 @@
 
     <groupId>com.sap.cloud.environment.servicebinding</groupId>
     <artifactId>java-parent</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>0.1.0</version>
     <packaging>pom</packaging>
     <description>Java Client Library to access BTP environment service bindings</description>
     <url>https://github.com/SAP/btp-environment-variable-access</url>
@@ -51,7 +51,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
-        <cloud-environment.version>0.0.1-SNAPSHOT</cloud-environment.version>
+        <cloud-environment.version>0.1.0</cloud-environment.version>
 
         <maven-compiler-plugin.version>3.10.1</maven-compiler-plugin.version>
         <maven-source-plugin.version>3.2.1</maven-source-plugin.version>
