@@ -46,6 +46,7 @@
     <properties>
         <java.version>1.8</java.version>
         <java.failOnWarning>true</java.failOnWarning>
+        <skipTests>false</skipTests>
         <project.rootdir>${project.basedir}</project.rootdir>
         <project.build.resourceEncoding>UTF-8</project.build.resourceEncoding>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -58,6 +59,7 @@
         <maven-javadoc-plugin.version>3.4.0</maven-javadoc-plugin.version>
         <maven-gpg-plugin.version>3.0.1</maven-gpg-plugin.version>
         <nexus-staging-maven-plugin.version>1.6.13</nexus-staging-maven-plugin.version>
+        <dependency-check-maven-plugin.version>7.1.0</dependency-check-maven-plugin.version>
     </properties>
 
     <modules>
@@ -148,6 +150,24 @@
                     <serverId>ossrh</serverId>
                     <nexusUrl>https://s01.oss.sonatype.org/</nexusUrl>
                     <autoReleaseAfterClose>true</autoReleaseAfterClose>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.owasp</groupId> <!--scans for vulnerabilities-->
+                <artifactId>dependency-check-maven</artifactId>
+                <version>${dependency-check-maven-plugin.version}</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <skip>${skipTests}</skip>
+                    <skipProvidedScope>true</skipProvidedScope>
+                    <failBuildOnCVSS>7</failBuildOnCVSS>
+                    <suppressionFile>.etc/suppression.xml</suppressionFile>
                 </configuration>
             </plugin>
         </plugins>
