@@ -6,11 +6,11 @@
 
     <groupId>com.sap.cloud.environment</groupId>
     <artifactId>java-bom</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>0.1.0</version>
     <packaging>pom</packaging>
 
     <properties>
-        <cloud-environment.version>0.0.1-SNAPSHOT</cloud-environment.version>
+        <cloud-environment.version>0.1.0</cloud-environment.version>
         <jsr305.version>3.0.2</jsr305.version>
         <org.json.version>20220320</org.json.version>
         <junit-jupiter.version>5.8.2</junit-jupiter.version>
