@@ -195,24 +195,25 @@
         }
       }
     },
-    "value" : 3.071317829457364,
+    "value" : 5.282638888888889,
     "weight" : 1.0,
-    "confidence" : 5.451966950302133,
+    "confidence" : 9.87962962962963,
     "usedValues" : [ {
       "type" : "ScoreValue",
       "score" : {
         "type" : "ProjectSecurityAwarenessScore",
         "name" : "How well open-source community is aware about security"
       },
-      "value" : 0.0,
+      "value" : 3.5,
       "weight" : 0.9,
-      "confidence" : 2.3529411764705883,
+      "confidence" : 10.0,
       "usedValues" : [ {
-        "type" : "UnknownValue",
+        "type" : "BooleanValue",
         "feature" : {
           "type" : "BooleanFeature",
           "name" : "If an open-source project has a security policy"
-        }
+        },
+        "flag" : true
       }, {
         "type" : "BooleanValue",
         "feature" : {
@@ -221,11 +222,12 @@
         },
         "flag" : false
       }, {
-        "type" : "UnknownValue",
+        "type" : "BooleanValue",
         "feature" : {
           "type" : "BooleanFeature",
           "name" : "If a project uses signed commits"
-        }
+        },
+        "flag" : false
       }, {
         "type" : "BooleanValue",
         "feature" : {
@@ -234,11 +236,12 @@
         },
         "flag" : false
       }, {
-        "type" : "UnknownValue",
+        "type" : "BooleanValue",
         "feature" : {
           "type" : "BooleanFeature",
           "name" : "If a project signs artifacts"
-        }
+        },
+        "flag" : true
       }, {
         "type" : "BooleanValue",
         "feature" : {
@@ -247,17 +250,19 @@
         },
         "flag" : false
       }, {
-        "type" : "UnknownValue",
+        "type" : "BooleanValue",
         "feature" : {
           "type" : "BooleanFeature",
           "name" : "If a project uses Dependabot"
-        }
+        },
+        "flag" : true
       }, {
-        "type" : "UnknownValue",
+        "type" : "BooleanValue",
         "feature" : {
           "type" : "BooleanFeature",
           "name" : "If a project uses nohttp tool"
-        }
+        },
+        "flag" : false
       }, {
         "type" : "BooleanValue",
         "feature" : {
@@ -266,53 +271,61 @@
         },
         "flag" : false
       }, {
-        "type" : "UnknownValue",
+        "type" : "BooleanValue",
         "feature" : {
           "type" : "BooleanFeature",
           "name" : "If an open-source project uses FindSecBugs"
-        }
+        },
+        "flag" : false
       }, {
-        "type" : "UnknownValue",
+        "type" : "BooleanValue",
         "feature" : {
           "type" : "BooleanFeature",
           "name" : "If a project uses OWASP Enterprise Security API (ESAPI)"
-        }
+        },
+        "flag" : false
       }, {
-        "type" : "UnknownValue",
+        "type" : "BooleanValue",
         "feature" : {
           "type" : "BooleanFeature",
           "name" : "If a project uses OWASP Java Encoder"
-        }
+        },
+        "flag" : false
       }, {
-        "type" : "UnknownValue",
+        "type" : "BooleanValue",
         "feature" : {
           "type" : "BooleanFeature",
           "name" : "If a project uses OWASP Java HTML Sanitizer"
-        }
+        },
+        "flag" : false
       }, {
-        "type" : "UnknownValue",
+        "type" : "BooleanValue",
         "feature" : {
           "type" : "BooleanFeature",
           "name" : "If an open-source project uses AddressSanitizer"
-        }
+        },
+        "flag" : false
       }, {
-        "type" : "UnknownValue",
+        "type" : "BooleanValue",
         "feature" : {
           "type" : "BooleanFeature",
           "name" : "If an open-source project uses MemorySanitizer"
-        }
+        },
+        "flag" : false
       }, {
-        "type" : "UnknownValue",
+        "type" : "BooleanValue",
         "feature" : {
           "type" : "BooleanFeature",
           "name" : "If an open-source project uses UndefinedBehaviorSanitizer"
-        }
+        },
+        "flag" : false
       }, {
-        "type" : "UnknownValue",
+        "type" : "OwaspDependencyCheckUsageValue",
         "feature" : {
           "type" : "OwaspDependencyCheckUsageFeature",
           "name" : "How OWASP Dependency Check is used"
-        }
+        },
+        "value" : "NOT_USED"
       } ],
       "explanation" : [ ],
       "isUnknown" : false,
@@ -379,24 +392,26 @@
         "type" : "ProjectActivityScore",
         "name" : "Open-source project activity score"
       },
-      "value" : 0.0,
+      "value" : 10.0,
       "weight" : 0.5,
-      "confidence" : 0.0,
+      "confidence" : 10.0,
       "usedValues" : [ {
-        "type" : "UnknownValue",
+        "type" : "IntegerValue",
         "feature" : {
           "type" : "PositiveIntegerFeature",
           "name" : "Number of commits in the last three months"
-        }
+        },
+        "number" : 75
       }, {
-        "type" : "UnknownValue",
+        "type" : "IntegerValue",
         "feature" : {
           "type" : "PositiveIntegerFeature",
           "name" : "Number of contributors in the last three months"
-        }
+        },
+        "number" : 5
       } ],
-      "explanation" : [ "A score value couldn't be calculated because the number of commits is unknown" ],
-      "isUnknown" : true,
+      "explanation" : [ "75 commits in the last 3 months results to 10.00 points", "5 contributors increase the score value from 10.00 to 12.00" ],
+      "isUnknown" : false,
       "isNotApplicable" : false
     }, {
       "type" : "ScoreValue",
@@ -470,33 +485,34 @@
           }
         }
       },
-      "value" : 0.0,
+      "value" : 4.0,
       "weight" : 1.0,
-      "confidence" : 4.444444444444445,
+      "confidence" : 9.555555555555555,
       "usedValues" : [ {
         "type" : "ScoreValue",
         "score" : {
           "type" : "DependencyScanScore",
           "name" : "How a project scans its dependencies for vulnerabilities"
         },
-        "value" : 0.0,
+        "value" : 10.0,
         "weight" : 1.0,
-        "confidence" : 2.5,
+        "confidence" : 10.0,
         "usedValues" : [ {
           "type" : "ScoreValue",
           "score" : {
             "type" : "DependabotScore",
             "name" : "How a project uses Dependabot"
           },
-          "value" : 0.0,
+          "value" : 10.0,
           "weight" : 1.0,
-          "confidence" : 5.0,
+          "confidence" : 10.0,
           "usedValues" : [ {
-            "type" : "UnknownValue",
+            "type" : "BooleanValue",
             "feature" : {
               "type" : "BooleanFeature",
               "name" : "If a project uses Dependabot"
-            }
+            },
+            "flag" : true
           }, {
             "type" : "BooleanValue",
             "feature" : {
@@ -505,10 +521,13 @@
             },
             "flag" : true
           }, {
-            "type" : "UnknownValue",
+            "type" : "PackageManagersValue",
             "feature" : {
               "type" : "PackageManagersFeature",
               "name" : "A set of package managers"
+            },
+            "packageManagers" : {
+              "packageManagers" : [ "MAVEN" ]
             }
           }, {
             "type" : "LanguagesValue",
@@ -522,7 +541,7 @@
           } ],
           "explanation" : [ ],
           "isUnknown" : false,
-          "isNotApplicable" : true
+          "isNotApplicable" : false
         }, {
           "type" : "ScoreValue",
           "score" : {
@@ -531,24 +550,30 @@
           },
           "value" : 0.0,
           "weight" : 1.0,
-          "confidence" : 0.0,
+          "confidence" : 10.0,
           "usedValues" : [ {
-            "type" : "UnknownValue",
+            "type" : "OwaspDependencyCheckUsageValue",
             "feature" : {
               "type" : "OwaspDependencyCheckUsageFeature",
               "name" : "How OWASP Dependency Check is used"
-            }
+            },
+            "value" : "NOT_USED"
           }, {
-            "type" : "UnknownValue",
+            "type" : "OwaspDependencyCheckCvssThresholdValue",
             "feature" : {
               "type" : "OwaspDependencyCheckCvssThreshold",
               "name" : "A CVSS threshold for OWASP Dependency Check to fail the build"
-            }
+            },
+            "number" : 0.0,
+            "specified" : false
           }, {
-            "type" : "UnknownValue",
+            "type" : "PackageManagersValue",
             "feature" : {
               "type" : "PackageManagersFeature",
               "name" : "A set of package managers"
+            },
+            "packageManagers" : {
+              "packageManagers" : [ "MAVEN" ]
             }
           } ],
           "explanation" : [ ],
@@ -566,18 +591,22 @@
         },
         "value" : 0.0,
         "weight" : 0.5,
-        "confidence" : 0.0,
+        "confidence" : 10.0,
         "usedValues" : [ {
-          "type" : "UnknownValue",
+          "type" : "BooleanValue",
           "feature" : {
             "type" : "BooleanFeature",
             "name" : "If a project uses nohttp tool"
-          }
+          },
+          "flag" : false
         }, {
-          "type" : "UnknownValue",
+          "type" : "PackageManagersValue",
           "feature" : {
             "type" : "PackageManagersFeature",
             "name" : "A set of package managers"
+          },
+          "packageManagers" : {
+            "packageManagers" : [ "MAVEN" ]
           }
         } ],
         "explanation" : [ ],
@@ -617,7 +646,7 @@
         },
         "value" : 0.0,
         "weight" : 1.0,
-        "confidence" : 5.0,
+        "confidence" : 8.0,
         "usedValues" : [ {
           "type" : "ScoreValue",
           "score" : {
@@ -654,7 +683,7 @@
           },
           "value" : 0.0,
           "weight" : 0.5,
-          "confidence" : 5.0,
+          "confidence" : 10.0,
           "usedValues" : [ {
             "type" : "LanguagesValue",
             "feature" : {
@@ -665,11 +694,12 @@
               "elements" : [ "JAVA" ]
             }
           }, {
-            "type" : "UnknownValue",
+            "type" : "BooleanValue",
             "feature" : {
               "type" : "BooleanFeature",
               "name" : "If an open-source project uses FindSecBugs"
-            }
+            },
+            "flag" : false
           } ],
           "explanation" : [ ],
           "isUnknown" : false,
@@ -682,7 +712,7 @@
           },
           "value" : 0.0,
           "weight" : 1.0,
-          "confidence" : 5.0,
+          "confidence" : 10.0,
           "usedValues" : [ {
             "type" : "BooleanValue",
             "feature" : {
@@ -691,17 +721,19 @@
             },
             "flag" : false
           }, {
-            "type" : "UnknownValue",
+            "type" : "BooleanValue",
             "feature" : {
               "type" : "BooleanFeature",
               "name" : "If a project runs CodeQL checks for commits"
-            }
+            },
+            "flag" : false
           }, {
-            "type" : "UnknownValue",
+            "type" : "BooleanValue",
             "feature" : {
               "type" : "BooleanFeature",
               "name" : "If a project runs CodeQL scans"
-            }
+            },
+            "flag" : false
           }, {
             "type" : "LanguagesValue",
             "feature" : {
@@ -756,7 +788,7 @@
         },
         "value" : 0.0,
         "weight" : 1.0,
-        "confidence" : 2.5,
+        "confidence" : 10.0,
         "usedValues" : [ {
           "type" : "LanguagesValue",
           "feature" : {
@@ -767,23 +799,26 @@
             "elements" : [ "JAVA" ]
           }
         }, {
-          "type" : "UnknownValue",
+          "type" : "BooleanValue",
           "feature" : {
             "type" : "BooleanFeature",
             "name" : "If an open-source project uses AddressSanitizer"
-          }
+          },
+          "flag" : false
         }, {
-          "type" : "UnknownValue",
+          "type" : "BooleanValue",
           "feature" : {
             "type" : "BooleanFeature",
             "name" : "If an open-source project uses MemorySanitizer"
-          }
+          },
+          "flag" : false
         }, {
-          "type" : "UnknownValue",
+          "type" : "BooleanValue",
           "feature" : {
             "type" : "BooleanFeature",
             "name" : "If an open-source project uses UndefinedBehaviorSanitizer"
-          }
+          },
+          "flag" : false
         } ],
         "explanation" : [ ],
         "isUnknown" : false,
@@ -897,7 +932,7 @@
       },
       "value" : 2.0,
       "weight" : 0.6,
-      "confidence" : 7.222222222222222,
+      "confidence" : 9.777777777777779,
       "usedValues" : [ {
         "type" : "VulnerabilitiesValue",
         "vulnerabilities" : {
@@ -979,33 +1014,34 @@
             }
           }
         },
-        "value" : 0.0,
+        "value" : 4.0,
         "weight" : 1.0,
-        "confidence" : 4.444444444444445,
+        "confidence" : 9.555555555555555,
         "usedValues" : [ {
           "type" : "ScoreValue",
           "score" : {
             "type" : "DependencyScanScore",
             "name" : "How a project scans its dependencies for vulnerabilities"
           },
-          "value" : 0.0,
+          "value" : 10.0,
           "weight" : 1.0,
-          "confidence" : 2.5,
+          "confidence" : 10.0,
           "usedValues" : [ {
             "type" : "ScoreValue",
             "score" : {
               "type" : "DependabotScore",
               "name" : "How a project uses Dependabot"
             },
-            "value" : 0.0,
+            "value" : 10.0,
             "weight" : 1.0,
-            "confidence" : 5.0,
+            "confidence" : 10.0,
             "usedValues" : [ {
-              "type" : "UnknownValue",
+              "type" : "BooleanValue",
               "feature" : {
                 "type" : "BooleanFeature",
                 "name" : "If a project uses Dependabot"
-              }
+              },
+              "flag" : true
             }, {
               "type" : "BooleanValue",
               "feature" : {
@@ -1014,10 +1050,13 @@
               },
               "flag" : true
             }, {
-              "type" : "UnknownValue",
+              "type" : "PackageManagersValue",
               "feature" : {
                 "type" : "PackageManagersFeature",
                 "name" : "A set of package managers"
+              },
+              "packageManagers" : {
+                "packageManagers" : [ "MAVEN" ]
               }
             }, {
               "type" : "LanguagesValue",
@@ -1031,7 +1070,7 @@
             } ],
             "explanation" : [ ],
             "isUnknown" : false,
-            "isNotApplicable" : true
+            "isNotApplicable" : false
           }, {
             "type" : "ScoreValue",
             "score" : {
@@ -1040,24 +1079,30 @@
             },
             "value" : 0.0,
             "weight" : 1.0,
-            "confidence" : 0.0,
+            "confidence" : 10.0,
             "usedValues" : [ {
-              "type" : "UnknownValue",
+              "type" : "OwaspDependencyCheckUsageValue",
               "feature" : {
                 "type" : "OwaspDependencyCheckUsageFeature",
                 "name" : "How OWASP Dependency Check is used"
-              }
+              },
+              "value" : "NOT_USED"
             }, {
-              "type" : "UnknownValue",
+              "type" : "OwaspDependencyCheckCvssThresholdValue",
               "feature" : {
                 "type" : "OwaspDependencyCheckCvssThreshold",
                 "name" : "A CVSS threshold for OWASP Dependency Check to fail the build"
-              }
+              },
+              "number" : 0.0,
+              "specified" : false
             }, {
-              "type" : "UnknownValue",
+              "type" : "PackageManagersValue",
               "feature" : {
                 "type" : "PackageManagersFeature",
                 "name" : "A set of package managers"
+              },
+              "packageManagers" : {
+                "packageManagers" : [ "MAVEN" ]
               }
             } ],
             "explanation" : [ ],
@@ -1075,18 +1120,22 @@
           },
           "value" : 0.0,
           "weight" : 0.5,
-          "confidence" : 0.0,
+          "confidence" : 10.0,
           "usedValues" : [ {
-            "type" : "UnknownValue",
+            "type" : "BooleanValue",
             "feature" : {
               "type" : "BooleanFeature",
               "name" : "If a project uses nohttp tool"
-            }
+            },
+            "flag" : false
           }, {
-            "type" : "UnknownValue",
+            "type" : "PackageManagersValue",
             "feature" : {
               "type" : "PackageManagersFeature",
               "name" : "A set of package managers"
+            },
+            "packageManagers" : {
+              "packageManagers" : [ "MAVEN" ]
             }
           } ],
           "explanation" : [ ],
@@ -1126,7 +1175,7 @@
           },
           "value" : 0.0,
           "weight" : 1.0,
-          "confidence" : 5.0,
+          "confidence" : 8.0,
           "usedValues" : [ {
             "type" : "ScoreValue",
             "score" : {
@@ -1163,7 +1212,7 @@
             },
             "value" : 0.0,
             "weight" : 0.5,
-            "confidence" : 5.0,
+            "confidence" : 10.0,
             "usedValues" : [ {
               "type" : "LanguagesValue",
               "feature" : {
@@ -1174,11 +1223,12 @@
                 "elements" : [ "JAVA" ]
               }
             }, {
-              "type" : "UnknownValue",
+              "type" : "BooleanValue",
               "feature" : {
                 "type" : "BooleanFeature",
                 "name" : "If an open-source project uses FindSecBugs"
-              }
+              },
+              "flag" : false
             } ],
             "explanation" : [ ],
             "isUnknown" : false,
@@ -1191,7 +1241,7 @@
             },
             "value" : 0.0,
             "weight" : 1.0,
-            "confidence" : 5.0,
+            "confidence" : 10.0,
             "usedValues" : [ {
               "type" : "BooleanValue",
               "feature" : {
@@ -1200,17 +1250,19 @@
               },
               "flag" : false
             }, {
-              "type" : "UnknownValue",
+              "type" : "BooleanValue",
               "feature" : {
                 "type" : "BooleanFeature",
                 "name" : "If a project runs CodeQL checks for commits"
-              }
+              },
+              "flag" : false
             }, {
-              "type" : "UnknownValue",
+              "type" : "BooleanValue",
               "feature" : {
                 "type" : "BooleanFeature",
                 "name" : "If a project runs CodeQL scans"
-              }
+              },
+              "flag" : false
             }, {
               "type" : "LanguagesValue",
               "feature" : {
@@ -1265,7 +1317,7 @@
           },
           "value" : 0.0,
           "weight" : 1.0,
-          "confidence" : 2.5,
+          "confidence" : 10.0,
           "usedValues" : [ {
             "type" : "LanguagesValue",
             "feature" : {
@@ -1276,23 +1328,26 @@
               "elements" : [ "JAVA" ]
             }
           }, {
-            "type" : "UnknownValue",
+            "type" : "BooleanValue",
             "feature" : {
               "type" : "BooleanFeature",
               "name" : "If an open-source project uses AddressSanitizer"
-            }
+            },
+            "flag" : false
           }, {
-            "type" : "UnknownValue",
+            "type" : "BooleanValue",
             "feature" : {
               "type" : "BooleanFeature",
               "name" : "If an open-source project uses MemorySanitizer"
-            }
+            },
+            "flag" : false
           }, {
-            "type" : "UnknownValue",
+            "type" : "BooleanValue",
             "feature" : {
               "type" : "BooleanFeature",
               "name" : "If an open-source project uses UndefinedBehaviorSanitizer"
-            }
+            },
+            "flag" : false
           } ],
           "explanation" : [ ],
           "isUnknown" : false,
@@ -1310,5 +1365,5 @@
     "isUnknown" : false,
     "isNotApplicable" : false
   },
-  "label" : [ "OssSecurityRating$SecurityLabel", "UNCLEAR" ]
+  "label" : [ "OssSecurityRating$SecurityLabel", "MODERATE" ]
 }
