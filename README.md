@@ -3,8 +3,6 @@
 [![Language grade: Java](https://img.shields.io/lgtm/grade/java/g/SAP/btp-environment-variable-access.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/SAP/btp-environment-variable-access/context:java)
 [![Fosstars security rating](https://raw.githubusercontent.com/SAP/btp-environment-variable-access/fosstars-report/fosstars_badge.svg)](https://github.com/SAP/btp-environment-variable-access/blob/fosstars-report/fosstars_report.md)
 
-https://api.reuse.software/info/github.com/SAP/btp-environment-variable-access
-
 # BTP Environment Service Binding Access for Java
 
 Utility for easily reading application configurations for bound services in the SAP Business Technology Platform Cloud Foundry and Kubernetes (K8S) environment.
