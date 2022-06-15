@@ -5,6 +5,7 @@
 
     <groupId>com.sap.cloud.environment.servicebinding</groupId>
     <artifactId>java-parent</artifactId>
+    <name>java-parent</name>
     <version>0.1.0</version>
     <packaging>pom</packaging>
     <description>Java Client Library to access BTP environment service bindings</description>
