@@ -2,7 +2,7 @@
  * Copyright (c) 2022 SAP SE or an SAP affiliate company. All rights reserved.
  */
 
-package com.sap.cloud.environment.api;
+package com.sap.cloud.environment.servicebinding.api;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -18,7 +18,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.sap.cloud.environment.api.exception.ValueCastException;
+import com.sap.cloud.environment.servicebinding.api.exception.ValueCastException;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatNoException;
@@ -184,11 +184,11 @@ class TypedMapViewTest
     @Test
     void getEntries()
     {
-        Map<String, Object> primitiveValues = Collections.synchronizedMap(PRIMITIVE_VALUES);
+        final Map<String, Object> primitiveValues = Collections.synchronizedMap(PRIMITIVE_VALUES);
         primitiveValues.put("String2", "Value2");
 
         final TypedMapView sut = TypedMapView.fromMap(primitiveValues);
-        Map<String, String> stringMap = sut.getEntries(String.class);
+        final Map<String, String> stringMap = sut.getEntries(String.class);
         assertThat(stringMap).hasSize(2);
         assertThat(stringMap.get("String")).isEqualTo("Value");
         assertThat(stringMap.get("String2")).isEqualTo("Value2");

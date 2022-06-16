@@ -2,7 +2,7 @@
  * Copyright (c) 2022 SAP SE or an SAP affiliate company. All rights reserved.
  */
 
-package com.sap.cloud.environment.api.exception;
+package com.sap.cloud.environment.servicebinding.api.exception;
 
 public class KeyNotFoundException extends RuntimeException
 {

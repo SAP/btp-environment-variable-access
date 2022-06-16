@@ -20,8 +20,8 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import com.sap.cloud.environment.api.DefaultServiceBinding;
-import com.sap.cloud.environment.api.ServiceBinding;
+import com.sap.cloud.environment.servicebinding.api.DefaultServiceBinding;
+import com.sap.cloud.environment.servicebinding.api.ServiceBinding;
 
 public final class LayeredDataParsingStrategy implements LayeredParsingStrategy
 {

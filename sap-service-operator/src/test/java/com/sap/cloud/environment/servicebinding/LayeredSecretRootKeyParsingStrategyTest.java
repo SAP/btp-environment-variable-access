@@ -10,7 +10,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Optional;
 
-import com.sap.cloud.environment.api.ServiceBinding;
+import com.sap.cloud.environment.servicebinding.api.ServiceBinding;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
