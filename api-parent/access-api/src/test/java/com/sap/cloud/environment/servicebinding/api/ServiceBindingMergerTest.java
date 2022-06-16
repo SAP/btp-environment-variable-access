@@ -4,7 +4,6 @@
 
 package com.sap.cloud.environment.servicebinding.api;
 
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import javax.annotation.Nonnull;
@@ -34,7 +33,7 @@ class ServiceBindingMergerTest
                                                                   ServiceNameAndPlanComparer.INSTANCE);
 
         final List<ServiceBinding> mergedServiceBindings = sut.getServiceBindings();
-        Assertions.assertThat(mergedServiceBindings).containsExactlyInAnyOrder(serviceBinding1, serviceBinding2);
+        assertThat(mergedServiceBindings).containsExactlyInAnyOrder(serviceBinding1, serviceBinding2);
     }
 
     @Test
@@ -50,7 +49,7 @@ class ServiceBindingMergerTest
                                                                   ServiceNameAndPlanComparer.INSTANCE);
 
         final List<ServiceBinding> mergedServiceBindings = sut.getServiceBindings();
-        Assertions.assertThat(mergedServiceBindings).containsExactlyInAnyOrder(serviceBinding1);
+        assertThat(mergedServiceBindings).containsExactlyInAnyOrder(serviceBinding1);
     }
 
     @Test
@@ -69,7 +68,7 @@ class ServiceBindingMergerTest
                                                                   ServiceNameAndPlanComparer.INSTANCE);
 
         final List<ServiceBinding> mergedServiceBindings = sut.getServiceBindings();
-        Assertions.assertThat(mergedServiceBindings).containsExactlyInAnyOrder(serviceBinding1, serviceBinding2);
+        assertThat(mergedServiceBindings).containsExactlyInAnyOrder(serviceBinding1, serviceBinding2);
     }
 
     @Test
@@ -88,7 +87,7 @@ class ServiceBindingMergerTest
                                                                   ServiceNameAndPlanComparer.INSTANCE);
 
         final List<ServiceBinding> mergedServiceBindings = sut.getServiceBindings();
-        Assertions.assertThat(mergedServiceBindings).containsExactlyInAnyOrder(serviceBinding1);
+        assertThat(mergedServiceBindings).containsExactlyInAnyOrder(serviceBinding1);
     }
 
     @Test
