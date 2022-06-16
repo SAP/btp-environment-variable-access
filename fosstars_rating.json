@@ -325,7 +325,7 @@
           "type" : "OwaspDependencyCheckUsageFeature",
           "name" : "How OWASP Dependency Check is used"
         },
-        "value" : "MANDATORY"
+        "value" : "OPTIONAL"
       } ],
       "explanation" : [ ],
       "isUnknown" : false,
@@ -401,7 +401,7 @@
           "type" : "PositiveIntegerFeature",
           "name" : "Number of commits in the last three months"
         },
-        "number" : 68
+        "number" : 75
       }, {
         "type" : "IntegerValue",
         "feature" : {
@@ -410,7 +410,7 @@
         },
         "number" : 3
       } ],
-      "explanation" : [ "68 commits in the last 3 months results to 10.00 points", "3 contributors increase the score value from 10.00 to 11.00" ],
+      "explanation" : [ "75 commits in the last 3 months results to 10.00 points", "3 contributors increase the score value from 10.00 to 11.00" ],
       "isUnknown" : false,
       "isNotApplicable" : false
     }, {
@@ -548,7 +548,7 @@
             "type" : "OwaspDependencyScanScore",
             "name" : "How a project uses OWASP Dependency Check to scan dependencies for vulnerabilities"
           },
-          "value" : 7.9,
+          "value" : 3.9,
           "weight" : 1.0,
           "confidence" : 10.0,
           "usedValues" : [ {
@@ -557,7 +557,7 @@
               "type" : "OwaspDependencyCheckUsageFeature",
               "name" : "How OWASP Dependency Check is used"
             },
-            "value" : "MANDATORY"
+            "value" : "OPTIONAL"
           }, {
             "type" : "OwaspDependencyCheckCvssThresholdValue",
             "feature" : {
@@ -1078,7 +1078,7 @@
               "type" : "OwaspDependencyScanScore",
               "name" : "How a project uses OWASP Dependency Check to scan dependencies for vulnerabilities"
             },
-            "value" : 7.9,
+            "value" : 3.9,
             "weight" : 1.0,
             "confidence" : 10.0,
             "usedValues" : [ {
@@ -1087,7 +1087,7 @@
                 "type" : "OwaspDependencyCheckUsageFeature",
                 "name" : "How OWASP Dependency Check is used"
               },
-              "value" : "MANDATORY"
+              "value" : "OPTIONAL"
             }, {
               "type" : "OwaspDependencyCheckCvssThresholdValue",
               "feature" : {
