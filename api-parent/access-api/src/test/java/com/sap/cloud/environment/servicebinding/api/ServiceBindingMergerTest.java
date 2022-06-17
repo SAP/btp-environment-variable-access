@@ -2,7 +2,7 @@
  * Copyright (c) 2022 SAP SE or an SAP affiliate company. All rights reserved.
  */
 
-package com.sap.cloud.environment.api;
+package com.sap.cloud.environment.servicebinding.api;
 
 import org.junit.jupiter.api.Test;
 

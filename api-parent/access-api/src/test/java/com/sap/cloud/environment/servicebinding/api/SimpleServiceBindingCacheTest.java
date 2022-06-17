@@ -2,7 +2,7 @@
  * Copyright (c) 2022 SAP SE or an SAP affiliate company. All rights reserved.
  */
 
-package com.sap.cloud.environment.api;
+package com.sap.cloud.environment.servicebinding.api;
 
 import org.junit.jupiter.api.Test;
 
@@ -21,7 +21,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.function.Supplier;
 
-import com.sap.cloud.environment.api.exception.ServiceBindingAccessException;
+import com.sap.cloud.environment.servicebinding.api.exception.ServiceBindingAccessException;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

@@ -25,10 +25,10 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import com.sap.cloud.environment.api.DefaultServiceBinding;
-import com.sap.cloud.environment.api.ServiceBinding;
-import com.sap.cloud.environment.api.ServiceBindingAccessor;
-import com.sap.cloud.environment.api.exception.ServiceBindingAccessException;
+import com.sap.cloud.environment.servicebinding.api.DefaultServiceBinding;
+import com.sap.cloud.environment.servicebinding.api.ServiceBinding;
+import com.sap.cloud.environment.servicebinding.api.ServiceBindingAccessor;
+import com.sap.cloud.environment.servicebinding.api.exception.ServiceBindingAccessException;
 import com.sap.cloud.environment.servicebinding.metadata.BindingMetadata;
 import com.sap.cloud.environment.servicebinding.metadata.BindingMetadataFactory;
 import com.sap.cloud.environment.servicebinding.metadata.BindingProperty;

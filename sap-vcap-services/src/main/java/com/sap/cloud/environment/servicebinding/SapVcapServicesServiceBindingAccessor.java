@@ -15,10 +15,10 @@ import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import com.sap.cloud.environment.api.DefaultServiceBinding;
-import com.sap.cloud.environment.api.ServiceBinding;
-import com.sap.cloud.environment.api.ServiceBindingAccessor;
-import com.sap.cloud.environment.api.exception.ServiceBindingAccessException;
+import com.sap.cloud.environment.servicebinding.api.DefaultServiceBinding;
+import com.sap.cloud.environment.servicebinding.api.ServiceBinding;
+import com.sap.cloud.environment.servicebinding.api.ServiceBindingAccessor;
+import com.sap.cloud.environment.servicebinding.api.exception.ServiceBindingAccessException;
 
 public class SapVcapServicesServiceBindingAccessor implements ServiceBindingAccessor
 {

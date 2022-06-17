@@ -2,7 +2,7 @@
  * Copyright (c) 2022 SAP SE or an SAP affiliate company. All rights reserved.
  */
 
-package com.sap.cloud.environment.api;
+package com.sap.cloud.environment.servicebinding.api;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -16,7 +16,7 @@ import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.function.Supplier;
 
-import com.sap.cloud.environment.api.exception.ServiceBindingAccessException;
+import com.sap.cloud.environment.servicebinding.api.exception.ServiceBindingAccessException;
 
 public class SimpleServiceBindingCache implements ServiceBindingAccessor
 {

@@ -2,7 +2,7 @@
  * Copyright (c) 2022 SAP SE or an SAP affiliate company. All rights reserved.
  */
 
-package com.sap.cloud.environment.api;
+package com.sap.cloud.environment.servicebinding.api;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -13,8 +13,8 @@ import java.util.Set;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
 
-import com.sap.cloud.environment.api.exception.KeyNotFoundException;
-import com.sap.cloud.environment.api.exception.ValueCastException;
+import com.sap.cloud.environment.servicebinding.api.exception.KeyNotFoundException;
+import com.sap.cloud.environment.servicebinding.api.exception.ValueCastException;
 
 public final class TypedMapView
 {
@@ -185,11 +185,13 @@ public final class TypedMapView
     }
 
 
+    @SuppressWarnings( "unchecked" )
+    @Nonnull
     public <T> Map<String, T> getEntries( @Nonnull final Class<? extends T> mapType )
     {
         return map.entrySet()
                   .stream()
                   .filter(e -> e.getValue() != null && e.getValue().getClass() == mapType)
-                  .collect(Collectors.toMap(e -> e.getKey(), e -> (T) e.getValue()));
+                  .collect(Collectors.toMap(Map.Entry::getKey, e -> (T) e.getValue()));
     }
 }

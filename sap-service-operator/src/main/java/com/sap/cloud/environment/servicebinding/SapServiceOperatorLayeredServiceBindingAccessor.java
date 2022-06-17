@@ -19,9 +19,9 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import com.sap.cloud.environment.api.ServiceBinding;
-import com.sap.cloud.environment.api.ServiceBindingAccessor;
-import com.sap.cloud.environment.api.exception.ServiceBindingAccessException;
+import com.sap.cloud.environment.servicebinding.api.ServiceBinding;
+import com.sap.cloud.environment.servicebinding.api.ServiceBindingAccessor;
+import com.sap.cloud.environment.servicebinding.api.exception.ServiceBindingAccessException;
 
 public class SapServiceOperatorLayeredServiceBindingAccessor implements ServiceBindingAccessor
 {

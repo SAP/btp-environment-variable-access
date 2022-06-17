@@ -2,7 +2,7 @@
  * Copyright (c) 2022 SAP SE or an SAP affiliate company. All rights reserved.
  */
 
-package com.sap.cloud.environment.api;
+package com.sap.cloud.environment.servicebinding.api;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -17,7 +17,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import com.sap.cloud.environment.api.exception.ValueCastException;
+import com.sap.cloud.environment.servicebinding.api.exception.ValueCastException;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatNoException;
@@ -181,11 +181,11 @@ class TypedListViewTest
     @Test
     void getItems()
     {
-        List<Object> primitiveValues = PRIMITIVE_VALUES.stream().collect(Collectors.toList());
+        final List<Object> primitiveValues = new ArrayList<>(PRIMITIVE_VALUES);
         primitiveValues.add("Value2");
 
         final TypedListView sut = TypedListView.fromList(primitiveValues);
-        List<String> stringList = sut.getItems(String.class);
+        final List<String> stringList = sut.getItems(String.class);
         assertThat(stringList).hasSize(2).contains("Value").contains("Value2");
     }
 }
