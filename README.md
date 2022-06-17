@@ -124,6 +124,8 @@ Map<String, Object> credentials = binding.getCredentials();
 
 ## Requirements and Setup
 
+Build results are published to maven central: https://search.maven.org/search?q=g:com.sap.cloud.environment.servicebinding
+
 ### Requirements
 - Java 8 or 11
 - Maven 3.8.1 or later
@@ -238,7 +240,8 @@ We as members, contributors, and leaders pledge to make participation in our com
 Copyright 2022 SAP SE or an SAP affiliate company and BTP Environment for Java contributors. Please see our [LICENSE](LICENSE) for copyright and license information. Detailed information including third-party components and their licensing/copyright information is available [via the REUSE tool](https://api.reuse.software/info/github.com/SAP/btp-environment-variable-access).
 
 ## Further References
-
+- Maven Central<br>
+  https://search.maven.org/search?q=g:com.sap.cloud.environment.servicebinding
 - Specification<br>
   https://github.com/openservicebrokerapi/servicebroker/blob/master/spec.md#body-11
 - API / Java Doc<br>
