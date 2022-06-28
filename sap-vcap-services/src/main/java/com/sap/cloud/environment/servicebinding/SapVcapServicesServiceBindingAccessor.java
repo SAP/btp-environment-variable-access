@@ -7,6 +7,8 @@ package com.sap.cloud.environment.servicebinding;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
@@ -22,6 +24,9 @@ import com.sap.cloud.environment.servicebinding.api.exception.ServiceBindingAcce
 
 public class SapVcapServicesServiceBindingAccessor implements ServiceBindingAccessor
 {
+    @Nonnull
+    private static final Logger logger = LoggerFactory.getLogger(SapVcapServicesServiceBindingAccessor.class);
+
     @Nonnull
     public static final Function<String, String> DEFAULT_ENVIRONMENT_VARIABLE_READER = System::getenv;
 
@@ -45,9 +50,11 @@ public class SapVcapServicesServiceBindingAccessor implements ServiceBindingAcce
     @Override
     public List<ServiceBinding> getServiceBindings() throws ServiceBindingAccessException
     {
+        logger.debug("Trying to determine service bindings using the '{}' environment variable.", VCAP_SERVICES);
         final String vcapServices = environmentVariableReader.apply(VCAP_SERVICES);
 
         if (vcapServices == null) {
+            logger.debug("Environment variable '{}' is not defined.", VCAP_SERVICES);
             return Collections.emptyList();
         }
 
@@ -55,6 +62,7 @@ public class SapVcapServicesServiceBindingAccessor implements ServiceBindingAcce
         try {
             parsedVcapServices = new JSONObject(vcapServices);
         } catch (final JSONException e) {
+            logger.debug("Environment variable '{}' ('{}') is not a valid JSON.", VCAP_SERVICES, vcapServices);
             return Collections.emptyList();
         }
 
@@ -73,6 +81,7 @@ public class SapVcapServicesServiceBindingAccessor implements ServiceBindingAcce
         try {
             jsonServiceBindings = vcapServices.getJSONArray(serviceName);
         } catch (final JSONException e) {
+            logger.debug("Skipping '{}': Unexpected format.", VCAP_SERVICES);
             return Collections.emptyList();
         }
 
@@ -88,6 +97,7 @@ public class SapVcapServicesServiceBindingAccessor implements ServiceBindingAcce
             serviceBindings.add(toServiceBinding(jsonServiceBinding, serviceName));
         }
 
+        logger.debug("Successfully read {} service binding(s) from '{}'.", serviceBindings.size(), VCAP_SERVICES);
         return serviceBindings;
     }
 

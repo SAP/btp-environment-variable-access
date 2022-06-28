@@ -6,6 +6,8 @@ package com.sap.cloud.environment.servicebinding;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -35,6 +37,9 @@ import com.sap.cloud.environment.servicebinding.metadata.BindingProperty;
 
 public class SapServiceOperatorServiceBindingIoAccessor implements ServiceBindingAccessor
 {
+    @Nonnull
+    private static final Logger logger = LoggerFactory.getLogger(SapServiceOperatorServiceBindingIoAccessor.class);
+
     @Nonnull
     public static final Function<String, String> DEFAULT_ENVIRONMENT_VARIABLE_READER = System::getenv;
 
@@ -82,6 +87,7 @@ public class SapServiceOperatorServiceBindingIoAccessor implements ServiceBindin
             return Collections.emptyList();
         }
 
+        logger.debug("Reading service bindings from '{}'.", rootDirectory);
         try (final Stream<Path> bindingRoots = Files.list(rootDirectory).filter(Files::isDirectory)) {
             return bindingRoots.map(this::parseServiceBinding)
                                .filter(Optional::isPresent)
@@ -95,13 +101,19 @@ public class SapServiceOperatorServiceBindingIoAccessor implements ServiceBindin
     @Nullable
     private Path getRootDirectory()
     {
+        logger.debug("Trying to determine service binding root directory using the '{}' environment variable.",
+                     ROOT_DIRECTORY_KEY);
         final String maybeRootDirectory = environmentVariableReader.apply(ROOT_DIRECTORY_KEY);
         if (maybeRootDirectory == null || maybeRootDirectory.isEmpty()) {
+            logger.debug("Environment variable '{}' is not defined.", ROOT_DIRECTORY_KEY);
             return null;
         }
 
         final Path rootDirectory = Paths.get(maybeRootDirectory);
         if (!Files.exists(rootDirectory) || !Files.isDirectory(rootDirectory)) {
+            logger.debug("Environment variable '{}' ('{}') does not point to a valid directory.",
+                         ROOT_DIRECTORY_KEY,
+                         maybeRootDirectory);
             return null;
         }
 
@@ -111,15 +123,18 @@ public class SapServiceOperatorServiceBindingIoAccessor implements ServiceBindin
     @Nonnull
     private Optional<ServiceBinding> parseServiceBinding( @Nonnull final Path rootDirectory )
     {
+        logger.debug("Trying to read service binding from '{}'.", rootDirectory);
         final Path metadataFile = rootDirectory.resolve(METADATA_FILE);
         if (!Files.exists(metadataFile) || !Files.isRegularFile(metadataFile)) {
             // every service binding must contain a metadata file
+            logger.debug("Skipping '{}': The directory does not contain a '{}' file.", rootDirectory, METADATA_FILE);
             return Optional.empty();
         }
 
         final Optional<BindingMetadata> maybeBindingMetadata = BindingMetadataFactory.tryFromJsonFile(metadataFile);
         if (!maybeBindingMetadata.isPresent()) {
             // metadata file cannot be parsed
+            logger.debug("Skipping '{}': Unable to parse the '{}' file.", rootDirectory, METADATA_FILE);
             return Optional.empty();
         }
 
@@ -135,6 +150,7 @@ public class SapServiceOperatorServiceBindingIoAccessor implements ServiceBindin
         final Optional<String> maybeServiceName = getServiceName(rawServiceBinding);
         if (!maybeServiceName.isPresent()) {
             // the service name property is mandatory
+            logger.debug("Skipping '{}': No '{}' property found.", rootDirectory, SERVICE_NAME_KEY);
             return Optional.empty();
         }
 
@@ -144,6 +160,7 @@ public class SapServiceOperatorServiceBindingIoAccessor implements ServiceBindin
         }
         if (rawCredentials.isEmpty()) {
             // bindings must always have credentials
+            logger.debug("Skipping '{}': No credentials property found.", rootDirectory);
             return Optional.empty();
         }
 
@@ -158,7 +175,7 @@ public class SapServiceOperatorServiceBindingIoAccessor implements ServiceBindin
                                                                           .withServicePlanKey(PLAN_KEY)
                                                                           .withCredentialsKey(credentialsKey)
                                                                           .build();
-
+        logger.debug("Successfully read service binding from '{}'.", rootDirectory);
         return Optional.of(serviceBinding);
     }
 

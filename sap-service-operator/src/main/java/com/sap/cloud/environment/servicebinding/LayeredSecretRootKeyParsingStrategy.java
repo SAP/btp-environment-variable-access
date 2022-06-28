@@ -6,6 +6,8 @@ package com.sap.cloud.environment.servicebinding;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -26,6 +28,9 @@ import com.sap.cloud.environment.servicebinding.api.ServiceBinding;
 
 public final class LayeredSecretRootKeyParsingStrategy implements LayeredParsingStrategy
 {
+    @Nonnull
+    private static final Logger logger = LoggerFactory.getLogger(LayeredSecretRootKeyParsingStrategy.class);
+
     @Nonnull
     private static final String PLAN_KEY = "plan";
 
@@ -88,23 +93,28 @@ public final class LayeredSecretRootKeyParsingStrategy implements LayeredParsing
                                            @Nonnull final String bindingName,
                                            @Nonnull final Path bindingPath ) throws IOException
     {
+        logger.debug("Trying to read service binding from '{}'.", bindingPath);
         final List<Path> propertyFiles = Files.list(bindingPath)
                                               .filter(Files::isRegularFile)
                                               .collect(Collectors.toList());
 
         if (propertyFiles.isEmpty()) {
             // service binding directory must contain exactly one file
+            logger.debug("Skipping '{}': The directory is empty.", bindingPath);
             return Optional.empty();
         }
 
         if (propertyFiles.size() > 1) {
             // service binding directory must contain exactly one file
+            logger.debug("Skipping '{}': The directory contains more than 1 file.", bindingPath);
             return Optional.empty();
         }
 
-        final String fileContent = String.join("\n", Files.readAllLines(propertyFiles.get(0), charset));
+        final Path propertyFile = propertyFiles.get(0);
+        final String fileContent = String.join("\n", Files.readAllLines(propertyFile, charset));
 
         if (fileContent.isEmpty()) {
+            logger.debug("Skipping '{}': The service binding file ('{}') is empty.", bindingPath, propertyFile);
             return Optional.empty();
         }
 
@@ -114,11 +124,17 @@ public final class LayeredSecretRootKeyParsingStrategy implements LayeredParsing
         try {
             parsedFileContent = new JSONObject(fileContent).toMap();
         } catch (final JSONException e) {
+            logger.debug("Skipping '{}': The service binding file ('{}') does not contain valid JSON.",
+                         bindingPath,
+                         propertyFile);
             return Optional.empty();
         }
 
         if (parsedFileContent == null) {
             // the property file must contain a Json structure
+            logger.debug("Skipping '{}': The service binding file ('{}') does not contain valid JSON.",
+                         bindingPath,
+                         propertyFile);
             return Optional.empty();
         }
 
@@ -142,6 +158,7 @@ public final class LayeredSecretRootKeyParsingStrategy implements LayeredParsing
                                                                           .withTagsKey(TAGS_KEY)
                                                                           .withCredentialsKey(LayeredPropertySetter.CREDENTIALS_KEY)
                                                                           .build();
+        logger.debug("Successfully read service binding from '{}'.", bindingPath);
         return Optional.of(serviceBinding);
     }
 

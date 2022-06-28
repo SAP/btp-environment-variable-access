@@ -6,6 +6,8 @@ package com.sap.cloud.environment.servicebinding;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nonnull;
 import java.io.IOException;
@@ -25,6 +27,9 @@ import com.sap.cloud.environment.servicebinding.api.ServiceBinding;
 
 public final class LayeredDataParsingStrategy implements LayeredParsingStrategy
 {
+    @Nonnull
+    private static final Logger logger = LoggerFactory.getLogger(LayeredDataParsingStrategy.class);
+
     @Nonnull
     private static final String PLAN_KEY = "plan";
 
@@ -91,12 +96,14 @@ public final class LayeredDataParsingStrategy implements LayeredParsingStrategy
                                            @Nonnull final String bindingName,
                                            @Nonnull final Path bindingPath ) throws IOException
     {
+        logger.debug("Trying to read service binding from '{}'.", bindingPath);
         final List<Path> propertyFiles = Files.list(bindingPath)
                                               .filter(Files::isRegularFile)
                                               .collect(Collectors.toList());
 
         if (propertyFiles.isEmpty()) {
             // service binding directory must contain at least one file
+            logger.debug("Skipping '{}': The directory is empty.", bindingPath);
             return Optional.empty();
         }
 
@@ -105,12 +112,16 @@ public final class LayeredDataParsingStrategy implements LayeredParsingStrategy
             final String propertyName = propertyFile.getFileName().toString();
             final String fileContent = String.join("\n", Files.readAllLines(propertyFile, charset));
             if (fileContent.isEmpty()) {
+                logger.debug("Ignoring empty property file '{}'.", propertyFile);
                 continue;
             }
 
             try {
                 final JSONObject jsonContent = new JSONObject(fileContent);
 
+                logger.debug("Skipping '{}': The directory contains an unexpected JSON file ('{}').",
+                             bindingPath,
+                             propertyFile);
                 // service binding must not contain a valid JSON object
                 return Optional.empty();
             } catch (final JSONException e) {
@@ -122,6 +133,7 @@ public final class LayeredDataParsingStrategy implements LayeredParsingStrategy
 
         if (rawServiceBinding.get(LayeredPropertySetter.CREDENTIALS_KEY) == null) {
             // service bindings must contain credentials
+            logger.debug("Skipping '{}': No credentials property found.", bindingPath);
             return Optional.empty();
         }
 
@@ -133,6 +145,7 @@ public final class LayeredDataParsingStrategy implements LayeredParsingStrategy
                                                                           .withTagsKey(TAGS_KEY)
                                                                           .withCredentialsKey(LayeredPropertySetter.CREDENTIALS_KEY)
                                                                           .build();
+        logger.debug("Successfully read service binding from '{}'.", bindingPath);
         return Optional.of(serviceBinding);
     }
 

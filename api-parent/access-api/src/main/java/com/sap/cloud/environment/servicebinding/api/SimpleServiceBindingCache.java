@@ -4,6 +4,9 @@
 
 package com.sap.cloud.environment.servicebinding.api;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.time.Duration;
@@ -21,9 +24,12 @@ import com.sap.cloud.environment.servicebinding.api.exception.ServiceBindingAcce
 public class SimpleServiceBindingCache implements ServiceBindingAccessor
 {
     @Nonnull
-    public static final Duration DEFAULT_CACHE_DURATION = Duration.ofMinutes(5L);
+    private static final Logger logger = LoggerFactory.getLogger(SimpleServiceBindingCache.class);
+
     @Nonnull
-    static final Supplier<LocalDateTime> DEFAULT_LOCAL_DATE_TIME_SUPPLIER = LocalDateTime::now;
+    private static final Duration DEFAULT_CACHE_DURATION = Duration.ofMinutes(5L);
+    @Nonnull
+    private static final Supplier<LocalDateTime> DEFAULT_LOCAL_DATE_TIME_SUPPLIER = LocalDateTime::now;
 
     @Nonnull
     private final ReadWriteLock accessLock = new ReentrantReadWriteLock();
@@ -80,6 +86,7 @@ public class SimpleServiceBindingCache implements ServiceBindingAccessor
                 return null;
             }
 
+            logger.debug("Serving service bindings from cache.");
             return cachedServiceBindings;
         } finally {
             accessLock.readLock().unlock();
@@ -95,6 +102,7 @@ public class SimpleServiceBindingCache implements ServiceBindingAccessor
                 return Objects.requireNonNull(cachedServiceBindings, "Cached Service Bindings must not be null.");
             }
 
+            logger.debug("Refreshing service bindings cache.");
             cachedServiceBindings = delegateAccessor.getServiceBindings();
             lastCacheRenewal = now;
             return cachedServiceBindings;
@@ -115,6 +123,7 @@ public class SimpleServiceBindingCache implements ServiceBindingAccessor
 
     public void invalidate()
     {
+        logger.debug("Invalidating service binding cache.");
         accessLock.writeLock().lock();
         try {
             cachedServiceBindings = null;

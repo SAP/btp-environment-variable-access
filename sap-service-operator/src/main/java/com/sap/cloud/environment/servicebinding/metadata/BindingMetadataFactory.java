@@ -7,6 +7,8 @@ package com.sap.cloud.environment.servicebinding.metadata;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -21,6 +23,9 @@ import java.util.Optional;
 
 public final class BindingMetadataFactory
 {
+    @Nonnull
+    private static final Logger logger = LoggerFactory.getLogger(BindingMetadataFactory.class);
+
     private BindingMetadataFactory()
     {
         throw new AssertionError("This utility class must not be instantiated");
@@ -32,6 +37,10 @@ public final class BindingMetadataFactory
         try {
             return Optional.of(getFromJsonFile(filePath));
         } catch (final Exception e) {
+            logger.debug("Unable to create '{}' from '{}': {}.",
+                         BindingMetadata.class.getName(),
+                         filePath,
+                         e.getMessage());
             return Optional.empty();
         }
     }
@@ -42,6 +51,10 @@ public final class BindingMetadataFactory
         try {
             return Optional.of(getFromJson(jsonMetadata));
         } catch (final Exception e) {
+            logger.debug("Unable to create '{}' from '{}': {}.",
+                         BindingMetadata.class.getName(),
+                         jsonMetadata,
+                         e.getMessage());
             return Optional.empty();
         }
     }

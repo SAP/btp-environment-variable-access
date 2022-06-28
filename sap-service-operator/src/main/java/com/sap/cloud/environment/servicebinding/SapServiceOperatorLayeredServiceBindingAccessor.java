@@ -4,6 +4,9 @@
 
 package com.sap.cloud.environment.servicebinding;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import javax.annotation.Nonnull;
 import java.io.IOException;
 import java.nio.charset.Charset;
@@ -25,6 +28,9 @@ import com.sap.cloud.environment.servicebinding.api.exception.ServiceBindingAcce
 
 public class SapServiceOperatorLayeredServiceBindingAccessor implements ServiceBindingAccessor
 {
+    @Nonnull
+    private static final Logger logger = LoggerFactory.getLogger(SapServiceOperatorLayeredServiceBindingAccessor.class);
+
     @Nonnull
     public static final Path DEFAULT_ROOT_PATH = Paths.get("/etc/secrets/sapbtp");
     @Nonnull
@@ -56,6 +62,7 @@ public class SapServiceOperatorLayeredServiceBindingAccessor implements ServiceB
     @Override
     public List<ServiceBinding> getServiceBindings()
     {
+        logger.debug("Trying to read service bindings from '{}'.", rootPath);
         try (final Stream<Path> files = Files.list(rootPath)) {
             return files.filter(Files::isDirectory).flatMap(this::parseServiceBindings).collect(Collectors.toList());
         } catch (final SecurityException | IOException e) {
