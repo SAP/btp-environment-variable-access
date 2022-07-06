@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test;
 
 import javax.annotation.Nonnull;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 
 import com.sap.cloud.environment.servicebinding.api.ServiceBinding;
@@ -60,6 +61,40 @@ class SapServiceOperatorLayeredServiceBindingAccessorTest
         assertThat(secretRootKeyBinding.getCredentials()).containsKeys("clientid", "clientsecret");
     }
 
+    @Test
+    void parseIgnoresInvalidBindings()
+    {
+        final Path path = TestResource.get(SapServiceOperatorLayeredServiceBindingAccessorTest.class, "InvalidBinding");
+
+        final SapServiceOperatorLayeredServiceBindingAccessor sut = new SapServiceOperatorLayeredServiceBindingAccessor(
+                path,
+                SapServiceOperatorLayeredServiceBindingAccessor.DEFAULT_PARSING_STRATEGIES);
+
+        final List<ServiceBinding> serviceBindings = sut.getServiceBindings();
+
+        assertThat(serviceBindings).hasSize(2);
+
+        assertContainsSecretRootKeyBinding(serviceBindings);
+        assertContainsSecretKeyBinding(serviceBindings);
+    }
+
+    @Test
+    void parseIgnoresNonExistingRootDirectory()
+    {
+        final Path path = Paths.get("this-directory-does-not-exist");
+
+        assertThat(path).doesNotExist();
+
+        final SapServiceOperatorLayeredServiceBindingAccessor sut = new SapServiceOperatorLayeredServiceBindingAccessor(
+                path,
+                SapServiceOperatorLayeredServiceBindingAccessor.DEFAULT_PARSING_STRATEGIES);
+
+        final List<ServiceBinding> serviceBindings = sut.getServiceBindings();
+
+        assertThat(serviceBindings).isNotNull();
+        assertThat(serviceBindings).isEmpty();
+    }
+
     private static void assertContainsSecretKeyBinding( @Nonnull final List<ServiceBinding> serviceBindings )
     {
         final ServiceBinding secretKeyBinding = serviceBindings.stream()
@@ -110,22 +145,5 @@ class SapServiceOperatorLayeredServiceBindingAccessorTest
         assertThat(dataBinding.getServicePlan().orElse("")).isEqualTo("data-xsuaa-plan");
         assertThat(dataBinding.getTags()).containsExactly("data-xsuaa-tag-1", "data-xsuaa-tag-2");
         assertThat(dataBinding.getCredentials()).containsOnlyKeys("domains", "clientid", "clientsecret");
-    }
-
-    @Test
-    void parseIgnoresInvalidBindings()
-    {
-        final Path path = TestResource.get(SapServiceOperatorLayeredServiceBindingAccessorTest.class, "InvalidBinding");
-
-        final SapServiceOperatorLayeredServiceBindingAccessor sut = new SapServiceOperatorLayeredServiceBindingAccessor(
-                path,
-                SapServiceOperatorLayeredServiceBindingAccessor.DEFAULT_PARSING_STRATEGIES);
-
-        final List<ServiceBinding> serviceBindings = sut.getServiceBindings();
-
-        assertThat(serviceBindings).hasSize(2);
-
-        assertContainsSecretRootKeyBinding(serviceBindings);
-        assertContainsSecretKeyBinding(serviceBindings);
     }
 }

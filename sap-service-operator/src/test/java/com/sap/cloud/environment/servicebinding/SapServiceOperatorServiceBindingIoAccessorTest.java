@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Function;
@@ -333,6 +334,47 @@ class SapServiceOperatorServiceBindingIoAccessorTest
         assertThat(serviceBinding.getServiceName().orElse(null)).isEqualTo("xsuaa");
         assertThat(serviceBinding.getCredentials().get("token")).isEqualTo("auth-token");
         assertThat(serviceBinding.get("unknown_property")).isEmpty();
+    }
+
+    @SuppressWarnings( "unchecked" )
+    @Test
+    void emptyEnvironmentVariableLeadsToEmptyResult()
+    {
+        // setup environment variable reader
+        final Function<String, String> reader = mock(Function.class);
+        when(reader.apply(any())).thenReturn(null);
+
+        // setup subject under test
+        final SapServiceOperatorServiceBindingIoAccessor sut = new SapServiceOperatorServiceBindingIoAccessor(reader,
+                                                                                                              SapServiceOperatorServiceBindingIoAccessor.DEFAULT_CHARSET);
+
+        final List<ServiceBinding> serviceBindings = sut.getServiceBindings();
+
+        // assert
+        assertThat(serviceBindings).isNotNull();
+        assertThat(serviceBindings).isEmpty();
+    }
+
+    @SuppressWarnings( "unchecked" )
+    @Test
+    void environmentVariablePointingToInvalidDirectoryLeadsToEmptyResult()
+    {
+        final Path path = Paths.get("this-directory-does-not-exist");
+        assertThat(path).doesNotExist();
+
+        // setup environment variable reader
+        final Function<String, String> reader = mock(Function.class);
+        when(reader.apply(eq("SERVICE_BINDING_ROOT"))).thenReturn(path.toString());
+
+        // setup subject under test
+        final SapServiceOperatorServiceBindingIoAccessor sut = new SapServiceOperatorServiceBindingIoAccessor(reader,
+                                                                                                              SapServiceOperatorServiceBindingIoAccessor.DEFAULT_CHARSET);
+
+        final List<ServiceBinding> serviceBindings = sut.getServiceBindings();
+
+        // assert
+        assertThat(serviceBindings).isNotNull();
+        assertThat(serviceBindings).isEmpty();
     }
 
     private static void assertContainsDataXsuaaBinding( @Nonnull final List<ServiceBinding> serviceBindings )
