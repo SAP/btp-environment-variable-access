@@ -63,6 +63,12 @@ public class SapServiceOperatorLayeredServiceBindingAccessor implements ServiceB
     public List<ServiceBinding> getServiceBindings()
     {
         logger.debug("Trying to read service bindings from '{}'.", rootPath);
+
+        if (!Files.exists(rootPath) || !Files.isDirectory(rootPath)) {
+            logger.debug("Skipping '{}': Directory does not exist.", rootPath);
+            return Collections.emptyList();
+        }
+
         try (final Stream<Path> files = Files.list(rootPath)) {
             return files.filter(Files::isDirectory).flatMap(this::parseServiceBindings).collect(Collectors.toList());
         } catch (final SecurityException | IOException e) {
