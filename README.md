@@ -51,13 +51,13 @@ Add following dependencies to the `<dependenices>` section of your _application_
 <!-- Include following dependency if your application uses the VCAP_SERVICES environment variable as a source for service bindings -->
 <dependency>
     <groupId>com.sap.cloud.environment.servicebinding</groupId>
-    <artfiactId>java-sap-vcap-services</artfiactId>
+    <artifactId>java-sap-vcap-services</artifactId>
 </dependency>
 
 <!-- Include following dependency if your application uses mounted service bindings created by the SAP BTP Service Operator -->
 <dependency>
     <groupId>com.sap.cloud.environment.servicebinding</groupId>
-    <artfiactId>java-sap-service-operator</artfiactId>
+    <artifactId>java-sap-service-operator</artifactId>
 </dependency>
 ```
 
