@@ -4,15 +4,16 @@
 
 package com.sap.cloud.environment.servicebinding.api;
 
-import org.junit.jupiter.api.Test;
-
-import javax.annotation.Nonnull;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+
+import javax.annotation.Nonnull;
+
+import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
@@ -29,8 +30,8 @@ class ServiceBindingMergerTest
         final ServiceBindingAccessor accessor = mock(ServiceBindingAccessor.class);
         when(accessor.getServiceBindings()).thenReturn(Arrays.asList(serviceBinding1, serviceBinding2));
 
-        final ServiceBindingMerger sut = new ServiceBindingMerger(Collections.singleton(accessor),
-                                                                  ServiceNameAndPlanComparer.INSTANCE);
+        final ServiceBindingMerger sut =
+            new ServiceBindingMerger(Collections.singleton(accessor), ServiceNameAndPlanComparer.INSTANCE);
 
         final List<ServiceBinding> mergedServiceBindings = sut.getServiceBindings();
         assertThat(mergedServiceBindings).containsExactlyInAnyOrder(serviceBinding1, serviceBinding2);
@@ -45,8 +46,8 @@ class ServiceBindingMergerTest
         final ServiceBindingAccessor accessor = mock(ServiceBindingAccessor.class);
         when(accessor.getServiceBindings()).thenReturn(Arrays.asList(serviceBinding1, serviceBinding2));
 
-        final ServiceBindingMerger sut = new ServiceBindingMerger(Collections.singleton(accessor),
-                                                                  ServiceNameAndPlanComparer.INSTANCE);
+        final ServiceBindingMerger sut =
+            new ServiceBindingMerger(Collections.singleton(accessor), ServiceNameAndPlanComparer.INSTANCE);
 
         final List<ServiceBinding> mergedServiceBindings = sut.getServiceBindings();
         assertThat(mergedServiceBindings).containsExactlyInAnyOrder(serviceBinding1);
@@ -64,8 +65,8 @@ class ServiceBindingMergerTest
         final ServiceBindingAccessor accessor2 = mock(ServiceBindingAccessor.class);
         when(accessor2.getServiceBindings()).thenReturn(Collections.singletonList(serviceBinding2));
 
-        final ServiceBindingMerger sut = new ServiceBindingMerger(Arrays.asList(accessor1, accessor2),
-                                                                  ServiceNameAndPlanComparer.INSTANCE);
+        final ServiceBindingMerger sut =
+            new ServiceBindingMerger(Arrays.asList(accessor1, accessor2), ServiceNameAndPlanComparer.INSTANCE);
 
         final List<ServiceBinding> mergedServiceBindings = sut.getServiceBindings();
         assertThat(mergedServiceBindings).containsExactlyInAnyOrder(serviceBinding1, serviceBinding2);
@@ -83,8 +84,8 @@ class ServiceBindingMergerTest
         final ServiceBindingAccessor accessor2 = mock(ServiceBindingAccessor.class);
         when(accessor2.getServiceBindings()).thenReturn(Collections.singletonList(serviceBinding2));
 
-        final ServiceBindingMerger sut = new ServiceBindingMerger(Arrays.asList(accessor1, accessor2),
-                                                                  ServiceNameAndPlanComparer.INSTANCE);
+        final ServiceBindingMerger sut =
+            new ServiceBindingMerger(Arrays.asList(accessor1, accessor2), ServiceNameAndPlanComparer.INSTANCE);
 
         final List<ServiceBinding> mergedServiceBindings = sut.getServiceBindings();
         assertThat(mergedServiceBindings).containsExactlyInAnyOrder(serviceBinding1);
@@ -110,12 +111,13 @@ class ServiceBindingMergerTest
         // that way, we are able to test whether the merger considers the order in which the bindings are returned
         properties.put("id", UUID.randomUUID().toString());
 
-        return DefaultServiceBinding.builder()
-                                    .copy(properties)
-                                    .withNameKey("id")
-                                    .withServiceNameKey("type")
-                                    .withServicePlanKey("plan")
-                                    .build();
+        return DefaultServiceBinding
+            .builder()
+            .copy(properties)
+            .withNameKey("id")
+            .withServiceNameKey("type")
+            .withServicePlanKey("plan")
+            .build();
     }
 
     private enum ServiceNameAndPlanComparer implements ServiceBindingMerger.EqualityComparer

@@ -4,11 +4,6 @@
 
 package com.sap.cloud.environment.servicebinding.api;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.temporal.Temporal;
@@ -19,6 +14,12 @@ import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.function.Supplier;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.sap.cloud.environment.servicebinding.api.exception.ServiceBindingAccessException;
 
 public class SimpleServiceBindingCache implements ServiceBindingAccessor
@@ -28,19 +29,25 @@ public class SimpleServiceBindingCache implements ServiceBindingAccessor
 
     @Nonnull
     private static final Duration DEFAULT_CACHE_DURATION = Duration.ofMinutes(5L);
+
     @Nonnull
     private static final Supplier<LocalDateTime> DEFAULT_LOCAL_DATE_TIME_SUPPLIER = LocalDateTime::now;
 
     @Nonnull
     private final ReadWriteLock accessLock = new ReentrantReadWriteLock();
+
     @Nonnull
     private final ServiceBindingAccessor delegateAccessor;
+
     @Nonnull
     private final Duration cacheDuration;
+
     @Nonnull
     private final Supplier<LocalDateTime> localDateTimeSupplier;
+
     @Nullable
     private List<ServiceBinding> cachedServiceBindings = null;
+
     @Nullable
     private LocalDateTime lastCacheRenewal = null;
 
@@ -49,29 +56,32 @@ public class SimpleServiceBindingCache implements ServiceBindingAccessor
         this(delegateAccessor, DEFAULT_CACHE_DURATION, DEFAULT_LOCAL_DATE_TIME_SUPPLIER);
     }
 
-    SimpleServiceBindingCache( @Nonnull final ServiceBindingAccessor delegateAccessor,
-                               @Nonnull final Duration cacheDuration,
-                               @Nonnull final Supplier<LocalDateTime> localDateTimeSupplier )
+    SimpleServiceBindingCache(
+        @Nonnull final ServiceBindingAccessor delegateAccessor,
+        @Nonnull final Duration cacheDuration,
+        @Nonnull final Supplier<LocalDateTime> localDateTimeSupplier )
     {
         this.delegateAccessor = delegateAccessor;
         this.cacheDuration = cacheDuration;
         this.localDateTimeSupplier = localDateTimeSupplier;
     }
 
-    public SimpleServiceBindingCache( @Nonnull final ServiceBindingAccessor delegateAccessor,
-                                      @Nonnull final Duration cacheDuration )
+    public SimpleServiceBindingCache(
+        @Nonnull final ServiceBindingAccessor delegateAccessor,
+        @Nonnull final Duration cacheDuration )
     {
         this(delegateAccessor, cacheDuration, DEFAULT_LOCAL_DATE_TIME_SUPPLIER);
     }
 
     @Nonnull
     @Override
-    public List<ServiceBinding> getServiceBindings() throws ServiceBindingAccessException
+    public List<ServiceBinding> getServiceBindings()
+        throws ServiceBindingAccessException
     {
         final LocalDateTime now = localDateTimeSupplier.get();
-        if (now == null) {
-            throw new IllegalStateException(String.format("Unable to determine the current %s.",
-                                                          LocalDateTime.class.getSimpleName()));
+        if( now == null ) {
+            throw new IllegalStateException(
+                String.format("Unable to determine the current %s.", LocalDateTime.class.getSimpleName()));
         }
 
         return Optional.ofNullable(tryReadCache(now)).orElse(readOrUpdateCache(now));
@@ -82,13 +92,14 @@ public class SimpleServiceBindingCache implements ServiceBindingAccessor
     {
         accessLock.readLock().lock();
         try {
-            if (isExpired(now)) {
+            if( isExpired(now) ) {
                 return null;
             }
 
             logger.debug("Serving service bindings from cache.");
             return cachedServiceBindings;
-        } finally {
+        }
+        finally {
             accessLock.readLock().unlock();
         }
     }
@@ -98,7 +109,7 @@ public class SimpleServiceBindingCache implements ServiceBindingAccessor
     {
         accessLock.writeLock().lock();
         try {
-            if (!isExpired(now)) {
+            if( !isExpired(now) ) {
                 return Objects.requireNonNull(cachedServiceBindings, "Cached Service Bindings must not be null.");
             }
 
@@ -106,14 +117,15 @@ public class SimpleServiceBindingCache implements ServiceBindingAccessor
             cachedServiceBindings = delegateAccessor.getServiceBindings();
             lastCacheRenewal = now;
             return cachedServiceBindings;
-        } finally {
+        }
+        finally {
             accessLock.writeLock().unlock();
         }
     }
 
     private boolean isExpired( @Nonnull final Temporal now )
     {
-        if (lastCacheRenewal == null || cachedServiceBindings == null) {
+        if( lastCacheRenewal == null || cachedServiceBindings == null ) {
             return true;
         }
 
@@ -128,7 +140,8 @@ public class SimpleServiceBindingCache implements ServiceBindingAccessor
         try {
             cachedServiceBindings = null;
             lastCacheRenewal = null;
-        } finally {
+        }
+        finally {
             accessLock.writeLock().unlock();
         }
     }

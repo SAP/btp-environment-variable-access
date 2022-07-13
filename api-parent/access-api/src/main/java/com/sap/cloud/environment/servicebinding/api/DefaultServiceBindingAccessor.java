@@ -4,15 +4,16 @@
 
 package com.sap.cloud.environment.servicebinding.api;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.Collection;
 import java.util.ServiceLoader;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public final class DefaultServiceBindingAccessor
 {
@@ -35,7 +36,7 @@ public final class DefaultServiceBindingAccessor
 
     public static void setInstance( @Nullable final ServiceBindingAccessor accessor )
     {
-        if (accessor != null) {
+        if( accessor != null ) {
             logger.debug("Setting instance to {}.", accessor.getClass().getName());
             instance = accessor;
         } else {
@@ -48,23 +49,23 @@ public final class DefaultServiceBindingAccessor
     private static ServiceBindingAccessor newDefaultInstance()
     {
         final ClassLoader classLoader = DefaultServiceBindingAccessor.class.getClassLoader();
-        final ServiceLoader<ServiceBindingAccessor> serviceLoader = ServiceLoader.load(ServiceBindingAccessor.class,
-                                                                                       classLoader);
-        final Collection<ServiceBindingAccessor> accessors = StreamSupport.stream(serviceLoader.spliterator(), false)
-                                                                          .collect(Collectors.toList());
+        final ServiceLoader<ServiceBindingAccessor> serviceLoader =
+            ServiceLoader.load(ServiceBindingAccessor.class, classLoader);
+        final Collection<ServiceBindingAccessor> accessors =
+            StreamSupport.stream(serviceLoader.spliterator(), false).collect(Collectors.toList());
 
-        if (logger.isDebugEnabled()) {
-            final String classNames = accessors.stream()
-                                               .map(Object::getClass)
-                                               .map(Class::getName)
-                                               .collect(Collectors.joining(", "));
-            logger.debug("Following implementations of {} were found: {}.",
-                         ServiceBindingAccessor.class.getSimpleName(),
-                         classNames);
+        if( logger.isDebugEnabled() ) {
+            final String classNames =
+                accessors.stream().map(Object::getClass).map(Class::getName).collect(Collectors.joining(", "));
+            logger
+                .debug(
+                    "Following implementations of {} were found: {}.",
+                    ServiceBindingAccessor.class.getSimpleName(),
+                    classNames);
         }
 
-        final ServiceBindingMerger bindingMerger = new ServiceBindingMerger(accessors,
-                                                                            ServiceBindingMerger.KEEP_EVERYTHING);
+        final ServiceBindingMerger bindingMerger =
+            new ServiceBindingMerger(accessors, ServiceBindingMerger.KEEP_EVERYTHING);
 
         return new SimpleServiceBindingCache(bindingMerger);
     }

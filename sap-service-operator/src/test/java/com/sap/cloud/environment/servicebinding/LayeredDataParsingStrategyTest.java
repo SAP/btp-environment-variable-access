@@ -4,12 +4,12 @@
 
 package com.sap.cloud.environment.servicebinding;
 
-import org.junit.jupiter.api.Test;
-
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Optional;
+
+import org.junit.jupiter.api.Test;
 
 import com.sap.cloud.environment.servicebinding.api.ServiceBinding;
 
@@ -19,7 +19,8 @@ class LayeredDataParsingStrategyTest
 {
     @Test
     @SuppressWarnings( "unchecked" )
-    void parseValidBinding() throws IOException
+    void parseValidBinding()
+        throws IOException
     {
         final Path path = TestResource.get(LayeredDataParsingStrategyTest.class, "ValidBinding");
 
@@ -29,12 +30,8 @@ class LayeredDataParsingStrategyTest
 
         assertThat(serviceBinding).isNotNull();
 
-        assertThat(serviceBinding.getKeys()).containsExactlyInAnyOrder("instance_guid",
-                                                                       "instance_name",
-                                                                       "label",
-                                                                       "plan",
-                                                                       "tags",
-                                                                       "credentials");
+        assertThat(serviceBinding.getKeys())
+            .containsExactlyInAnyOrder("instance_guid", "instance_name", "label", "plan", "tags", "credentials");
 
         assertThat(serviceBinding.getName().orElse("")).isEqualTo("my-xsuaa-binding");
         assertThat(serviceBinding.getServiceName().orElse("")).isEqualTo("XSUAA");
@@ -42,14 +39,15 @@ class LayeredDataParsingStrategyTest
         assertThat(serviceBinding.getTags()).containsExactly("my-tag-1", "my-tag-2");
 
         assertThat(serviceBinding.getCredentials()).containsOnlyKeys("domains", "clientid", "clientsecret");
-        assertThat((List<Object>) serviceBinding.getCredentials().get("domains")).containsExactly("my-domain-1",
-                                                                                                  "my-domain-2");
+        assertThat((List<Object>) serviceBinding.getCredentials().get("domains"))
+            .containsExactly("my-domain-1", "my-domain-2");
         assertThat(serviceBinding.getCredentials()).containsEntry("clientid", "my-clientid");
         assertThat(serviceBinding.getCredentials()).containsEntry("clientsecret", "my-clientsecret");
     }
 
     @Test
-    void parseWithoutCredentialsLeadsToEmptyResult() throws IOException
+    void parseWithoutCredentialsLeadsToEmptyResult()
+        throws IOException
     {
         final Path path = TestResource.get(LayeredDataParsingStrategyTest.class, "NoCredentials");
 

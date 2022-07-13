@@ -4,10 +4,6 @@
 
 package com.sap.cloud.environment.servicebinding.api;
 
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
-
-import javax.annotation.Nonnull;
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -15,7 +11,11 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
+
+import javax.annotation.Nonnull;
+
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 import com.sap.cloud.environment.servicebinding.api.exception.ValueCastException;
 
@@ -27,13 +27,16 @@ import static org.mockito.Mockito.mock;
 class TypedListViewTest
 {
     private static final Collection<Object> PRIMITIVE_VALUES = new ArrayList<>();
+
     private static final Collection<Method> TYPED_ACCESSORS = new ArrayList<>();
 
     private static final int INTEGER = 42;
+
     private static final double DOUBLE = 13.37d;
 
     @BeforeAll
-    static void beforeAll() throws NoSuchMethodException
+    static void beforeAll()
+        throws NoSuchMethodException
     {
         PRIMITIVE_VALUES.add(null);
         PRIMITIVE_VALUES.add(true);
@@ -77,8 +80,8 @@ class TypedListViewTest
     @Test
     void createTransformsNestedMapToMapView()
     {
-        final TypedListView sut = TypedListView.fromList(Collections.singletonList(Collections.singletonMap("Key",
-                                                                                                            "Value")));
+        final TypedListView sut =
+            TypedListView.fromList(Collections.singletonList(Collections.singletonMap("Key", "Value")));
 
         assertThat(sut.getMapView(0)).isNotNull();
         assertThat(sut.getMapView(0).getKeys()).containsExactlyInAnyOrder("Key");
@@ -94,68 +97,77 @@ class TypedListViewTest
     }
 
     @Test
-    void getBoolean() throws NoSuchMethodException
+    void getBoolean()
+        throws NoSuchMethodException
     {
         final TypedListView sut = TypedListView.fromList(Collections.singletonList(true));
 
         expectValueCastExceptionForAllBut(sut, 0, TypedListView.class.getDeclaredMethod("getBoolean", int.class));
     }
 
-    private static void expectValueCastExceptionForAllBut( @Nonnull final TypedListView sut,
-                                                           final int index,
-                                                           @Nonnull final Method... methods )
+    private static void expectValueCastExceptionForAllBut(
+        @Nonnull final TypedListView sut,
+        final int index,
+        @Nonnull final Method... methods )
     {
 
         final List<Method> expectedWorkingMethods = Arrays.asList(methods);
-        for (final Method typedAccessor : TYPED_ACCESSORS) {
-            if (expectedWorkingMethods.contains(typedAccessor)) {
+        for( final Method typedAccessor : TYPED_ACCESSORS ) {
+            if( expectedWorkingMethods.contains(typedAccessor) ) {
                 assertThatNoException().isThrownBy(() -> typedAccessor.invoke(sut, index));
             } else {
-                assertThatThrownBy(() -> typedAccessor.invoke(sut,
-                                                              index)).hasCauseExactlyInstanceOf(ValueCastException.class);
+                assertThatThrownBy(() -> typedAccessor.invoke(sut, index))
+                    .hasCauseExactlyInstanceOf(ValueCastException.class);
             }
         }
     }
 
     @Test
-    void getInteger() throws NoSuchMethodException
+    void getInteger()
+        throws NoSuchMethodException
     {
         final TypedListView sut = TypedListView.fromList(Collections.singletonList(INTEGER));
 
-        expectValueCastExceptionForAllBut(sut,
-                                          0,
-                                          TypedListView.class.getDeclaredMethod("getInteger", int.class),
-                                          TypedListView.class.getDeclaredMethod("getDouble", int.class),
-                                          TypedListView.class.getDeclaredMethod("getNumber", int.class));
+        expectValueCastExceptionForAllBut(
+            sut,
+            0,
+            TypedListView.class.getDeclaredMethod("getInteger", int.class),
+            TypedListView.class.getDeclaredMethod("getDouble", int.class),
+            TypedListView.class.getDeclaredMethod("getNumber", int.class));
     }
 
     @Test
-    void getDouble() throws NoSuchMethodException
+    void getDouble()
+        throws NoSuchMethodException
     {
         final TypedListView sut = TypedListView.fromList(Collections.singletonList(DOUBLE));
 
-        expectValueCastExceptionForAllBut(sut,
-                                          0,
-                                          TypedListView.class.getDeclaredMethod("getInteger", int.class),
-                                          TypedListView.class.getDeclaredMethod("getDouble", int.class),
-                                          TypedListView.class.getDeclaredMethod("getNumber", int.class));
+        expectValueCastExceptionForAllBut(
+            sut,
+            0,
+            TypedListView.class.getDeclaredMethod("getInteger", int.class),
+            TypedListView.class.getDeclaredMethod("getDouble", int.class),
+            TypedListView.class.getDeclaredMethod("getNumber", int.class));
     }
 
     @Test
-    void getNumber() throws NoSuchMethodException
+    void getNumber()
+        throws NoSuchMethodException
     {
-        final TypedListView sut = TypedListView.fromList(Collections.singletonList(BigDecimal.valueOf(Long.MAX_VALUE,
-                                                                                                      Integer.MAX_VALUE)));
+        final TypedListView sut =
+            TypedListView.fromList(Collections.singletonList(BigDecimal.valueOf(Long.MAX_VALUE, Integer.MAX_VALUE)));
 
-        expectValueCastExceptionForAllBut(sut,
-                                          0,
-                                          TypedListView.class.getDeclaredMethod("getInteger", int.class),
-                                          TypedListView.class.getDeclaredMethod("getDouble", int.class),
-                                          TypedListView.class.getDeclaredMethod("getNumber", int.class));
+        expectValueCastExceptionForAllBut(
+            sut,
+            0,
+            TypedListView.class.getDeclaredMethod("getInteger", int.class),
+            TypedListView.class.getDeclaredMethod("getDouble", int.class),
+            TypedListView.class.getDeclaredMethod("getNumber", int.class));
     }
 
     @Test
-    void getString() throws NoSuchMethodException
+    void getString()
+        throws NoSuchMethodException
     {
         final TypedListView sut = TypedListView.fromList(Collections.singletonList("Value"));
 
@@ -163,7 +175,8 @@ class TypedListViewTest
     }
 
     @Test
-    void getMapView() throws NoSuchMethodException
+    void getMapView()
+        throws NoSuchMethodException
     {
         final TypedListView sut = TypedListView.fromList(Collections.singletonList(mock(TypedMapView.class)));
 
@@ -171,7 +184,8 @@ class TypedListViewTest
     }
 
     @Test
-    void getListView() throws NoSuchMethodException
+    void getListView()
+        throws NoSuchMethodException
     {
         final TypedListView sut = TypedListView.fromList(Collections.singletonList(mock(TypedListView.class)));
 

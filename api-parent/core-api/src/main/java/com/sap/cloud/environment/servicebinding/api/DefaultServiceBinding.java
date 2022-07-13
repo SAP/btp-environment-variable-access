@@ -4,8 +4,6 @@
 
 package com.sap.cloud.environment.servicebinding.api;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -13,27 +11,36 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 public class DefaultServiceBinding implements ServiceBinding
 {
     @Nonnull
     private final Map<String, Object> properties;
+
     @Nullable
     private final String name;
+
     @Nullable
     private final String serviceName;
+
     @Nullable
     private final String servicePlan;
+
     @Nonnull
     private final List<String> tags;
+
     @Nonnull
     private final Map<String, Object> credentials;
 
-    DefaultServiceBinding( @Nonnull final Map<String, Object> properties,
-                           @Nullable final String name,
-                           @Nullable final String serviceName,
-                           @Nullable final String servicePlan,
-                           @Nonnull final List<String> tags,
-                           @Nonnull final Map<String, Object> credentials )
+    DefaultServiceBinding(
+        @Nonnull final Map<String, Object> properties,
+        @Nullable final String name,
+        @Nullable final String serviceName,
+        @Nullable final String servicePlan,
+        @Nonnull final List<String> tags,
+        @Nonnull final Map<String, Object> credentials )
     {
         this.properties = properties;
         this.name = name;
@@ -113,21 +120,21 @@ public class DefaultServiceBinding implements ServiceBinding
     @Override
     public boolean equals( final Object o )
     {
-        if (this == o) {
+        if( this == o ) {
             return true;
         }
-        if (o == null || getClass() != o.getClass()) {
+        if( o == null || getClass() != o.getClass() ) {
             return false;
         }
 
         final DefaultServiceBinding that = (DefaultServiceBinding) o;
 
         return getName().equals(that.getName())
-               && getServiceName().equals(that.getServiceName())
-               && getServicePlan().equals(that.getServicePlan())
-               && getTags().equals(that.getTags())
-               && getCredentials().equals(that.getCredentials())
-               && properties.equals(that.properties);
+            && getServiceName().equals(that.getServiceName())
+            && getServicePlan().equals(that.getServicePlan())
+            && getTags().equals(that.getTags())
+            && getCredentials().equals(that.getCredentials())
+            && properties.equals(that.properties);
     }
 
     public interface MapSelectionBuilder

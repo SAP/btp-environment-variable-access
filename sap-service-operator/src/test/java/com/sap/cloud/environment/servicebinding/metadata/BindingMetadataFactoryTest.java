@@ -4,11 +4,10 @@
 
 package com.sap.cloud.environment.servicebinding.metadata;
 
+import javax.annotation.Nonnull;
 
 import org.json.JSONException;
 import org.junit.jupiter.api.Test;
-
-import javax.annotation.Nonnull;
 
 import com.sap.cloud.environment.servicebinding.TestResource;
 
@@ -19,6 +18,7 @@ class BindingMetadataFactoryTest
 {
     @Nonnull
     private static final BindingProperty TYPE_PROPERTY = BindingProperty.text("label", "label.txt");
+
     @Nonnull
     private static final BindingProperty TAGS_PROPERTY = BindingProperty.json("tags", "tags.json");
 
@@ -41,7 +41,6 @@ class BindingMetadataFactoryTest
         assertThat(sut).isNotNull();
         assertThat(sut.getMetadataProperties().size()).isEqualTo(2);
         assertThat(sut.getCredentialProperties().size()).isEqualTo(2);
-
 
         assertThat(sut.getMetadataProperties()).containsExactlyInAnyOrder(TYPE_PROPERTY, TAGS_PROPERTY);
         assertThat(sut.getCredentialProperties()).containsExactlyInAnyOrder(USER_PROPERTY, PASSWORD_PROPERTY);
@@ -74,15 +73,18 @@ class BindingMetadataFactoryTest
         assertThat(sut.getCredentialProperties().size()).isEqualTo(2);
 
         assertThat(sut.getMetadataProperties()).containsExactlyInAnyOrder(TYPE_PROPERTY, TAGS_PROPERTY);
-        assertThat(sut.getCredentialProperties()).containsExactlyInAnyOrder(BindingProperty.container("container1"),
-                                                                            BindingProperty.container("container2"));
+        assertThat(sut.getCredentialProperties())
+            .containsExactlyInAnyOrder(
+                BindingProperty.container("container1"),
+                BindingProperty.container("container2"));
     }
 
     @Test
     void fromJsonWithInvalidInputThrowsIllegalArgumentException()
     {
-        assertThatThrownBy(() -> BindingMetadataFactory.getFromJson("this is not a valid JSON object")).isExactlyInstanceOf(
-                IllegalArgumentException.class).hasCauseExactlyInstanceOf(JSONException.class);
+        assertThatThrownBy(() -> BindingMetadataFactory.getFromJson("this is not a valid JSON object"))
+            .isExactlyInstanceOf(IllegalArgumentException.class)
+            .hasCauseExactlyInstanceOf(JSONException.class);
     }
 
     @Test

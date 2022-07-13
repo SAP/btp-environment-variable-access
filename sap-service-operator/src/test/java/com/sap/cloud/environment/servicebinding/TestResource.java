@@ -4,7 +4,6 @@
 
 package com.sap.cloud.environment.servicebinding;
 
-import javax.annotation.Nonnull;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -12,6 +11,8 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+
+import javax.annotation.Nonnull;
 
 public final class TestResource
 {
@@ -26,10 +27,11 @@ public final class TestResource
         final Path path = get(testClass, fileName);
         try {
             return String.join("\n", Files.readAllLines(path, StandardCharsets.UTF_8));
-        } catch (final IOException e) {
-            throw new AssertionError(String.format("Unable to read test resource from '%s/%s'",
-                                                   testClass.getSimpleName(),
-                                                   fileName), e);
+        }
+        catch( final IOException e ) {
+            throw new AssertionError(
+                String.format("Unable to read test resource from '%s/%s'", testClass.getSimpleName(), fileName),
+                e);
         }
     }
 
@@ -43,16 +45,18 @@ public final class TestResource
     public static Path get( @Nonnull final Class<?> testClass )
     {
         final URL url = testClass.getClassLoader().getResource(testClass.getSimpleName());
-        if (url == null) {
-            throw new AssertionError(String.format("Unable to load test resource directory '%s'",
-                                                   testClass.getSimpleName()));
+        if( url == null ) {
+            throw new AssertionError(
+                String.format("Unable to load test resource directory '%s'", testClass.getSimpleName()));
         }
 
         try {
             return Paths.get(url.toURI());
-        } catch (final URISyntaxException e) {
-            throw new AssertionError(String.format("Unable to load test resource directory '%s'",
-                                                   testClass.getSimpleName()), e);
+        }
+        catch( final URISyntaxException e ) {
+            throw new AssertionError(
+                String.format("Unable to load test resource directory '%s'", testClass.getSimpleName()),
+                e);
         }
     }
 }

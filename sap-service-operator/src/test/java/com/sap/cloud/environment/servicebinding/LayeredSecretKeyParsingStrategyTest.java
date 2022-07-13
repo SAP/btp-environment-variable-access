@@ -4,12 +4,12 @@
 
 package com.sap.cloud.environment.servicebinding;
 
-import org.junit.jupiter.api.Test;
-
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Optional;
+
+import org.junit.jupiter.api.Test;
 
 import com.sap.cloud.environment.servicebinding.api.ServiceBinding;
 
@@ -19,7 +19,8 @@ class LayeredSecretKeyParsingStrategyTest
 {
     @Test
     @SuppressWarnings( "unchecked" )
-    void parseValidBinding() throws IOException
+    void parseValidBinding()
+        throws IOException
     {
         final Path path = TestResource.get(LayeredSecretKeyParsingStrategyTest.class, "ValidBinding");
 
@@ -33,12 +34,8 @@ class LayeredSecretKeyParsingStrategyTest
         assertThat(serviceBinding.getServicePlan().orElse("")).isEqualTo("my-plan");
         assertThat(serviceBinding.getTags()).isEmpty();
 
-        assertThat(serviceBinding.getCredentials()).containsOnlyKeys("domain",
-                                                                     "domains",
-                                                                     "clientid",
-                                                                     "clientsecret",
-                                                                     "url",
-                                                                     "zone_uuid");
+        assertThat(serviceBinding.getCredentials())
+            .containsOnlyKeys("domain", "domains", "clientid", "clientsecret", "url", "zone_uuid");
         assertThat(serviceBinding.getCredentials()).containsEntry("domain", "my-trusted-domain");
         assertThat(serviceBinding.getCredentials().get("domains")).isInstanceOf(List.class);
         assertThat((List<Object>) serviceBinding.getCredentials().get("domains")).containsExactly("my-trusted-domain");
@@ -49,7 +46,8 @@ class LayeredSecretKeyParsingStrategyTest
     }
 
     @Test
-    void parsingTwoJsonFilesLeadsEmptyResult() throws IOException
+    void parsingTwoJsonFilesLeadsEmptyResult()
+        throws IOException
     {
         final Path path = TestResource.get(LayeredSecretKeyParsingStrategyTest.class, "TwoJsonFiles");
 
@@ -61,7 +59,8 @@ class LayeredSecretKeyParsingStrategyTest
     }
 
     @Test
-    void parsingNoJsonFileLeadsEmptyResult() throws IOException
+    void parsingNoJsonFileLeadsEmptyResult()
+        throws IOException
     {
         final Path path = TestResource.get(LayeredSecretKeyParsingStrategyTest.class, "NoJsonFile");
 

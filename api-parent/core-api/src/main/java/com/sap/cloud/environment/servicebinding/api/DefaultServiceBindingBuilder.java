@@ -4,8 +4,6 @@
 
 package com.sap.cloud.environment.servicebinding.api;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -17,71 +15,80 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 import com.sap.cloud.environment.servicebinding.api.exception.UnsupportedPropertyTypeException;
 
 public class DefaultServiceBindingBuilder
-        implements DefaultServiceBinding.MapSelectionBuilder, DefaultServiceBinding.TerminalBuilder
+    implements
+    DefaultServiceBinding.MapSelectionBuilder,
+    DefaultServiceBinding.TerminalBuilder
 {
-    private static final Collection<Class<?>> SUPPORTED_VALUE_TYPES = Arrays.asList(Boolean.class,
-                                                                                    Number.class,
-                                                                                    String.class,
-                                                                                    Map.class,
-                                                                                    Iterable.class);
+    private static final Collection<Class<?>> SUPPORTED_VALUE_TYPES =
+        Arrays.asList(Boolean.class, Number.class, String.class, Map.class, Iterable.class);
 
     @Nonnull
     private Map<String, Object> map = Collections.emptyMap();
+
     @Nullable
     private String name;
+
     @Nullable
     private String serviceName;
+
     @Nullable
     private String servicePlan;
+
     @Nullable
     private List<String> tags;
+
     @Nullable
     private Map<String, Object> credentials;
 
     @Nonnull
     @SuppressWarnings( "unchecked" )
-    private static Map<String, Object> copyRawMap( @Nonnull final Object rawMap,
-                                                   @Nonnull final Function<Map<String, Object>, Map<String, Object>> mapDecorator,
-                                                   @Nonnull final Function<List<Object>, List<Object>> listDecorator )
-            throws ClassCastException
+    private static Map<String, Object> copyRawMap(
+        @Nonnull final Object rawMap,
+        @Nonnull final Function<Map<String, Object>, Map<String, Object>> mapDecorator,
+        @Nonnull final Function<List<Object>, List<Object>> listDecorator )
+        throws ClassCastException
     {
         return copyMap((Map<String, Object>) rawMap, mapDecorator, listDecorator);
     }
 
     @Nonnull
-    static Map<String, Object> copyMap( @Nonnull final Map<String, Object> map,
-                                        @Nonnull final Function<Map<String, Object>, Map<String, Object>> mapDecorator,
-                                        @Nonnull final Function<List<Object>, List<Object>> listDecorator )
+    static Map<String, Object> copyMap(
+        @Nonnull final Map<String, Object> map,
+        @Nonnull final Function<Map<String, Object>, Map<String, Object>> mapDecorator,
+        @Nonnull final Function<List<Object>, List<Object>> listDecorator )
     {
         final Map<String, Object> copiedMap = new TreeMap<>(String::compareToIgnoreCase);
-        for (final Map.Entry<String, Object> entry : map.entrySet()) {
+        for( final Map.Entry<String, Object> entry : map.entrySet() ) {
             @Nullable
             final String key = entry.getKey();
             @Nullable
             final Object value = entry.getValue();
 
-            if (key == null) {
+            if( key == null ) {
                 continue;
             }
 
-            if (value == null) {
+            if( value == null ) {
                 copiedMap.put(key, null);
                 continue;
             }
 
-            if (!isSupportedType(value.getClass())) {
+            if( !isSupportedType(value.getClass()) ) {
                 throw new UnsupportedPropertyTypeException(value.getClass());
             }
 
-            if (value instanceof Map) {
+            if( value instanceof Map ) {
                 copiedMap.put(key, mapDecorator.apply(copyRawMap(value, mapDecorator, listDecorator)));
                 continue;
             }
 
-            if (value instanceof Iterable) {
+            if( value instanceof Iterable ) {
                 copiedMap.put(key, listDecorator.apply(copyRawIterable(value, mapDecorator, listDecorator)));
                 continue;
             }
@@ -94,37 +101,39 @@ public class DefaultServiceBindingBuilder
 
     @Nonnull
     @SuppressWarnings( "unchecked" )
-    private static List<Object> copyRawIterable( @Nonnull final Object rawCollection,
-                                                 @Nonnull final Function<Map<String, Object>, Map<String, Object>> mapDecorator,
-                                                 @Nonnull final Function<List<Object>, List<Object>> listDecorator )
-            throws ClassCastException
+    private static List<Object> copyRawIterable(
+        @Nonnull final Object rawCollection,
+        @Nonnull final Function<Map<String, Object>, Map<String, Object>> mapDecorator,
+        @Nonnull final Function<List<Object>, List<Object>> listDecorator )
+        throws ClassCastException
     {
         return copyIterable((Iterable<Object>) rawCollection, mapDecorator, listDecorator);
     }
 
     @Nonnull
-    private static List<Object> copyIterable( @Nonnull final Iterable<Object> iterable,
-                                              @Nonnull final Function<Map<String, Object>, Map<String, Object>> mapDecorator,
-                                              @Nonnull final Function<List<Object>, List<Object>> listDecorator )
+    private static List<Object> copyIterable(
+        @Nonnull final Iterable<Object> iterable,
+        @Nonnull final Function<Map<String, Object>, Map<String, Object>> mapDecorator,
+        @Nonnull final Function<List<Object>, List<Object>> listDecorator )
     {
         final List<Object> copiedList = new ArrayList<>();
-        for (final Object element : iterable) {
+        for( final Object element : iterable ) {
 
-            if (element == null) {
+            if( element == null ) {
                 copiedList.add(null);
                 continue;
             }
 
-            if (!isSupportedType(element.getClass())) {
+            if( !isSupportedType(element.getClass()) ) {
                 throw new UnsupportedPropertyTypeException(element.getClass());
             }
 
-            if (element instanceof Map) {
+            if( element instanceof Map ) {
                 copiedList.add(mapDecorator.apply(copyRawMap(element, mapDecorator, listDecorator)));
                 continue;
             }
 
-            if (element instanceof Iterable) {
+            if( element instanceof Iterable ) {
                 copiedList.add(listDecorator.apply(copyRawIterable(element, mapDecorator, listDecorator)));
                 continue;
             }
@@ -200,8 +209,8 @@ public class DefaultServiceBindingBuilder
     @Override
     public DefaultServiceBinding.TerminalBuilder withTags( @Nonnull final Iterable<String> tags )
     {
-        this.tags = Collections.unmodifiableList(StreamSupport.stream(tags.spliterator(), false)
-                                                              .collect(Collectors.toList()));
+        this.tags =
+            Collections.unmodifiableList(StreamSupport.stream(tags.spliterator(), false).collect(Collectors.toList()));
         return this;
     }
 
@@ -233,12 +242,13 @@ public class DefaultServiceBindingBuilder
     @Override
     public DefaultServiceBinding build()
     {
-        return new DefaultServiceBinding(map,
-                                         name,
-                                         serviceName,
-                                         servicePlan,
-                                         tags == null ? Collections.emptyList() : tags,
-                                         credentials == null ? Collections.emptyMap() : credentials);
+        return new DefaultServiceBinding(
+            map,
+            name,
+            serviceName,
+            servicePlan,
+            tags == null ? Collections.emptyList() : tags,
+            credentials == null ? Collections.emptyMap() : credentials);
     }
 
     @Nonnull
@@ -246,13 +256,14 @@ public class DefaultServiceBindingBuilder
     private Map<String, Object> extractMap( @Nonnull final String key )
     {
         final Object maybeValue = map.get(key);
-        if (!(maybeValue instanceof Map)) {
+        if( !(maybeValue instanceof Map) ) {
             return Collections.emptyMap();
         }
 
         try {
             return (Map<String, Object>) maybeValue;
-        } catch (final ClassCastException e) {
+        }
+        catch( final ClassCastException e ) {
             return Collections.emptyMap();
         }
     }
@@ -262,13 +273,14 @@ public class DefaultServiceBindingBuilder
     private List<String> extractStringList( @Nonnull final String key )
     {
         final Object maybeValue = map.get(key);
-        if (!(maybeValue instanceof List)) {
+        if( !(maybeValue instanceof List) ) {
             return Collections.emptyList();
         }
 
         try {
             return (List<String>) maybeValue;
-        } catch (final ClassCastException e) {
+        }
+        catch( final ClassCastException e ) {
             return Collections.emptyList();
         }
     }
@@ -277,13 +289,14 @@ public class DefaultServiceBindingBuilder
     private String extractString( @Nonnull final String key )
     {
         final Object maybeValue = map.get(key);
-        if (!(maybeValue instanceof String)) {
+        if( !(maybeValue instanceof String) ) {
             return null;
         }
 
         try {
             return (String) maybeValue;
-        } catch (final ClassCastException e) {
+        }
+        catch( final ClassCastException e ) {
             return null;
         }
     }

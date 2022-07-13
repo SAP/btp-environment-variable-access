@@ -4,18 +4,19 @@
 
 package com.sap.cloud.environment.servicebinding;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+
+import javax.annotation.Nonnull;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.sap.cloud.environment.servicebinding.api.DefaultServiceBinding;
 import com.sap.cloud.environment.servicebinding.api.ServiceBinding;
@@ -48,12 +49,13 @@ public class SapVcapServicesServiceBindingAccessor implements ServiceBindingAcce
 
     @Nonnull
     @Override
-    public List<ServiceBinding> getServiceBindings() throws ServiceBindingAccessException
+    public List<ServiceBinding> getServiceBindings()
+        throws ServiceBindingAccessException
     {
         logger.debug("Trying to determine service bindings using the '{}' environment variable.", VCAP_SERVICES);
         final String vcapServices = environmentVariableReader.apply(VCAP_SERVICES);
 
-        if (vcapServices == null) {
+        if( vcapServices == null ) {
             logger.debug("Environment variable '{}' is not defined.", VCAP_SERVICES);
             return Collections.emptyList();
         }
@@ -61,36 +63,40 @@ public class SapVcapServicesServiceBindingAccessor implements ServiceBindingAcce
         final JSONObject parsedVcapServices;
         try {
             parsedVcapServices = new JSONObject(vcapServices);
-        } catch (final JSONException e) {
+        }
+        catch( final JSONException e ) {
             logger.debug("Environment variable '{}' ('{}') is not a valid JSON.", VCAP_SERVICES, vcapServices);
             return Collections.emptyList();
         }
 
-        return parsedVcapServices.keySet()
-                                 .stream()
-                                 .flatMap(serviceName -> extractServiceBindings(parsedVcapServices,
-                                                                                serviceName).stream())
-                                 .collect(Collectors.toList());
+        return parsedVcapServices
+            .keySet()
+            .stream()
+            .flatMap(serviceName -> extractServiceBindings(parsedVcapServices, serviceName).stream())
+            .collect(Collectors.toList());
     }
 
     @Nonnull
-    private List<ServiceBinding> extractServiceBindings( @Nonnull final JSONObject vcapServices,
-                                                         @Nonnull final String serviceName )
+    private
+        List<ServiceBinding>
+        extractServiceBindings( @Nonnull final JSONObject vcapServices, @Nonnull final String serviceName )
     {
         final JSONArray jsonServiceBindings;
         try {
             jsonServiceBindings = vcapServices.getJSONArray(serviceName);
-        } catch (final JSONException e) {
+        }
+        catch( final JSONException e ) {
             logger.debug("Skipping '{}': Unexpected format.", VCAP_SERVICES);
             return Collections.emptyList();
         }
 
         final List<ServiceBinding> serviceBindings = new ArrayList<>(jsonServiceBindings.length());
-        for (int i = 0; i < jsonServiceBindings.length(); ++i) {
+        for( int i = 0; i < jsonServiceBindings.length(); ++i ) {
             final JSONObject jsonServiceBinding;
             try {
                 jsonServiceBinding = jsonServiceBindings.getJSONObject(i);
-            } catch (final JSONException e) {
+            }
+            catch( final JSONException e ) {
                 continue;
             }
 
@@ -102,16 +108,18 @@ public class SapVcapServicesServiceBindingAccessor implements ServiceBindingAcce
     }
 
     @Nonnull
-    private ServiceBinding toServiceBinding( @Nonnull final JSONObject jsonServiceBinding,
-                                             @Nonnull final String serviceName )
+    private
+        ServiceBinding
+        toServiceBinding( @Nonnull final JSONObject jsonServiceBinding, @Nonnull final String serviceName )
     {
-        return DefaultServiceBinding.builder()
-                                    .copy(jsonServiceBinding.toMap())
-                                    .withNameKey("name")
-                                    .withServiceName(serviceName)
-                                    .withServicePlanKey("plan")
-                                    .withTagsKey("tags")
-                                    .withCredentialsKey("credentials")
-                                    .build();
+        return DefaultServiceBinding
+            .builder()
+            .copy(jsonServiceBinding.toMap())
+            .withNameKey("name")
+            .withServiceName(serviceName)
+            .withServicePlanKey("plan")
+            .withTagsKey("tags")
+            .withCredentialsKey("credentials")
+            .build();
     }
 }

@@ -4,14 +4,6 @@
 
 package com.sap.cloud.environment.servicebinding.metadata;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -20,6 +12,15 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Optional;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public final class BindingMetadataFactory
 {
@@ -36,11 +37,14 @@ public final class BindingMetadataFactory
     {
         try {
             return Optional.of(getFromJsonFile(filePath));
-        } catch (final Exception e) {
-            logger.debug("Unable to create '{}' from '{}': {}.",
-                         BindingMetadata.class.getName(),
-                         filePath,
-                         e.getMessage());
+        }
+        catch( final Exception e ) {
+            logger
+                .debug(
+                    "Unable to create '{}' from '{}': {}.",
+                    BindingMetadata.class.getName(),
+                    filePath,
+                    e.getMessage());
             return Optional.empty();
         }
     }
@@ -50,11 +54,14 @@ public final class BindingMetadataFactory
     {
         try {
             return Optional.of(getFromJson(jsonMetadata));
-        } catch (final Exception e) {
-            logger.debug("Unable to create '{}' from '{}': {}.",
-                         BindingMetadata.class.getName(),
-                         jsonMetadata,
-                         e.getMessage());
+        }
+        catch( final Exception e ) {
+            logger
+                .debug(
+                    "Unable to create '{}' from '{}': {}.",
+                    BindingMetadata.class.getName(),
+                    jsonMetadata,
+                    e.getMessage());
             return Optional.empty();
         }
     }
@@ -65,9 +72,11 @@ public final class BindingMetadataFactory
         try {
             final String fileContent = String.join("\n", Files.readAllLines(filePath));
             return getFromJson(fileContent);
-        } catch (final IOException e) {
-            throw new IllegalStateException(String.format("Unable to read the file content of '%s'",
-                                                          filePath.getFileName()), e);
+        }
+        catch( final IOException e ) {
+            throw new IllegalStateException(
+                String.format("Unable to read the file content of '%s'", filePath.getFileName()),
+                e);
         }
     }
 
@@ -76,7 +85,8 @@ public final class BindingMetadataFactory
     {
         try {
             return getFromJson(new JSONObject(jsonMetadata));
-        } catch (final JSONException e) {
+        }
+        catch( final JSONException e ) {
             throw new IllegalArgumentException("The given metadata must be a valid JSON object.", e);
         }
     }
@@ -84,10 +94,10 @@ public final class BindingMetadataFactory
     @Nonnull
     public static BindingMetadata getFromJson( @Nonnull final JSONObject jsonMetadata )
     {
-        final Collection<BindingProperty> metadataProperties = readProperties(jsonMetadata.optJSONArray(
-                "metaDataProperties"));
-        final Collection<BindingProperty> credentialProperties = readProperties(jsonMetadata.optJSONArray(
-                "credentialProperties"));
+        final Collection<BindingProperty> metadataProperties =
+            readProperties(jsonMetadata.optJSONArray("metaDataProperties"));
+        final Collection<BindingProperty> credentialProperties =
+            readProperties(jsonMetadata.optJSONArray("credentialProperties"));
 
         return new BindingMetadata(metadataProperties, credentialProperties);
     }
@@ -95,14 +105,14 @@ public final class BindingMetadataFactory
     @Nonnull
     private static Collection<BindingProperty> readProperties( @Nullable final JSONArray jsonProperties )
     {
-        if (jsonProperties == null) {
+        if( jsonProperties == null ) {
             return Collections.emptyList();
         }
 
         final Collection<BindingProperty> properties = new ArrayList<>(jsonProperties.length());
-        for (int i = 0; i < jsonProperties.length(); ++i) {
+        for( int i = 0; i < jsonProperties.length(); ++i ) {
             final JSONObject jsonMetadataProperty = jsonProperties.optJSONObject(i);
-            if (jsonMetadataProperty == null) {
+            if( jsonMetadataProperty == null ) {
                 continue;
             }
 
@@ -111,7 +121,7 @@ public final class BindingMetadataFactory
             final PropertyFormat format = readFormatField(jsonMetadataProperty);
             final boolean isContainer = readContainerField(jsonMetadataProperty);
 
-            if (!isValidName(name) || !isValidSourceName(sourceName) || !isValidFormat(format, isContainer)) {
+            if( !isValidName(name) || !isValidSourceName(sourceName) || !isValidFormat(format, isContainer) ) {
                 continue;
             }
 
@@ -131,14 +141,15 @@ public final class BindingMetadataFactory
     private static PropertyFormat readFormatField( @Nonnull final JSONObject jsonProperty )
     {
         final String rawFormat = jsonProperty.optString("format", null);
-        if (rawFormat == null) {
+        if( rawFormat == null ) {
             return null;
         }
 
-        return Arrays.stream(PropertyFormat.values())
-                     .filter(format -> format.getValue().equalsIgnoreCase(rawFormat))
-                     .findFirst()
-                     .orElse(null);
+        return Arrays
+            .stream(PropertyFormat.values())
+            .filter(format -> format.getValue().equalsIgnoreCase(rawFormat))
+            .findFirst()
+            .orElse(null);
     }
 
     @Nonnull
@@ -164,11 +175,11 @@ public final class BindingMetadataFactory
 
     private static boolean isValidFormat( @Nullable final PropertyFormat format, final boolean isContainer )
     {
-        if (format == null) {
+        if( format == null ) {
             return false;
         }
 
-        if (!isContainer) {
+        if( !isContainer ) {
             return true;
         }
 

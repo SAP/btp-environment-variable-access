@@ -4,9 +4,6 @@
 
 package com.sap.cloud.environment.servicebinding.api;
 
-import org.junit.jupiter.api.Test;
-
-import javax.annotation.Nonnull;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.temporal.TemporalAmount;
@@ -21,6 +18,10 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.function.Supplier;
 
+import javax.annotation.Nonnull;
+
+import org.junit.jupiter.api.Test;
+
 import com.sap.cloud.environment.servicebinding.api.exception.ServiceBindingAccessException;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -29,27 +30,23 @@ class SimpleServiceBindingCacheTest
 {
     @Nonnull
     private static final Duration ONE_SECOND = Duration.ofSeconds(1L);
+
     @Nonnull
     private static final Duration TWO_SECONDS = Duration.ofSeconds(2L);
 
     @Nonnull
-    private static final ServiceBinding FIRST_SERVICE_BINDING = DefaultServiceBinding.builder()
-                                                                                     .copy(Collections.singletonMap("id",
-                                                                                                                    1))
-                                                                                     .build();
+    private static final ServiceBinding FIRST_SERVICE_BINDING =
+        DefaultServiceBinding.builder().copy(Collections.singletonMap("id", 1)).build();
 
     @Nonnull
-    private static final ServiceBinding SECOND_SERVICE_BINDING = DefaultServiceBinding.builder()
-                                                                                      .copy(Collections.singletonMap(
-                                                                                              "id",
-                                                                                              2))
-                                                                                      .build();
+    private static final ServiceBinding SECOND_SERVICE_BINDING =
+        DefaultServiceBinding.builder().copy(Collections.singletonMap("id", 2)).build();
 
     @Test
     void cacheIsFilledUponFirstInvocation()
     {
-        final CountingServiceBindingAccessor accessor = new CountingServiceBindingAccessor(FIRST_SERVICE_BINDING,
-                                                                                           SECOND_SERVICE_BINDING);
+        final CountingServiceBindingAccessor accessor =
+            new CountingServiceBindingAccessor(FIRST_SERVICE_BINDING, SECOND_SERVICE_BINDING);
         final ManualTimeSupplier timeSupplier = new ManualTimeSupplier();
 
         final SimpleServiceBindingCache sut = new SimpleServiceBindingCache(accessor, ONE_SECOND, timeSupplier);
@@ -64,8 +61,8 @@ class SimpleServiceBindingCacheTest
     @Test
     void cacheIsInvalidatedAutomatically()
     {
-        final CountingServiceBindingAccessor accessor = new CountingServiceBindingAccessor(FIRST_SERVICE_BINDING,
-                                                                                           SECOND_SERVICE_BINDING);
+        final CountingServiceBindingAccessor accessor =
+            new CountingServiceBindingAccessor(FIRST_SERVICE_BINDING, SECOND_SERVICE_BINDING);
         final ManualTimeSupplier timeSupplier = new ManualTimeSupplier();
 
         final SimpleServiceBindingCache sut = new SimpleServiceBindingCache(accessor, ONE_SECOND, timeSupplier);
@@ -82,8 +79,8 @@ class SimpleServiceBindingCacheTest
     @Test
     void cacheCanBeInvalidatedManually()
     {
-        final CountingServiceBindingAccessor accessor = new CountingServiceBindingAccessor(FIRST_SERVICE_BINDING,
-                                                                                           SECOND_SERVICE_BINDING);
+        final CountingServiceBindingAccessor accessor =
+            new CountingServiceBindingAccessor(FIRST_SERVICE_BINDING, SECOND_SERVICE_BINDING);
         final ManualTimeSupplier timeSupplier = new ManualTimeSupplier();
 
         final SimpleServiceBindingCache sut = new SimpleServiceBindingCache(accessor, ONE_SECOND, timeSupplier);
@@ -98,10 +95,12 @@ class SimpleServiceBindingCacheTest
     }
 
     @Test
-    void cacheIsThreadSafe() throws ExecutionException, InterruptedException
+    void cacheIsThreadSafe()
+        throws ExecutionException,
+            InterruptedException
     {
-        final CountingServiceBindingAccessor accessor = new CountingServiceBindingAccessor(FIRST_SERVICE_BINDING,
-                                                                                           SECOND_SERVICE_BINDING);
+        final CountingServiceBindingAccessor accessor =
+            new CountingServiceBindingAccessor(FIRST_SERVICE_BINDING, SECOND_SERVICE_BINDING);
         final ManualTimeSupplier timeSupplier = new ManualTimeSupplier();
 
         final SimpleServiceBindingCache sut = new SimpleServiceBindingCache(accessor, ONE_SECOND, timeSupplier);
@@ -109,11 +108,11 @@ class SimpleServiceBindingCacheTest
         final ExecutorService executorService = Executors.newFixedThreadPool(8);
         try {
             final Collection<Future<List<ServiceBinding>>> firstFutures = new ArrayList<>(8);
-            for (int i = 0; i < 8; ++i) {
+            for( int i = 0; i < 8; ++i ) {
                 firstFutures.add(executorService.submit(sut::getServiceBindings));
             }
 
-            for (final Future<List<ServiceBinding>> future : firstFutures) {
+            for( final Future<List<ServiceBinding>> future : firstFutures ) {
                 assertThat(future.get()).containsExactly(FIRST_SERVICE_BINDING);
             }
 
@@ -122,16 +121,17 @@ class SimpleServiceBindingCacheTest
             timeSupplier.advance(TWO_SECONDS); // cache is automatically invalidated
 
             final Collection<Future<List<ServiceBinding>>> secondFutures = new ArrayList<>(8);
-            for (int i = 0; i < 8; ++i) {
+            for( int i = 0; i < 8; ++i ) {
                 secondFutures.add(executorService.submit(sut::getServiceBindings));
             }
 
-            for (final Future<List<ServiceBinding>> future : secondFutures) {
+            for( final Future<List<ServiceBinding>> future : secondFutures ) {
                 assertThat(future.get()).containsExactly(SECOND_SERVICE_BINDING);
             }
 
             assertThat(accessor.getNumberOfAccesses()).isEqualTo(2);
-        } finally {
+        }
+        finally {
             executorService.shutdown();
         }
     }
@@ -140,6 +140,7 @@ class SimpleServiceBindingCacheTest
     {
         @Nonnull
         private final List<ServiceBinding> serviceBindings;
+
         private int numberOfAccesses = 0;
 
         public CountingServiceBindingAccessor( @Nonnull final ServiceBinding... serviceBindings )
@@ -159,15 +160,16 @@ class SimpleServiceBindingCacheTest
 
         @Nonnull
         @Override
-        public List<ServiceBinding> getServiceBindings() throws ServiceBindingAccessException
+        public List<ServiceBinding> getServiceBindings()
+            throws ServiceBindingAccessException
         {
-            if (serviceBindings.isEmpty()) {
+            if( serviceBindings.isEmpty() ) {
                 return Collections.emptyList();
             }
 
             numberOfAccesses += 1;
-            return Collections.singletonList(serviceBindings.get(Math.min(numberOfAccesses - 1,
-                                                                          serviceBindings.size() - 1)));
+            return Collections
+                .singletonList(serviceBindings.get(Math.min(numberOfAccesses - 1, serviceBindings.size() - 1)));
         }
     }
 
