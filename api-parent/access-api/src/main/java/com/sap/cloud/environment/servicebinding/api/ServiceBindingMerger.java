@@ -4,10 +4,11 @@
 
 package com.sap.cloud.environment.servicebinding.api;
 
-import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+
+import javax.annotation.Nonnull;
 
 public class ServiceBindingMerger implements ServiceBindingAccessor
 {
@@ -16,11 +17,13 @@ public class ServiceBindingMerger implements ServiceBindingAccessor
 
     @Nonnull
     private final Collection<ServiceBindingAccessor> accessors;
+
     @Nonnull
     private final EqualityComparer equalityComparer;
 
-    public ServiceBindingMerger( @Nonnull final Collection<ServiceBindingAccessor> accessors,
-                                 @Nonnull final EqualityComparer equalityComparer )
+    public ServiceBindingMerger(
+        @Nonnull final Collection<ServiceBindingAccessor> accessors,
+        @Nonnull final EqualityComparer equalityComparer )
     {
         this.accessors = new ArrayList<>(accessors);
         this.equalityComparer = equalityComparer;
@@ -31,22 +34,24 @@ public class ServiceBindingMerger implements ServiceBindingAccessor
     public List<ServiceBinding> getServiceBindings()
     {
         final List<ServiceBinding> mergedServiceBindings = new ArrayList<>();
-        accessors.stream()
-                 .map(ServiceBindingAccessor::getServiceBindings)
-                 .flatMap(List::stream)
-                 .forEachOrdered(binding -> {
-                     if (contains(mergedServiceBindings, binding)) {
-                         return;
-                     }
+        accessors
+            .stream()
+            .map(ServiceBindingAccessor::getServiceBindings)
+            .flatMap(List::stream)
+            .forEachOrdered(binding -> {
+                if( contains(mergedServiceBindings, binding) ) {
+                    return;
+                }
 
-                     mergedServiceBindings.add(binding);
-                 });
+                mergedServiceBindings.add(binding);
+            });
 
         return mergedServiceBindings;
     }
 
-    private boolean contains( @Nonnull final List<ServiceBinding> existingBindings,
-                              @Nonnull final ServiceBinding newBinding )
+    private
+        boolean
+        contains( @Nonnull final List<ServiceBinding> existingBindings, @Nonnull final ServiceBinding newBinding )
     {
         return existingBindings.stream().anyMatch(contained -> equalityComparer.areEqual(contained, newBinding));
     }

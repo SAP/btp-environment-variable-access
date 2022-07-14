@@ -4,11 +4,11 @@
 
 package com.sap.cloud.environment.servicebinding;
 
-import org.junit.jupiter.api.Test;
-
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Optional;
+
+import org.junit.jupiter.api.Test;
 
 import com.sap.cloud.environment.servicebinding.api.ServiceBinding;
 
@@ -17,7 +17,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 class LayeredSecretRootKeyParsingStrategyTest
 {
     @Test
-    void multipleFilesLeadToEmptyResult() throws IOException
+    void multipleFilesLeadToEmptyResult()
+        throws IOException
     {
         final Path path = TestResource.get(LayeredSecretRootKeyParsingStrategyTest.class, "MultipleFiles");
 
@@ -29,7 +30,8 @@ class LayeredSecretRootKeyParsingStrategyTest
     }
 
     @Test
-    void fileWithoutJsonLeadsToEmptyResult() throws IOException
+    void fileWithoutJsonLeadsToEmptyResult()
+        throws IOException
     {
         final Path path = TestResource.get(LayeredSecretRootKeyParsingStrategyTest.class, "NotAJsonFile");
 
@@ -41,7 +43,8 @@ class LayeredSecretRootKeyParsingStrategyTest
     }
 
     @Test
-    void parseValidBinding() throws IOException
+    void parseValidBinding()
+        throws IOException
     {
         final Path path = TestResource.get(LayeredSecretRootKeyParsingStrategyTest.class, "ValidBinding");
 

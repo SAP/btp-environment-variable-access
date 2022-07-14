@@ -4,14 +4,14 @@
 
 package com.sap.cloud.environment.servicebinding;
 
-
-import org.junit.jupiter.api.Test;
-
-import javax.annotation.Nonnull;
 import java.util.Collection;
 import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+
+import javax.annotation.Nonnull;
+
+import org.junit.jupiter.api.Test;
 
 import com.sap.cloud.environment.servicebinding.api.ServiceBinding;
 
@@ -22,10 +22,11 @@ class SapVcapServicesServiceBindingAccessorTest
     @Test
     void parseFullVcapServices()
     {
-        final String vcapServices = TestResource.read(SapVcapServicesServiceBindingAccessorTest.class,
-                                                      "FullVcapServices.json");
+        final String vcapServices =
+            TestResource.read(SapVcapServicesServiceBindingAccessorTest.class, "FullVcapServices.json");
 
-        final SapVcapServicesServiceBindingAccessor sut = new SapVcapServicesServiceBindingAccessor(any -> vcapServices);
+        final SapVcapServicesServiceBindingAccessor sut =
+            new SapVcapServicesServiceBindingAccessor(any -> vcapServices);
 
         final List<ServiceBinding> serviceBindings = sut.getServiceBindings();
 
@@ -38,10 +39,11 @@ class SapVcapServicesServiceBindingAccessorTest
 
     private void assertContainsXsuaaBinding1( @Nonnull final Collection<ServiceBinding> serviceBindings )
     {
-        final List<ServiceBinding> bindings = serviceBindings.stream()
-                                                             .filter(binding -> "xsuaa-binding-1".equalsIgnoreCase(
-                                                                     binding.getName().orElse("")))
-                                                             .collect(Collectors.toList());
+        final List<ServiceBinding> bindings =
+            serviceBindings
+                .stream()
+                .filter(binding -> "xsuaa-binding-1".equalsIgnoreCase(binding.getName().orElse("")))
+                .collect(Collectors.toList());
 
         assertThat(bindings.size()).isEqualTo(1);
 
@@ -60,10 +62,11 @@ class SapVcapServicesServiceBindingAccessorTest
 
     private void assertContainsXsuaaBinding2( @Nonnull final Collection<ServiceBinding> serviceBindings )
     {
-        final List<ServiceBinding> bindings = serviceBindings.stream()
-                                                             .filter(binding -> "xsuaa-binding-2".equalsIgnoreCase(
-                                                                     binding.getName().orElse("")))
-                                                             .collect(Collectors.toList());
+        final List<ServiceBinding> bindings =
+            serviceBindings
+                .stream()
+                .filter(binding -> "xsuaa-binding-2".equalsIgnoreCase(binding.getName().orElse("")))
+                .collect(Collectors.toList());
 
         assertThat(bindings.size()).isEqualTo(1);
 
@@ -82,10 +85,11 @@ class SapVcapServicesServiceBindingAccessorTest
 
     private void assertContainsDestinationBinding1( @Nonnull final Collection<ServiceBinding> serviceBindings )
     {
-        final List<ServiceBinding> bindings = serviceBindings.stream()
-                                                             .filter(binding -> "destination-binding-1".equalsIgnoreCase(
-                                                                     binding.getName().orElse("")))
-                                                             .collect(Collectors.toList());
+        final List<ServiceBinding> bindings =
+            serviceBindings
+                .stream()
+                .filter(binding -> "destination-binding-1".equalsIgnoreCase(binding.getName().orElse("")))
+                .collect(Collectors.toList());
 
         assertThat(bindings.size()).isEqualTo(1);
 
@@ -115,10 +119,11 @@ class SapVcapServicesServiceBindingAccessorTest
     @Test
     void brokenBindingIsIgnored()
     {
-        final String vcapServices = TestResource.read(SapVcapServicesServiceBindingAccessorTest.class,
-                                                      "VcapServicesWithBrokenBinding.json");
+        final String vcapServices =
+            TestResource.read(SapVcapServicesServiceBindingAccessorTest.class, "VcapServicesWithBrokenBinding.json");
 
-        final SapVcapServicesServiceBindingAccessor sut = new SapVcapServicesServiceBindingAccessor(any -> vcapServices);
+        final SapVcapServicesServiceBindingAccessor sut =
+            new SapVcapServicesServiceBindingAccessor(any -> vcapServices);
 
         final List<ServiceBinding> serviceBindings = sut.getServiceBindings();
 
@@ -130,14 +135,13 @@ class SapVcapServicesServiceBindingAccessorTest
     @Test
     void resultIsNotCached()
     {
-        final String vcapServices = TestResource.read(SapVcapServicesServiceBindingAccessorTest.class,
-                                                      "FullVcapServices.json");
-        final CountingEnvironmentVariableReader environmentVariableReader = new CountingEnvironmentVariableReader(
-                "VCAP_SERVICES",
-                vcapServices);
+        final String vcapServices =
+            TestResource.read(SapVcapServicesServiceBindingAccessorTest.class, "FullVcapServices.json");
+        final CountingEnvironmentVariableReader environmentVariableReader =
+            new CountingEnvironmentVariableReader("VCAP_SERVICES", vcapServices);
 
-        final SapVcapServicesServiceBindingAccessor sut = new SapVcapServicesServiceBindingAccessor(
-                environmentVariableReader);
+        final SapVcapServicesServiceBindingAccessor sut =
+            new SapVcapServicesServiceBindingAccessor(environmentVariableReader);
 
         // first invocation
         assertThat(sut.getServiceBindings().size()).isEqualTo(3);
@@ -152,8 +156,10 @@ class SapVcapServicesServiceBindingAccessorTest
     {
         @Nonnull
         private final String expectedKey;
+
         @Nonnull
         private final String value;
+
         private int invocations;
 
         public CountingEnvironmentVariableReader( @Nonnull final String expectedKey, @Nonnull final String value )

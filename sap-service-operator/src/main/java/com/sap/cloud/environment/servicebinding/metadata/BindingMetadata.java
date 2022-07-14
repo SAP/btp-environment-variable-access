@@ -4,11 +4,12 @@
 
 package com.sap.cloud.environment.servicebinding.metadata;
 
-import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+
+import javax.annotation.Nonnull;
 
 public class BindingMetadata
 {
@@ -18,9 +19,9 @@ public class BindingMetadata
     @Nonnull
     private final List<BindingProperty> credentialProperties;
 
-
-    BindingMetadata( @Nonnull final Collection<BindingProperty> metadataProperties,
-                     @Nonnull final Collection<BindingProperty> credentialProperties )
+    BindingMetadata(
+        @Nonnull final Collection<BindingProperty> metadataProperties,
+        @Nonnull final Collection<BindingProperty> credentialProperties )
     {
         this.metadataProperties = Collections.unmodifiableList(new ArrayList<>(metadataProperties));
         this.credentialProperties = Collections.unmodifiableList(new ArrayList<>(credentialProperties));

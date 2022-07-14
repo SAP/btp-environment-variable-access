@@ -4,10 +4,11 @@
 
 package com.sap.cloud.environment.servicebinding;
 
-import javax.annotation.Nonnull;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Optional;
+
+import javax.annotation.Nonnull;
 
 import com.sap.cloud.environment.servicebinding.api.ServiceBinding;
 
@@ -15,7 +16,7 @@ import com.sap.cloud.environment.servicebinding.api.ServiceBinding;
 public interface LayeredParsingStrategy
 {
     @Nonnull
-    Optional<ServiceBinding> parse( @Nonnull final String serviceName,
-                                    @Nonnull final String bindingName,
-                                    @Nonnull final Path bindingPath ) throws IOException;
+    Optional<ServiceBinding>
+        parse( @Nonnull final String serviceName, @Nonnull final String bindingName, @Nonnull final Path bindingPath )
+            throws IOException;
 }

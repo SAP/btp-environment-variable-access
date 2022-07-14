@@ -4,8 +4,9 @@
 
 package com.sap.cloud.environment.servicebinding.metadata;
 
-import javax.annotation.Nonnull;
 import java.util.Objects;
+
+import javax.annotation.Nonnull;
 
 public class BindingProperty
 {
@@ -56,10 +57,11 @@ public class BindingProperty
         return new BindingProperty(name, sourceName, PropertyFormat.JSON, false);
     }
 
-    BindingProperty( @Nonnull final String name,
-                     @Nonnull final String sourceName,
-                     @Nonnull final PropertyFormat format,
-                     final boolean isContainer )
+    BindingProperty(
+        @Nonnull final String name,
+        @Nonnull final String sourceName,
+        @Nonnull final PropertyFormat format,
+        final boolean isContainer )
     {
         this.name = name;
         this.sourceName = sourceName;
@@ -93,16 +95,16 @@ public class BindingProperty
     @Override
     public boolean equals( final Object obj )
     {
-        if (!(obj instanceof BindingProperty)) {
+        if( !(obj instanceof BindingProperty) ) {
             return false;
         }
 
         final BindingProperty other = (BindingProperty) obj;
 
         return getName().equals(other.getName())
-               && getSourceName().equals(other.getSourceName())
-               && getFormat() == other.getFormat()
-               && isContainer() == other.isContainer();
+            && getSourceName().equals(other.getSourceName())
+            && getFormat() == other.getFormat()
+            && isContainer() == other.isContainer();
     }
 
     @Override

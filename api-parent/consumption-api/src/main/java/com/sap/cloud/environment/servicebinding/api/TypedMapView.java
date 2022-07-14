@@ -4,14 +4,15 @@
 
 package com.sap.cloud.environment.servicebinding.api;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import com.sap.cloud.environment.servicebinding.api.exception.KeyNotFoundException;
 import com.sap.cloud.environment.servicebinding.api.exception.ValueCastException;
@@ -30,8 +31,8 @@ public final class TypedMapView
     public static TypedMapView of( @Nonnull final ServiceBinding serviceBinding )
     {
         final Map<String, Object> properties = new TreeMap<>(String::compareToIgnoreCase);
-        for (final String key : serviceBinding.getKeys()) {
-            if (key == null || key.isEmpty()) {
+        for( final String key : serviceBinding.getKeys() ) {
+            if( key == null || key.isEmpty() ) {
                 continue;
             }
 
@@ -48,16 +49,17 @@ public final class TypedMapView
         return fromMap(serviceBinding.getCredentials());
     }
 
-    private static void insertElement( @Nonnull final Map<String, Object> properties,
-                                       @Nonnull final String key,
-                                       @Nullable final Object value )
+    private static void insertElement(
+        @Nonnull final Map<String, Object> properties,
+        @Nonnull final String key,
+        @Nullable final Object value )
     {
-        if (value instanceof Map) {
+        if( value instanceof Map ) {
             properties.put(key, fromRawMap(value));
             return;
         }
 
-        if (value instanceof List) {
+        if( value instanceof List ) {
             properties.put(key, TypedListView.fromRawList(value));
             return;
         }
@@ -71,7 +73,8 @@ public final class TypedMapView
     {
         try {
             return fromMap((Map<String, Object>) rawMap);
-        } catch (final ClassCastException e) {
+        }
+        catch( final ClassCastException e ) {
             throw new ValueCastException();
         }
     }
@@ -80,11 +83,11 @@ public final class TypedMapView
     static TypedMapView fromMap( @Nonnull final Map<String, Object> map )
     {
         final Map<String, Object> properties = new TreeMap<>(String::compareToIgnoreCase);
-        for (final Map.Entry<String, Object> entry : map.entrySet()) {
+        for( final Map.Entry<String, Object> entry : map.entrySet() ) {
             final String key = entry.getKey();
             final Object value = entry.getValue();
 
-            if (key == null) {
+            if( key == null ) {
                 continue;
             }
 
@@ -100,11 +103,13 @@ public final class TypedMapView
         return Collections.unmodifiableSet(map.keySet());
     }
 
-    public boolean getBoolean( @Nonnull final String key ) throws KeyNotFoundException, ValueCastException
+    public boolean getBoolean( @Nonnull final String key )
+        throws KeyNotFoundException,
+            ValueCastException
     {
         final Object value = get(key);
 
-        if (value instanceof Boolean) {
+        if( value instanceof Boolean ) {
             return (boolean) value;
         }
 
@@ -112,9 +117,10 @@ public final class TypedMapView
     }
 
     @Nullable
-    public Object get( @Nonnull final String key ) throws KeyNotFoundException
+    public Object get( @Nonnull final String key )
+        throws KeyNotFoundException
     {
-        if (!containsKey(key)) {
+        if( !containsKey(key) ) {
             throw new KeyNotFoundException();
         }
 
@@ -126,34 +132,42 @@ public final class TypedMapView
         return map.containsKey(key);
     }
 
-    public int getInteger( @Nonnull final String key ) throws KeyNotFoundException, ValueCastException
+    public int getInteger( @Nonnull final String key )
+        throws KeyNotFoundException,
+            ValueCastException
     {
         return getNumber(key).intValue();
     }
 
     @Nonnull
-    public Number getNumber( @Nonnull final String key ) throws KeyNotFoundException, ValueCastException
+    public Number getNumber( @Nonnull final String key )
+        throws KeyNotFoundException,
+            ValueCastException
     {
         final Object value = get(key);
 
-        if (value instanceof Number) {
+        if( value instanceof Number ) {
             return (Number) value;
         }
 
         throw new ValueCastException();
     }
 
-    public double getDouble( @Nonnull final String key ) throws KeyNotFoundException, ValueCastException
+    public double getDouble( @Nonnull final String key )
+        throws KeyNotFoundException,
+            ValueCastException
     {
         return getNumber(key).doubleValue();
     }
 
     @Nonnull
-    public String getString( @Nonnull final String key ) throws KeyNotFoundException, ValueCastException
+    public String getString( @Nonnull final String key )
+        throws KeyNotFoundException,
+            ValueCastException
     {
         final Object value = get(key);
 
-        if (value instanceof String) {
+        if( value instanceof String ) {
             return (String) value;
         }
 
@@ -161,11 +175,13 @@ public final class TypedMapView
     }
 
     @Nonnull
-    public TypedMapView getMapView( @Nonnull final String key ) throws KeyNotFoundException, ValueCastException
+    public TypedMapView getMapView( @Nonnull final String key )
+        throws KeyNotFoundException,
+            ValueCastException
     {
         final Object value = get(key);
 
-        if (value instanceof TypedMapView) {
+        if( value instanceof TypedMapView ) {
             return (TypedMapView) value;
         }
 
@@ -173,25 +189,27 @@ public final class TypedMapView
     }
 
     @Nonnull
-    public TypedListView getListView( @Nonnull final String key ) throws KeyNotFoundException, ValueCastException
+    public TypedListView getListView( @Nonnull final String key )
+        throws KeyNotFoundException,
+            ValueCastException
     {
         final Object value = get(key);
 
-        if (value instanceof TypedListView) {
+        if( value instanceof TypedListView ) {
             return (TypedListView) value;
         }
 
         throw new ValueCastException();
     }
 
-
     @SuppressWarnings( "unchecked" )
     @Nonnull
     public <T> Map<String, T> getEntries( @Nonnull final Class<? extends T> mapType )
     {
-        return map.entrySet()
-                  .stream()
-                  .filter(e -> e.getValue() != null && e.getValue().getClass() == mapType)
-                  .collect(Collectors.toMap(Map.Entry::getKey, e -> (T) e.getValue()));
+        return map
+            .entrySet()
+            .stream()
+            .filter(e -> e.getValue() != null && e.getValue().getClass() == mapType)
+            .collect(Collectors.toMap(Map.Entry::getKey, e -> (T) e.getValue()));
     }
 }
