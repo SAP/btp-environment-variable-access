@@ -17,7 +17,7 @@ It used the following sub-scores:
 1.  **[Security testing](#security-testing)**: **5.6** (weight is 1.0)
     1.  **[Dependency testing](#dependency-testing)**: **10.0** (weight is 1.0)
         1.  **[Dependabot score](#dependabot-score)**: **10.0** (weight is 1.0)
-        1.  **[OWASP Dependency Check score](#owasp-dependency-check-score)**: **3.9** (weight is 1.0)
+        1.  **[OWASP Dependency Check score](#owasp-dependency-check-score)**: **7.0** (weight is 1.0)
     1.  **[Static analysis](#static-analysis)**: **4.0** (weight is 1.0)
         1.  **[LGTM score](#lgtm-score)**: **10.0** (weight is 1.0)
         1.  **[How a project uses CodeQL](#how-a-project-uses-codeql)**: **0.0** (weight is 1.0)
@@ -31,7 +31,7 @@ It used the following sub-scores:
     1.  **[Security testing](#security-testing)**: **5.6** (weight is 1.0)
         1.  **[Dependency testing](#dependency-testing)**: **10.0** (weight is 1.0)
             1.  **[Dependabot score](#dependabot-score)**: **10.0** (weight is 1.0)
-            1.  **[OWASP Dependency Check score](#owasp-dependency-check-score)**: **3.9** (weight is 1.0)
+            1.  **[OWASP Dependency Check score](#owasp-dependency-check-score)**: **7.0** (weight is 1.0)
         1.  **[Static analysis](#static-analysis)**: **4.0** (weight is 1.0)
             1.  **[LGTM score](#lgtm-score)**: **10.0** (weight is 1.0)
             1.  **[How a project uses CodeQL](#how-a-project-uses-codeql)**: **0.0** (weight is 1.0)
@@ -76,7 +76,7 @@ This sub-score is based on the following sub-scores:
 
 1.  **[Dependency testing](#dependency-testing)**: **10.0** (weight is 1.0)
     1.  **[Dependabot score](#dependabot-score)**: **10.0** (weight is 1.0)
-    1.  **[OWASP Dependency Check score](#owasp-dependency-check-score)**: **3.9** (weight is 1.0)
+    1.  **[OWASP Dependency Check score](#owasp-dependency-check-score)**: **7.0** (weight is 1.0)
 1.  **[Static analysis](#static-analysis)**: **4.0** (weight is 1.0)
     1.  **[LGTM score](#lgtm-score)**: **10.0** (weight is 1.0)
     1.  **[How a project uses CodeQL](#how-a-project-uses-codeql)**: **0.0** (weight is 1.0)
@@ -111,7 +111,7 @@ This sub-score is based on 17 features:
 1.  Does it use UndefinedBehaviorSanitizer? **No**
 1.  Does it use nohttp? **No**
 1.  Does it use verified signed commits? **No**
-1.  How is OWASP Dependency Check used? **Optional**
+1.  How is OWASP Dependency Check used? **Mandatory**
 1.  Is it included to OSS-Fuzz? **No**
 
 ### Unpatched vulnerabilities
@@ -139,7 +139,7 @@ This sub-score is based on the following sub-score:
 1.  **[Security testing](#security-testing)**: **5.6** (weight is 1.0)
     1.  **[Dependency testing](#dependency-testing)**: **10.0** (weight is 1.0)
         1.  **[Dependabot score](#dependabot-score)**: **10.0** (weight is 1.0)
-        1.  **[OWASP Dependency Check score](#owasp-dependency-check-score)**: **3.9** (weight is 1.0)
+        1.  **[OWASP Dependency Check score](#owasp-dependency-check-score)**: **7.0** (weight is 1.0)
     1.  **[Static analysis](#static-analysis)**: **4.0** (weight is 1.0)
         1.  **[LGTM score](#lgtm-score)**: **10.0** (weight is 1.0)
         1.  **[How a project uses CodeQL](#how-a-project-uses-codeql)**: **0.0** (weight is 1.0)
@@ -172,12 +172,12 @@ Score: **10.0**, confidence is 10.0 (max), weight is 0.5 (medium)
 
 The score evaluates how active a project is. It's based on number of commits and contributors in the last 3 months.
 
-87 commits in the last 3 months results to 10.00 points
+91 commits in the last 3 months results to 10.00 points
 3 contributors increase the score value from 10.00 to 11.00
 
 This sub-score is based on 2 features:
 
-1.  Number of commits in the last three months: **87**
+1.  Number of commits in the last three months: **91**
 1.  Number of contributors in the last three months: **3**
 
 ### Project popularity
@@ -208,7 +208,7 @@ Score: **10.0**, confidence is 10.0 (max), weight is 1.0 (high)
 This sub-score is based on the following sub-scores:
 
 1.  **[Dependabot score](#dependabot-score)**: **10.0** (weight is 1.0)
-1.  **[OWASP Dependency Check score](#owasp-dependency-check-score)**: **3.9** (weight is 1.0)
+1.  **[OWASP Dependency Check score](#owasp-dependency-check-score)**: **7.0** (weight is 1.0)
 
 
 ### Static analysis
@@ -284,7 +284,7 @@ This sub-score is based on 4 features:
 
 ### OWASP Dependency Check score
 
-Score: **3.9**, confidence is 10.0 (max), weight is 1.0 (high)
+Score: **7.0**, confidence is 10.0 (max), weight is 1.0 (high)
 
 
 
@@ -292,9 +292,9 @@ Score: **3.9**, confidence is 10.0 (max), weight is 1.0 (high)
 
 This sub-score is based on 3 features:
 
-1.  How is OWASP Dependency Check used? **Optional**
+1.  How is OWASP Dependency Check used? **Mandatory**
 1.  Package managers: **MAVEN**
-1.  What is the threshold for OWASP Dependency Check? **7.0**
+1.  What is the threshold for OWASP Dependency Check? **Not specified**
 
 ### LGTM score
 

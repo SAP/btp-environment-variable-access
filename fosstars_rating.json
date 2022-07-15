@@ -325,7 +325,7 @@
           "type" : "OwaspDependencyCheckUsageFeature",
           "name" : "How OWASP Dependency Check is used"
         },
-        "value" : "OPTIONAL"
+        "value" : "MANDATORY"
       } ],
       "explanation" : [ ],
       "isUnknown" : false,
@@ -401,7 +401,7 @@
           "type" : "PositiveIntegerFeature",
           "name" : "Number of commits in the last three months"
         },
-        "number" : 87
+        "number" : 91
       }, {
         "type" : "IntegerValue",
         "feature" : {
@@ -410,7 +410,7 @@
         },
         "number" : 3
       } ],
-      "explanation" : [ "87 commits in the last 3 months results to 10.00 points", "3 contributors increase the score value from 10.00 to 11.00" ],
+      "explanation" : [ "91 commits in the last 3 months results to 10.00 points", "3 contributors increase the score value from 10.00 to 11.00" ],
       "isUnknown" : false,
       "isNotApplicable" : false
     }, {
@@ -548,7 +548,7 @@
             "type" : "OwaspDependencyScanScore",
             "name" : "How a project uses OWASP Dependency Check to scan dependencies for vulnerabilities"
           },
-          "value" : 3.9,
+          "value" : 7.0,
           "weight" : 1.0,
           "confidence" : 10.0,
           "usedValues" : [ {
@@ -557,15 +557,15 @@
               "type" : "OwaspDependencyCheckUsageFeature",
               "name" : "How OWASP Dependency Check is used"
             },
-            "value" : "OPTIONAL"
+            "value" : "MANDATORY"
           }, {
             "type" : "OwaspDependencyCheckCvssThresholdValue",
             "feature" : {
               "type" : "OwaspDependencyCheckCvssThreshold",
               "name" : "A CVSS threshold for OWASP Dependency Check to fail the build"
             },
-            "number" : 7.0,
-            "specified" : true
+            "number" : 0.0,
+            "specified" : false
           }, {
             "type" : "PackageManagersValue",
             "feature" : {
@@ -1078,7 +1078,7 @@
               "type" : "OwaspDependencyScanScore",
               "name" : "How a project uses OWASP Dependency Check to scan dependencies for vulnerabilities"
             },
-            "value" : 3.9,
+            "value" : 7.0,
             "weight" : 1.0,
             "confidence" : 10.0,
             "usedValues" : [ {
@@ -1087,15 +1087,15 @@
                 "type" : "OwaspDependencyCheckUsageFeature",
                 "name" : "How OWASP Dependency Check is used"
               },
-              "value" : "OPTIONAL"
+              "value" : "MANDATORY"
             }, {
               "type" : "OwaspDependencyCheckCvssThresholdValue",
               "feature" : {
                 "type" : "OwaspDependencyCheckCvssThreshold",
                 "name" : "A CVSS threshold for OWASP Dependency Check to fail the build"
               },
-              "number" : 7.0,
-              "specified" : true
+              "number" : 0.0,
+              "specified" : false
             }, {
               "type" : "PackageManagersValue",
               "feature" : {
