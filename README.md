@@ -17,6 +17,7 @@ Foundry and Kubernetes (K8S) environment.
 ## Usage
 
 ### Parent POM
+
 Add one of the following dependencies to the `<dependencyManagement>` section of your _parent_ `pom.xml`:
 
 ```xml
@@ -41,6 +42,7 @@ Add one of the following dependencies to the `<dependencyManagement>` section of
     <scope>import</scope>
 </dependency>
 ```
+
 </details>
 
 ### Application POM
@@ -95,31 +97,76 @@ cf bind-service <app-name> <service-name>
 
 ## Kubernetes Specifics
 
-Kubernetes offers several ways of handling application configurations for bound services and certificates. BTP
-Environment client library for Java expects that such configuration is handled as Kubernetes Secrets and mounted as
-files to the pod at a specific
-path. This path can be provided by the application developer, but the default is `/etc/secrets/sapbtp`. From there, BTP
-Environment client library for Java assumes that the directory structure is the
-following `/etc/secrets/sapbtp/<service-name>/<instance-name>`. Here `<service-name>` and `<instance-name>` are both
-directories and the latter contains the credentials/configurations for the service instance as
-files. [SAP BTP service operator](https://github.com/SAP/sap-btp-service-operator) supports several ways
-on how secret files are organized.
+Kubernetes offers several ways of handling application configurations for bound services and certificates. The BTP
+Service Binding client library for Java is capable of handling service bindings that conform to
+the [servicebinding.io](https://servicebinding.io/spec/core/1.0.0/) specification (version `1.0.0`) with
+the [SAP metadata extension](https://blogs.sap.com/2022/07/12/the-new-way-to-consume-service-bindings-on-kyma-runtime/).
+To conform to the specification, following requirements _must_ be met:
 
-For example, the below folder structure resembles two instances of service `xsuaa`, `application` and `broker`, each
-with their own configurations and one instance of service `servicemanager` called `my-instance` with its configuration.
+1. There must be an environment variable named `SERVICE_BINDING_ROOT` that points to a local directory, which must be
+   accessible for the application.
+2. Each service binding must be contained within its own directory. These directories must be contained in
+   the `SERVICE_BINDING_ROOT`.
+3. Each service binding must define a `.metadata` file, which provides structural information about the properties of
+   the binding.
+
+<details>
+<summary>Service Binding Example</summary>
+
+For example, a valid binding could look like below:
 
 ```sh
-/etc/
-    /secrets/
-            /sapbtp/
-                 /xsuaa/
-                       /application/
-                       /broker/
-                 /servicemanager/
-                       /my-instance/
+/$SERVICE_BINDING_ROOT/
+  my-funny-binding/
+    .metadata: /* see below */
+    type: funny-service
+    tags: ["funny", "somewhat", "useful"]
+    user: me
+    a_number: 3
+    a_boolean: true
+    an_object: { "property1": "value 1", "property2": true }
 ```
 
-#### Service Binding
+With the `.metadata` file containing following content:
+
+```json
+{
+  "metaDataProperties": [
+    {
+      "name": "type",
+      "format": "text"
+    },
+    {
+      "name": "tags",
+      "format": "json"
+    }
+  ],
+  "credentialProperties": [
+    {
+      "name": "user",
+      "format": "text"
+    },
+    {
+      "name": "a_number",
+      "format": "json"
+    },
+    {
+      "name": "a_boolean",
+      "format": "json"
+    },
+    {
+      "name": "an_object",
+      "format": "json"
+    }
+  ]
+}
+```
+
+</details>
+
+Such bindings can be created using the [SAP BTP service operator](https://github.com/SAP/sap-btp-service-operator).
+
+#### Mounting Service Bindings
 
 In Kubernetes you can create and bind to a service instance using the SAP BTP Service Operator as
 described [here](https://github.com/SAP/sap-btp-service-operator#using-the-sap-btp-service-operator).
@@ -127,9 +174,8 @@ described [here](https://github.com/SAP/sap-btp-service-operator#using-the-sap-b
 Upon creation of the binding, a Kubernetes secret (by default with the same name as the binding) is created containing
 credentials, configurations and certificates. This secret can then be mounted to the pod as a volume.
 
-The following extract from *deployment.yml* file shows how the secret of a `xsuaa` service instance
-binding `xsuaa-service-binding`
-is mounted as volume to an application container:
+The following extract from _deployment.yml_ file shows how the secret of a `xsuaa` service instance
+binding `xsuaa-service-binding` is mounted as volume to an application container:
 
 ```yml
 ...
@@ -137,12 +183,15 @@ spec:
   containers:
     - name: app
       image: app-image:1.0.0
+      env:
+        - name: SERVICE_BINDING_ROOT
+          value: "/bindings/"
       ports:
         - name: http
           containerPort: 8080
       volumeMounts:
         - name: xsuaa
-          mountPath: "/etc/secrets/sapbtp/xsuaa/authn"
+          mountPath: "/bindings/authn"
           readOnly: true
   volumes:
     - name: authn
@@ -150,106 +199,62 @@ spec:
         secretName: xsuaa-service-binding
 ```
 
-Of course, you can also create Kubernetes secrets directly with `kubectl` and mount them to the pod. As long as the
-mount path follows the `<root-path>/<service-name>/<instance-name>` pattern, BTP Environment client library is able to
-discover the bound services configurations.
+<details>
+<summary>Legacy Bindings</summary>
 
-**Note**: The library attempts to parse property values which are either stored flat, i.e. metadata and credential
-properties are located next to each other (DataParsingStrategy):
+This library also supports older versions of the SAP BTP Service operator (version `< 0.2.3`).
+Bindings created by the older operator do not have the `.metadata` file and are **required** to be mounted to a specific
+path within the pod: `/etc/secrets/sapbtp/<service-name>/<instance-name>`.
 
-```
-/etc/
-    /secrets/
-            /sapbtp/
-                 /some-service/
-                       /some-instance/
-                                  /clientid
-                                  /plan
-                                  /tags
-                                  /url
-```
+For example, the below folder structure resembles two instances of service `xsuaa`: One named `application` and the
+other named `broker`, each with their own configurations. Additionally, there is one instance of
+service `servicemanager` called `my-instance` with its configuration.
 
-Or, alternatively metadata is stored flat, but the credential properties are stored in one json file (
-SecretKeyParsingStrategy):
-
-```
-/etc/
-    /secrets/
-            /sapbtp/
-                 /some-service/
-                       /some-instance/
-                                  /credentials.json
-                                  /plan
-                                  /tags
+```sh
+/etc/secrets/sapbtp
+  /xsuaa
+    /application/
+    /broker/
+  /servicemanager
+    /my-instance/
 ```
 
-Or, similar to Cloud Foundry ```VCAP_SERVICES``` metadata as well as the credential properties are stored in one json
-file (SecretRootKeyParsingStrategy):
+Bindings within these directories may have different structures. This library is capable of parsing the following
+structures:
 
-```
-/etc/
-    /secrets/
-            /sapbtp/
-                 /some-service/
-                       /some-instance/
-                                  /binding.json
-```
+1. "Flat Properties"
 
-In all above cases, the service credentials are accessible to the application like that:
-
-```java
-ServiceBindingAccessor accessor=DefaultServiceBindingAccessor.getInstance();
-        ServiceBinding binding=getServiceBindings()
-        .stream()
-        .filter(b->"some-instance".equals(b.getName().orElse(null)))
-        .collect(Collectors.toList()).get(0); // assumes there is one service binding found
-        String plan=binding.getServicePlan().orElse(null);
-        Map<String, Object> credentials=binding.getCredentials();
+```sh
+/etc/secrets/sapbtp
+  /some-service
+    /some-instance
+      /clientid
+      /plan
+      /tags
+      /url
 ```
 
-### Service Lookup via Name
+2. "Flat Metadata and JSON Credentials"
 
-```java
-ServiceBinding bindings=DefaultServiceBindingAccessor.getInstance().getServiceBindings().stream()
-        .filter(b->"some-instance".equals(b.getName().orElse(null)))
-        .collect(Collectors.toList()).get(0); // assumes there is one service binding found 
+```sh
+/etc/secrets/sapbtp
+  /some-service
+    /some-instance
+      /credentials.json
+      /plan
+      /tags
 ```
 
-### Service Lookup via Service Name and Plan
+3. "Full JSON Binding"
 
-```java
-ServiceBindingAccessor accessor=DefaultServiceBindingAccessor.getInstance();
-
-        List<ServiceBinding> bindings=accessor.getServiceBindings().stream()
-        .filter(b->"identity".equalsIgnoreCase(b.getServiceName().orElse(null))
-        &&"application".equalsIgnoreCase(b.getServicePlan().orElse(null)))
-        .collect(Collectors.toList()); // There should never be two
-
-        if(bindings.isEmpty()){
-        throw new IllegalStateException("There is no binding of service 'identity' and plan 'application'");
-        }else if(bindings.size()>1){
-        throw new IllegalStateException("Found multiple bindings of service 'identity' and plan 'application'");
-        }
+```sh
+/etc/secrets/sapbtp
+  /some-service
+    /some-instance
+      /binding.json
 ```
 
-### Service Lookup via Tag / Label
-
-Here is how you can get this service configuration in your Java application if you don't know the instance name in
-advance:
-
-```java
-ServiceBindingAccessor accessor=DefaultServiceBindingAccessor.getInstance();
-
-        List<ServiceBinding> bindings=accessor.getServiceBindings().stream()
-        .filter(b->b.getTags().contains("myTag"))
-        .collect(Collectors.toList());
-
-        bindings=accessor.getServiceBindings().stream()
-        .filter(b->"myLabel".equalsIgnoreCase(b.get("label").orElse(null)))
-        .collect(Collectors.toList());
-```
-
-This example finds a service binding with `myTag` in the tags or with `myLabel` label.
+</details>
 
 ### Read Service Binding Properties
 
@@ -257,37 +262,37 @@ Given that ``credentials.json`` consists of
 
 ```json
 {
-    "url": "https://mydomain.com",
-    "domains": [
-        "mydomain-1",
-        "mydomain-2"
-    ]
+  "url": "https://mydomain.com",
+  "domains": [
+    "mydomain-1",
+    "mydomain-2"
+  ]
 }
 ```
 
 You can access the ``url`` property as follows:
 
 ```java
-String url=(String)credentials.get("url");
+String url = (String)credentials.get("url");
 ```
 
 Or, alternatively:
 
 ```java
-TypedMapView credentialsTyped=TypedMapView.ofCredentials(binding);
-        String url=credentialsTyped.getString("url");
+TypedMapView credentialsTyped = TypedMapView.ofCredentials(binding);
+String url = credentialsTyped.getString("url");
 ```
 
 The access of ``domains`` looks like:
 
 ```java
-List<String> domainsList=credentialsTyped.getListView("domains").getItems(String.class);
+List<String> domainsList = credentialsTyped.getListView("domains").getItems(String.class);
 ```
 
 ### User-Provided Service Instances
 
 While this package can look up any kind of bound service instances, you should be aware
-that [User-Provided Service Instances](https://docs.cloudfoundry.org/devguide/services/user-provided.html) have less
+that [User-Provided Service Instances](https://docs.cloudfoundry.org/devguide/services/user-provided.html) have fewer
 properties than managed service instances and no tags.
 
 ## Support, Feedback, Contributing
