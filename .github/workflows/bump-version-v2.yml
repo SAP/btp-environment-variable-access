@@ -47,7 +47,7 @@ jobs:
         with:
           destination_branch: "main"
           source_branch: ${{ steps.git-commit.outputs.branch-name }}
-          pr_title: "Bump Version: `${{ steps.bump-version.outputs.old_version }}` -> `${{ steps.bump-version.outputs.new_version }}`"
+          pr_title: "Bump Version: ${{ steps.bump-version.outputs.old_version }} -> ${{ steps.bump-version.outputs.new_version }}"
           pr_draft: false
           github_token: ${{ secrets.CLOUD_SDK_AT_SAP_ALL_ACCESS_PAT }}
 
