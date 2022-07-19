@@ -1,10 +1,10 @@
 ---
-name: Bump Project Version
+name: Bump Project Version V2
 
 on:
   workflow_dispatch:
     inputs:
-      bumpType:
+      updateType:
         description: "The type of version bump that should be performed"
         required: true
         type: choice
@@ -22,24 +22,12 @@ jobs:
         with:
           token: ${{ secrets.CLOUD_SDK_AT_SAP_ALL_ACCESS_PAT }}
 
-      - name: Checkout Scripts
-        uses: actions/checkout@v3
+      - name: Bump Version
+        uses: DigitalToolsManufactory/gh-action-maven-bump-version@v1
+        id: bump-version
         with:
-          repository: "DigitalToolsManufactory/dev-scripts"
-          path: ".dev-scripts"
-
-      - name: Install Python 3
-        uses: actions/setup-python@v1
-        with:
-          python-version: 3.x
-
-      - name: Install Python Dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install -r .dev-scripts/requirements.txt
-
-      - name: Run Python Script
-        run: python .dev-scripts/maven_version.py bump --bump-type ${{ github.event.inputs.bumpType }} pom.xml modules-bom/pom.xml bom/pom.xml
+          bumpType: "${{ inputs.updateType }}"
+          pomFiles: "pom.xml bom/pom.xml modules-bom/pom.xml"
 
       - name: Commit Changes
         id: git-commit
@@ -59,7 +47,7 @@ jobs:
         with:
           destination_branch: "main"
           source_branch: ${{ steps.git-commit.outputs.branch-name }}
-          pr_title: "Bump ${{ github.events.inputs.bumpType}} Version"
+          pr_title: "Bump Version: `${{ steps.bump-version.outputs.old_version }}` -> `${{ steps.bump-version.outputs.new_version }}"
           pr_draft: false
           github_token: ${{ secrets.CLOUD_SDK_AT_SAP_ALL_ACCESS_PAT }}
 
