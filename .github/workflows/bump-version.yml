@@ -1,5 +1,5 @@
 ---
-name: Bump Project Version V2
+name: Bump Project Version
 
 on:
   workflow_dispatch:
