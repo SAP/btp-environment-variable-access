@@ -48,7 +48,7 @@ jobs:
           git config --global user.name "SAP Cloud SDK"
           
           branch_name=version-bump/$(date +%s)
-          echo "::set-output name=branch-name::$branch_name\n"
+          echo "::set-output name=branch-name::$branch_name"
           
           git checkout -b "$branch_name"
           git commit -am "bump version"
