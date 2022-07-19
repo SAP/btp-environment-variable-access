@@ -1,0 +1,71 @@
+---
+name: Bump Project Version
+
+on:
+  workflow_dispatch:
+    inputs:
+      bumpType:
+        description: "The type of version bump that should be performed"
+        required: true
+        type: choice
+        options:
+          - major
+          - minor
+          - patch
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Setup SSH Agent
+        env:
+          SSH_AUTH_SOCK: /tmp/ssh_agent.sock
+        run: |
+          mkdir -p ~/.ssh
+          ssh-keyscan github.com >> ~/.ssh/known_hosts
+          
+          ssh-agent -a $SSH_AUTH_SOCK > /dev/null
+          ssh-add <(echo "${{ secrets.CLOUD_SDK_AT_SAP_PRIVATE_DEPLOY_KEY }}")
+
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Checkout Scripts
+        uses: actions/checkout@v3
+        with:
+          repository: "DigitalToolsManufactory/dev-scripts"
+          path: ".dev-scripts"
+
+      - name: Install Python 3
+        uses: actions/setup-python@v1
+        with:
+          python-version: 3.x
+
+      - name: Install Python Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r .dev-scripts/requirements.txt
+
+      - name: Run Python Script
+        run: python .dev-scripts/maven_version.py bump --bump-type ${{ github.event.inputs.bumpType }} pom.xml modules-bom/pom.xml bom/pom.xml
+
+      - name: Commit Changes
+        id: git-commit
+        env:
+          SSH_AUTH_SOCK: /tmp/ssh_agent.sock
+        run: |
+          git config --global user.email "cloudsdk@sap.com"
+          git config --global user.name "SAP Cloud SDK"
+          
+          branch_name=$(date + '%s')
+          echo "::set-output name=branch-name::$branch_name\n"
+          
+          git checkout -b "version-bump/$branch_name"
+          git commit -am "bump version"
+          git push --set-upstream origin $branch_name
+
+      - name: Cleanup
+        if: always()
+        env:
+          SSH_AUTH_SOCK: /tmp/ssh_agent.sock
+        run: ssh-add -D
