@@ -23,7 +23,7 @@ jobs:
           token: ${{ secrets.CLOUD_SDK_AT_SAP_ALL_ACCESS_PAT }}
 
       - name: Bump Version
-        uses: DigitalToolsManufactory/dev-scripts/bump-maven-version@89614c4fc08adc79ed0d04251d3590396b100ea5
+        uses: DigitalToolsManufactory/gh-action-maven-bump-version@v1
         id: bump-version
         with:
           bumpType: ${{ github.events.inputs.bumpType }}
