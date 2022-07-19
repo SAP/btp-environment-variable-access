@@ -57,7 +57,7 @@ jobs:
           git config --global user.email "cloudsdk@sap.com"
           git config --global user.name "SAP Cloud SDK"
           
-          branch_name=$(date + '%s')
+          branch_name=$(date +%s)
           echo "::set-output name=branch-name::$branch_name\n"
           
           git checkout -b "version-bump/$branch_name"
