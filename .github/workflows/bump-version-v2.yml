@@ -4,7 +4,7 @@ name: Bump Project Version V2
 on:
   workflow_dispatch:
     inputs:
-      bumpType:
+      updateType:
         description: "The type of version bump that should be performed"
         required: true
         type: choice
@@ -26,7 +26,7 @@ jobs:
         uses: DigitalToolsManufactory/gh-action-maven-bump-version@v1
         id: bump-version
         with:
-          bumpType: ${{ github.events.inputs.bumpType }}
+          bumpType: "${{ inputs.updateType }}"
           pomFiles: "pom.xml bom/pom.xml modules-bom/pom.xml"
 
       - name: Commit Changes
