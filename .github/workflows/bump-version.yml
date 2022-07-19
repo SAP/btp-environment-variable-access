@@ -17,18 +17,10 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Setup SSH Agent
-        env:
-          SSH_AUTH_SOCK: /tmp/ssh_agent.sock
-        run: |
-          mkdir -p ~/.ssh
-          ssh-keyscan github.com >> ~/.ssh/known_hosts
-          
-          ssh-agent -a $SSH_AUTH_SOCK > /dev/null
-          ssh-add <(echo "${{ secrets.CLOUD_SDK_AT_SAP_PRIVATE_DEPLOY_KEY }}")
-
       - name: Checkout Repository
         uses: actions/checkout@v3
+        with:
+          token: ${{ secrets.CLOUD_SDK_AT_SAP_ALL_ACCESS_PAT }}
 
       - name: Checkout Scripts
         uses: actions/checkout@v3
@@ -51,8 +43,6 @@ jobs:
 
       - name: Commit Changes
         id: git-commit
-        env:
-          SSH_AUTH_SOCK: /tmp/ssh_agent.sock
         run: |
           git config --global user.email "cloudsdk@sap.com"
           git config --global user.name "SAP Cloud SDK"
@@ -64,8 +54,12 @@ jobs:
           git commit -am "bump version"
           git push --set-upstream origin "$branch_name"
 
-      - name: Cleanup
-        if: always()
-        env:
-          SSH_AUTH_SOCK: /tmp/ssh_agent.sock
-        run: ssh-add -D
+      - name: Create Pull Request
+        uses: repo-sync/pull-request@v2
+        with:
+          destination_branch: "main"
+          source_branch: ${{ steps.git-commit.outputs.branch-name }}
+          pr_title: "Bump ${{ github.events.inputs.bumpType}} Version"
+          pr_draft: false
+          github_token: ${{ secrets.CLOUD_SDK_AT_SAP_ALL_ACCESS_PAT }}
+
