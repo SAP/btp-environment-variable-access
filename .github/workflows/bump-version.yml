@@ -62,7 +62,7 @@ jobs:
           
           git checkout -b "version-bump/$branch_name"
           git commit -am "bump version"
-          git push --set-upstream origin $branch_name
+          git push --set-upstream origin "$branch_name"
 
       - name: Cleanup
         if: always()
