@@ -1,4 +1,4 @@
-[![Maven Central](https://img.shields.io/badge/Maven_Central-yellow.svg)](https://search.maven.org/search?q=g:com.sap.cloud.environment.servicebinding%2BAND%2Ba:java-bom)
+[![Maven Central](https://img.shields.io/badge/Maven_Central-0.3.1-yellow.svg)](https://search.maven.org/search?q=g:com.sap.cloud.environment.servicebinding%2BAND%2Ba:java-bom)
 [![REUSE status](https://api.reuse.software/badge/github.com/SAP/btp-environment-variable-access)](https://api.reuse.software/info/github.com/SAP/btp-environment-variable-access)
 [![Java CI with Maven](https://github.com/SAP/btp-environment-variable-access/actions/workflows/maven.yml/badge.svg)](https://github.com/SAP/btp-environment-variable-access/actions/workflows/maven.yml)
 [![Language grade: Java](https://img.shields.io/lgtm/grade/java/g/SAP/btp-environment-variable-access.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/SAP/btp-environment-variable-access/context:java)
