@@ -3,14 +3,15 @@ name: Release to Maven Central
 on:
   workflow_dispatch:
     inputs:
-      updateType:
-        description: "The type of version bump that should be performed"
+      releaseType:
+        description: "The release type that should be performed."
         required: true
         type: choice
         options:
           - major
           - minor
           - patch
+        default: minor
 
 jobs:
   release:
@@ -33,7 +34,7 @@ jobs:
         uses: DigitalToolsManufactory/gh-action-maven-bump-version@v1
         id: bump-version
         with:
-          bumpType: "${{ inputs.updateType }}"
+          bumpType: "${{ inputs.releaseType }}"
           pomFiles: "pom.xml bom/pom.xml modules-bom/pom.xml"
 
       - name: Build Project
