@@ -1,0 +1,56 @@
+name: Build with Maven
+
+on:
+  workflow_call:
+    inputs:
+      mavenProfile:
+        description: "The Maven profile to use to build the project."
+        required: false
+        type: string
+      mavenModules:
+        description: "The Maven module that should be built with following syntax: ':<module-name>(opt:,:<further-module-name>')*. Example: ':module-1,:module-2'."
+        required: false
+        type: string
+      skipGpg:
+        description: "Indicates whether the GPG signing should be skipped."
+        required: false
+        type: boolean
+        default: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        java-version: [ 8, 11 ]
+    name: Build with Java ${{ matrix.java-version }}
+
+    steps:
+      - name: Set up JDK ${{ matrix.java-version }}
+        uses: actions/setup-java@v2
+        with:
+          distribution: 'adopt'
+          java-version: ${{ matrix.java-version }}
+      - name: Build with Maven
+        run: |
+          profile = ""
+          modules = ""
+          skipGpg = ""
+          
+          if [ -n "${{ inputs.mavenProfile }}" ]; then
+            profile = "-P ${{ inputs.mavenProfile }}"
+          fi
+          
+          if [ -n "${{ inputs.mavenModules }}" ]; then
+            modules = "-pl ${{ inputs.mavenModules }}"
+          fi
+          
+          if [ "${{ inputs.skipGpg }}" = "true" ]; then
+            skipGgp = "-Dgpg.skip"
+          fi
+          
+          mvn clean install $profile $modules $skipGpg
+          
+          
+          
+          
