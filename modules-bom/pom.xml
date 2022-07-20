@@ -4,7 +4,7 @@
 
     <groupId>com.sap.cloud.environment.servicebinding</groupId>
     <artifactId>java-modules-bom</artifactId>
-    <version>0.3.1</version>
+    <version>0.3.2</version>
     <packaging>pom</packaging>
     <name>java-modules-bom</name>
     <description>Bill of Material (BOM) for modules of the Java client library to access BTP environment service bindings</description>
@@ -44,7 +44,7 @@
     </distributionManagement>
 
     <properties>
-        <cloud-environment.version>0.3.1</cloud-environment.version>
+        <cloud-environment.version>0.3.2</cloud-environment.version>
     </properties>
 
     <dependencyManagement>
