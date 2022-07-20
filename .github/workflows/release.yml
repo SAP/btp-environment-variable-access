@@ -1,4 +1,4 @@
-name: Release Project to Maven Central
+name: Release to Maven Central
 
 on:
   workflow_dispatch:
@@ -13,29 +13,22 @@ on:
           - patch
 
 jobs:
-  checkout:
+  release:
     runs-on: ubuntu-latest
-    name: Checkout Repository
+    name: Perform Release
+    needs: checkout
     steps:
       - uses: actions/checkout@v3
+        name: Checkout Repository
         with:
           token: ${{ secrets.CLOUD_SDK_AT_SAP_ALL_ACCESS_PAT }}
 
-  setup:
-    runs-on: ubuntu-latest
-    name: Setup JDK
-    needs: checkout
-    steps:
       - uses: actions/setup-java@v2
+        name: Setup JDK
         with:
           distribution: 'adopt'
           java-version: 8
 
-  bump:
-    runs-on: ubuntu-latest
-    name: Bump Version
-    needs: checkout
-    steps:
       - name: Bump Version
         uses: DigitalToolsManufactory/gh-action-maven-bump-version@v1
         id: bump-version
@@ -43,33 +36,21 @@ jobs:
           bumpType: "${{ inputs.updateType }}"
           pomFiles: "pom.xml bom/pom.xml modules-bom/pom.xml"
 
-  build:
-    runs-on: ubuntu-latest
-    name: Build Project
-    needs: [setup, bump]
-    steps:
-      - run: mvn clean install -P release -Dgpg.skip
+      - name: Build Project
+        run: mvn clean install -P release -Dgpg.skip
 
-  commit:
-    runs-on: ubuntu-latest
-    name: Commit Changes
-    needs: build
-    steps:
-      - id: git-commit
+      - name: Commit Changes
+        id: git-commit
         run: |
           git config --global user.email "cloudsdk@sap.com"
           git config --global user.name "SAP Cloud SDK"
-
+          
           git commit -am "bump version ${{ steps.git-commit.outputs.old_version}} -> ${{ steps.git-commit.outputs.new_version}}"
           git tag -m "Release v${{ steps.git-commit.outputs.new_version}}" -a "v${{ steps.git-commit.outputs.new_version}}"
           git push --follow-tags
 
-  release:
-    runs-on: ubuntu-latest
-    name: Publish Release
-    needs: commit
-    steps:
-      - uses: samuelmeuli/action-maven-publish@v1
+      - name: Deploy Release
+        uses: samuelmeuli/action-maven-publish@v1
         with:
           gpg_private_key: ${{ secrets.CLOUD_SDK_AT_SAP_PRIVATE_GPG_KEY }}
           gpg_passphrase: ${{ secrets.CLOUD_SDK_AT_SAP_PRIVATE_GPG_PASSPHRASE }}
