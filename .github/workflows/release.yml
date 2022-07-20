@@ -40,13 +40,12 @@ jobs:
         run: mvn clean install -P release -Dgpg.skip
 
       - name: Commit Changes
-        id: git-commit
         run: |
           git config --global user.email "cloudsdk@sap.com"
           git config --global user.name "SAP Cloud SDK"
           
-          git commit -am "bump version ${{ steps.git-commit.outputs.old_version}} -> ${{ steps.git-commit.outputs.new_version}}"
-          git tag -m "Release v${{ steps.git-commit.outputs.new_version}}" -a "v${{ steps.git-commit.outputs.new_version}}"
+          git commit -am "bump version ${{ steps.bump-version.outputs.old_version}} -> ${{ steps.bump-version.outputs.new_version}}"
+          git tag -m "Release v${{ steps.bump-version.outputs.new_version}}" -a "v${{ steps.bump-version.outputs.new_version}}"
           git push --follow-tags
 
       - name: Deploy Release
