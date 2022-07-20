@@ -1,6 +1,22 @@
 name: Build with Maven
 
 on:
+  workflow_dispatch:
+    inputs:
+      mavenProfile:
+        description: "The Maven profile to use to build the project."
+        required: false
+        type: string
+      mavenModules:
+        description: "The Maven module that should be built with following syntax: ':<module-name>(opt:,:<further-module-name>')*. Example: ':module-1,:module-2'."
+        required: false
+        type: string
+      skipGpg:
+        description: "Indicates whether the GPG signing should be skipped."
+        required: false
+        type: boolean
+        default: true
+
   workflow_call:
     inputs:
       mavenProfile:
