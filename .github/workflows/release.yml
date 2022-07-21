@@ -45,7 +45,7 @@ jobs:
           git config --global user.name "SAP Cloud SDK"
           
           git commit -am "bump version ${{ steps.bump-version.outputs.old_version}} -> ${{ steps.bump-version.outputs.new_version}}"
-          git tag -m "Release v${{ steps.bump-version.outputs.new_version}}" -a "v${{ steps.bump-version.outputs.new_version}}"
+          git tag -m "Release version ${{ steps.bump-version.outputs.new_version}}" -a "${{ steps.bump-version.outputs.new_version}}"
           git push --follow-tags
 
       - name: Deploy Release
