@@ -55,11 +55,11 @@ jobs:
           git tag -s -m "Release version ${{ steps.bump-version.outputs.new_version}}" -a "${{ steps.bump-version.outputs.new_version}}"
           git push --follow-tags
 
-#      - name: Deploy Release
-#        uses: samuelmeuli/action-maven-publish@v1
-#        with:
-#          gpg_private_key: ${{ secrets.CLOUD_SDK_AT_SAP_PRIVATE_GPG_KEY }}
-#          gpg_passphrase: ${{ secrets.CLOUD_SDK_AT_SAP_PRIVATE_GPG_PASSPHRASE }}
-#          nexus_username: ${{ secrets.CLOUD_SDK_AT_SAP_NEXUS_USER }}
-#          nexus_password: ${{ secrets.CLOUD_SDK_AT_SAP_NEXUS_PASSPHRASE }}
-#          maven_profiles: "release"
+      - name: Deploy Release
+        uses: samuelmeuli/action-maven-publish@v1
+        with:
+          gpg_private_key: ${{ secrets.CLOUD_SDK_AT_SAP_PRIVATE_GPG_KEY }}
+          gpg_passphrase: ${{ secrets.CLOUD_SDK_AT_SAP_PRIVATE_GPG_PASSPHRASE }}
+          nexus_username: ${{ secrets.CLOUD_SDK_AT_SAP_NEXUS_USER }}
+          nexus_password: ${{ secrets.CLOUD_SDK_AT_SAP_NEXUS_PASSPHRASE }}
+          maven_profiles: "release"
