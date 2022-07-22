@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.sap.cloud.environment.servicebinding</groupId>
     <artifactId>java-parent</artifactId>
-    <version>0.3.1</version>
+    <version>0.3.2</version>
     <packaging>pom</packaging>
     <name>java-parent</name>
     <description>Java Client Library to access BTP environment service bindings</description>
@@ -60,7 +60,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
-        <cloud-environment.version>0.3.1</cloud-environment.version>
+        <cloud-environment.version>0.3.2</cloud-environment.version>
 
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
