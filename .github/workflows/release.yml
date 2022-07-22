@@ -23,6 +23,13 @@ jobs:
         with:
           token: ${{ secrets.CLOUD_SDK_AT_SAP_ALL_ACCESS_PAT }}
 
+      - uses: crazy-max/ghaction-import-gpg@v5
+        with:
+          gpg_private_key: ${{ secrets.CLOUD_SDK_AT_SAP_PRIVATE_GPG_KEY }}
+          passphrase: ${{ secrets.CLOUD_SDK_AT_SAP_PRIVATE_GPG_PASSPHRASE }}
+          git_user_signingkey: true
+          git_commit_gpgsign: true
+
       - uses: actions/setup-java@v2
         name: Setup JDK
         with:
@@ -44,8 +51,8 @@ jobs:
           git config --global user.email "cloudsdk@sap.com"
           git config --global user.name "SAP Cloud SDK"
           
-          git commit -am "bump version ${{ steps.bump-version.outputs.old_version}} -> ${{ steps.bump-version.outputs.new_version}}"
-          git tag -m "Release version ${{ steps.bump-version.outputs.new_version}}" -a "${{ steps.bump-version.outputs.new_version}}"
+          git commit -S -am "bump version ${{ steps.bump-version.outputs.old_version}} -> ${{ steps.bump-version.outputs.new_version}}"
+          git tag -s -m "Release version ${{ steps.bump-version.outputs.new_version}}" -a "${{ steps.bump-version.outputs.new_version}}"
           git push --follow-tags
 
       - name: Deploy Release
