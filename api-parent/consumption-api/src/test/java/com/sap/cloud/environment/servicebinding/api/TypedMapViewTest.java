@@ -4,26 +4,16 @@
 
 package com.sap.cloud.environment.servicebinding.api;
 
-import java.lang.reflect.Method;
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.annotation.Nonnull;
-
+import com.sap.cloud.environment.servicebinding.api.exception.ValueCastException;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-import com.sap.cloud.environment.servicebinding.api.exception.ValueCastException;
+import javax.annotation.Nonnull;
+import java.lang.reflect.Method;
+import java.math.BigDecimal;
+import java.util.*;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatNoException;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.mock;
 
 class TypedMapViewTest
@@ -36,6 +26,8 @@ class TypedMapViewTest
 
     private static final double DOUBLE = 13.37d;
 
+    private static final BigDecimal BIG_DECIMAL = BigDecimal.valueOf(Long.MAX_VALUE, Integer.MAX_VALUE);
+
     @BeforeAll
     static void beforeAll()
         throws NoSuchMethodException
@@ -43,7 +35,7 @@ class TypedMapViewTest
         PRIMITIVE_VALUES.put("Boolean", true);
         PRIMITIVE_VALUES.put("Integer", INTEGER);
         PRIMITIVE_VALUES.put("Double", DOUBLE);
-        PRIMITIVE_VALUES.put("Number", BigDecimal.valueOf(Long.MAX_VALUE, Integer.MAX_VALUE));
+        PRIMITIVE_VALUES.put("Number", BIG_DECIMAL);
         PRIMITIVE_VALUES.put("String", "Value");
         PRIMITIVE_VALUES.put("Object", null);
 
@@ -106,31 +98,13 @@ class TypedMapViewTest
         expectValueCastExceptionForAllBut(sut, "Key", TypedMapView.class.getDeclaredMethod("getBoolean", String.class));
     }
 
-    private static void expectValueCastExceptionForAllBut(
-        @Nonnull final TypedMapView sut,
-        @Nonnull final String key,
-        @Nonnull final Method... methods )
-    {
-
-        final List<Method> expectedWorkingMethods = Arrays.asList(methods);
-        for( final Method typedAccessor : TYPED_ACCESSORS ) {
-            if( expectedWorkingMethods.contains(typedAccessor) ) {
-                assertThatNoException().isThrownBy(() -> typedAccessor.invoke(sut, key));
-            } else {
-                assertThatThrownBy(() -> typedAccessor.invoke(sut, key))
-                    .hasCauseExactlyInstanceOf(ValueCastException.class);
-            }
-        }
-    }
-
     @Test
     void getInteger()
         throws NoSuchMethodException
     {
         final TypedMapView sut = TypedMapView.fromMap(Collections.singletonMap("Key", INTEGER));
 
-        expectValueCastExceptionForAllBut(
-            sut,
+        expectValueCastExceptionForAllBut(sut,
             "Key",
             TypedMapView.class.getDeclaredMethod("getInteger", String.class),
             TypedMapView.class.getDeclaredMethod("getDouble", String.class),
@@ -143,8 +117,7 @@ class TypedMapViewTest
     {
         final TypedMapView sut = TypedMapView.fromMap(Collections.singletonMap("Key", DOUBLE));
 
-        expectValueCastExceptionForAllBut(
-            sut,
+        expectValueCastExceptionForAllBut(sut,
             "Key",
             TypedMapView.class.getDeclaredMethod("getInteger", String.class),
             TypedMapView.class.getDeclaredMethod("getDouble", String.class),
@@ -155,12 +128,13 @@ class TypedMapViewTest
     void getNumber()
         throws NoSuchMethodException
     {
-        final TypedMapView sut =
-            TypedMapView
-                .fromMap(Collections.singletonMap("Key", BigDecimal.valueOf(Long.MAX_VALUE, Integer.MAX_VALUE)));
+        final TypedMapView
+            sut =
+            TypedMapView.fromMap(Collections.singletonMap(
+                "Key",
+                BigDecimal.valueOf(Long.MAX_VALUE, Integer.MAX_VALUE)));
 
-        expectValueCastExceptionForAllBut(
-            sut,
+        expectValueCastExceptionForAllBut(sut,
             "Key",
             TypedMapView.class.getDeclaredMethod("getNumber", String.class),
             TypedMapView.class.getDeclaredMethod("getInteger", String.class),
@@ -191,8 +165,7 @@ class TypedMapViewTest
     {
         final TypedMapView sut = TypedMapView.fromMap(Collections.singletonMap("Key", mock(TypedListView.class)));
 
-        expectValueCastExceptionForAllBut(
-            sut,
+        expectValueCastExceptionForAllBut(sut,
             "Key",
             TypedMapView.class.getDeclaredMethod("getListView", String.class));
     }
@@ -200,7 +173,7 @@ class TypedMapViewTest
     @Test
     void getEntries()
     {
-        final Map<String, Object> primitiveValues = Collections.synchronizedMap(PRIMITIVE_VALUES);
+        final Map<String, Object> primitiveValues = new HashMap<>(PRIMITIVE_VALUES);
         primitiveValues.put("String2", "Value2");
 
         final TypedMapView sut = TypedMapView.fromMap(primitiveValues);
@@ -208,5 +181,31 @@ class TypedMapViewTest
         assertThat(stringMap).hasSize(2);
         assertThat(stringMap.get("String")).isEqualTo("Value");
         assertThat(stringMap.get("String2")).isEqualTo("Value2");
+    }
+
+    @Test
+    void getEntriesAlsoReturnsSubTypes()
+    {
+        final TypedMapView sut = TypedMapView.fromMap(PRIMITIVE_VALUES);
+
+        assertThat(sut.getEntries(Integer.class).values()).containsExactlyInAnyOrder(INTEGER);
+        assertThat(sut.getEntries(Double.class).values()).containsExactlyInAnyOrder(DOUBLE);
+        assertThat(sut.getEntries(Number.class).values()).containsExactlyInAnyOrder(INTEGER, DOUBLE, BIG_DECIMAL);
+    }
+
+    private static void expectValueCastExceptionForAllBut(
+        @Nonnull final TypedMapView sut, @Nonnull final String key, @Nonnull final Method... methods )
+    {
+
+        final List<Method> expectedWorkingMethods = Arrays.asList(methods);
+        for( final Method typedAccessor : TYPED_ACCESSORS ) {
+            if( expectedWorkingMethods.contains(typedAccessor) ) {
+                assertThatNoException().isThrownBy(() -> typedAccessor.invoke(sut, key));
+            } else {
+                assertThatThrownBy(() -> typedAccessor.invoke(
+                    sut,
+                    key)).hasCauseExactlyInstanceOf(ValueCastException.class);
+            }
+        }
     }
 }

@@ -15,13 +15,6 @@ public class ServiceBindingAccessException extends RuntimeException
     private static final long serialVersionUID = 8589108462580396260L;
 
     /**
-     * Initializes a new {@link ServiceBindingAccessException} instance without a dedicated message or cause.
-     */
-    public ServiceBindingAccessException()
-    {
-    }
-
-    /**
      * Initializes a new {@link ServiceBindingAccessException} instance with a dedicated {@code message}.
      *
      * @param message
@@ -30,6 +23,17 @@ public class ServiceBindingAccessException extends RuntimeException
     public ServiceBindingAccessException( @Nonnull final String message )
     {
         super(message);
+    }
+
+    /**
+     * Initializes a new {@link ServiceBindingAccessException} instance with a dedicated {@code cause}.
+     *
+     * @param cause
+     *            The exception cause.
+     */
+    public ServiceBindingAccessException( @Nonnull final Throwable cause )
+    {
+        super(cause);
     }
 
     /**
@@ -44,16 +48,5 @@ public class ServiceBindingAccessException extends RuntimeException
     public ServiceBindingAccessException( @Nonnull final String message, @Nonnull final Throwable cause )
     {
         super(message, cause);
-    }
-
-    /**
-     * Initializes a new {@link ServiceBindingAccessException} instance with a dedicated {@code cause}.
-     *
-     * @param cause
-     *            The exception cause.
-     */
-    public ServiceBindingAccessException( @Nonnull final Throwable cause )
-    {
-        super(cause);
     }
 }
