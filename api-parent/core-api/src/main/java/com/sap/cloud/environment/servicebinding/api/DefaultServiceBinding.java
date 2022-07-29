@@ -4,16 +4,16 @@
 
 package com.sap.cloud.environment.servicebinding.api;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import com.sap.cloud.environment.servicebinding.api.exception.UnsupportedPropertyTypeException;
+
+/**
+ * A {@link ServiceBinding} that treats keys case insensitively.
+ */
 public class DefaultServiceBinding implements ServiceBinding
 {
     @Nonnull
@@ -50,6 +50,11 @@ public class DefaultServiceBinding implements ServiceBinding
         this.credentials = credentials;
     }
 
+    /**
+     * Initializes a new {@link MapSelectionBuilder} instance.
+     *
+     * @return A new {@link MapSelectionBuilder} instance.
+     */
     @Nonnull
     public static MapSelectionBuilder builder()
     {
@@ -137,44 +142,161 @@ public class DefaultServiceBinding implements ServiceBinding
             && properties.equals(that.properties);
     }
 
+    /**
+     * Represents the first step that is required for building a {@link DefaultServiceBinding}.
+     */
     public interface MapSelectionBuilder
     {
+        /**
+         * Creates a deep copy of the given {@code properties}, which is then used as the data source of the to-be-built
+         * {@link DefaultServiceBinding}.
+         *
+         * @param properties
+         *            The properties of the to-be-built {@link DefaultServiceBinding}.
+         * @return A {@link TerminalBuilder} to finalize the building process.
+         * @throws UnsupportedPropertyTypeException
+         *             Thrown if the given {@code properties} contain an unsupported property type. Supported types are:
+         *             <ul>
+         *             <li>{@link Boolean}</li>
+         *             <li>{@link Number}</li>
+         *             <li>{@link String}</li>
+         *             <li>{@link Map}</li>
+         *             <li>{@link Iterable}</li>
+         *             </ul>
+         */
         @Nonnull
-        TerminalBuilder copy( @Nonnull final Map<String, Object> properties );
+        TerminalBuilder copy( @Nonnull final Map<String, Object> properties )
+            throws UnsupportedPropertyTypeException;
     }
 
+    /**
+     * Represents the last step that is required for building a {@link DefaultServiceBinding}.
+     */
     public interface TerminalBuilder
     {
+        /**
+         * Defines the name of the to-be-built {@link DefaultServiceBinding}.
+         *
+         * @param name
+         *            The name that should be returned by {@link DefaultServiceBinding#getName()}.
+         * @return This {@link TerminalBuilder} instance.
+         */
         @Nonnull
         TerminalBuilder withName( @Nonnull final String name );
 
+        /**
+         * Extracts the name of the to-be-built {@link DefaultServiceBinding} from the initially passed properties (see
+         * {@link MapSelectionBuilder#copy(Map)}) using the given {@code key}.
+         *
+         * @param key
+         *            The key that should be used to extract the value that should be returned by
+         *            {@link DefaultServiceBinding#getName()} from the initially passed properties (see
+         *            {@link MapSelectionBuilder#copy(Map)}).
+         * @return This {@link TerminalBuilder} instance.
+         */
         @Nonnull
         TerminalBuilder withNameKey( @Nonnull final String key );
 
+        /**
+         * Defines the name of the bound service of the to-be-built {@link DefaultServiceBinding}.
+         *
+         * @param serviceName
+         *            The name of the bound service that should be returned by
+         *            {@link DefaultServiceBinding#getServiceName()}.
+         * @return This {@link TerminalBuilder} instance.
+         */
         @Nonnull
         TerminalBuilder withServiceName( @Nonnull final String serviceName );
 
+        /**
+         * Extracts the name of the bound service of the to-be-built {@link DefaultServiceBinding} from the initially
+         * passed properties (see {@link MapSelectionBuilder#copy(Map)}) using the given {@code key}.
+         *
+         * @param key
+         *            The key that should be used to extract the value that should be returned by
+         *            {@link DefaultServiceBinding#getServiceName()} from the initially passed properties (see
+         *            {@link MapSelectionBuilder#copy(Map)}).
+         * @return This {@link TerminalBuilder} instance.
+         */
         @Nonnull
         TerminalBuilder withServiceNameKey( @Nonnull final String key );
 
+        /**
+         * Defines the plan of the bound service of the to-be-built {@link DefaultServiceBinding}.
+         *
+         * @param servicePlan
+         *            The plan of the bound service that should be returned by
+         *            {@link DefaultServiceBinding#getServicePlan()}.
+         * @return This {@link TerminalBuilder} instance.
+         */
         @Nonnull
         TerminalBuilder withServicePlan( @Nonnull final String servicePlan );
 
+        /**
+         * Extracts the plan of the bound service of the to-be-built {@link DefaultServiceBinding} from the initially
+         * passed properties (see {@link MapSelectionBuilder#copy(Map)}) using the given {@code key}.
+         *
+         * @param key
+         *            The key that should be used to extract the value that should be returned by
+         *            {@link DefaultServiceBinding#getServicePlan()} from the initially passed properties (see
+         *            {@link MapSelectionBuilder#copy(Map)}).
+         * @return This {@link TerminalBuilder} instance.
+         */
         @Nonnull
         TerminalBuilder withServicePlanKey( @Nonnull final String key );
 
+        /**
+         * Defines the tags of the to-be-built {@link DefaultServiceBinding}.
+         *
+         * @param tags
+         *            The tags that should be returned by {@link DefaultServiceBinding#getTags()}.
+         * @return This {@link TerminalBuilder} instance.
+         */
         @Nonnull
         TerminalBuilder withTags( @Nonnull final Iterable<String> tags );
 
+        /**
+         * Extracts the tags of the to-be-built {@link DefaultServiceBinding} from the initially passed properties (see
+         * {@link MapSelectionBuilder#copy(Map)}) using the given {@code key}.
+         *
+         * @param key
+         *            The key that should be used to extract the values that should be returned by
+         *            {@link DefaultServiceBinding#getTags()} from the initially passed properties (see
+         *            {@link MapSelectionBuilder#copy(Map)}).
+         * @return This {@link TerminalBuilder} instance.
+         */
         @Nonnull
         TerminalBuilder withTagsKey( @Nonnull final String key );
 
+        /**
+         * Defines the credentials of the to-be-built {@link DefaultServiceBinding}.
+         *
+         * @param credentials
+         *            The credentials, which will be deep-copied that should be returned by
+         *            {@link DefaultServiceBinding#getCredentials()}.
+         * @return This {@link TerminalBuilder} instance.
+         */
         @Nonnull
         TerminalBuilder withCredentials( @Nonnull final Map<String, Object> credentials );
 
+        /**
+         * Extracts the credentials of the to-be-built {@link DefaultServiceBinding} from the initially passed
+         * properties (see {@link MapSelectionBuilder#copy(Map)}) using the given {@code key}.
+         *
+         * @param key
+         *            The key that should be used to extract the values that should be returned by
+         *            {@link DefaultServiceBinding#getCredentials()} from the initially passed properties (see
+         *            {@link MapSelectionBuilder#copy(Map)}).
+         * @return This {@link TerminalBuilder} instance.
+         */
         @Nonnull
         TerminalBuilder withCredentialsKey( @Nonnull final String key );
 
+        /**
+         * Initializes a new {@link DefaultServiceBinding} instance.
+         *
+         * @return A new {@link DefaultServiceBinding} instance.
+         */
         @Nonnull
         DefaultServiceBinding build();
     }

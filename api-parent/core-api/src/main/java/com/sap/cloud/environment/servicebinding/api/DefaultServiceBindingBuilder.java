@@ -4,13 +4,7 @@
 
 package com.sap.cloud.environment.servicebinding.api;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
@@ -20,6 +14,11 @@ import javax.annotation.Nullable;
 
 import com.sap.cloud.environment.servicebinding.api.exception.UnsupportedPropertyTypeException;
 
+/**
+ * A {@link com.sap.cloud.environment.servicebinding.api.DefaultServiceBinding.MapSelectionBuilder} and
+ * {@link com.sap.cloud.environment.servicebinding.api.DefaultServiceBinding.TerminalBuilder} that can be used to build
+ * {@link DefaultServiceBinding} instances.
+ */
 public class DefaultServiceBindingBuilder
     implements
     DefaultServiceBinding.MapSelectionBuilder,
@@ -58,7 +57,7 @@ public class DefaultServiceBindingBuilder
     }
 
     @Nonnull
-    static Map<String, Object> copyMap(
+    private static Map<String, Object> copyMap(
         @Nonnull final Map<String, Object> map,
         @Nonnull final Function<Map<String, Object>, Map<String, Object>> mapDecorator,
         @Nonnull final Function<List<Object>, List<Object>> listDecorator )
