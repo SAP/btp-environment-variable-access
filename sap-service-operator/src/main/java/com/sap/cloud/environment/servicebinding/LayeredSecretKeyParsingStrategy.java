@@ -4,6 +4,14 @@
 
 package com.sap.cloud.environment.servicebinding;
 
+import com.sap.cloud.environment.servicebinding.api.DefaultServiceBinding;
+import com.sap.cloud.environment.servicebinding.api.ServiceBinding;
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.annotation.Nonnull;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
@@ -14,16 +22,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
-
-import javax.annotation.Nonnull;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.sap.cloud.environment.servicebinding.api.DefaultServiceBinding;
-import com.sap.cloud.environment.servicebinding.api.ServiceBinding;
 
 /**
  * A {@link LayeredParsingStrategy} that expects <b>exactly one</b> JSON file that contains the credentials. All other

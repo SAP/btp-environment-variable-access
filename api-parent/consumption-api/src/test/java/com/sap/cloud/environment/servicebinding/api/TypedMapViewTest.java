@@ -4,18 +4,24 @@
 
 package com.sap.cloud.environment.servicebinding.api;
 
-import java.lang.reflect.Method;
-import java.math.BigDecimal;
-import java.util.*;
-
-import javax.annotation.Nonnull;
-
+import com.sap.cloud.environment.servicebinding.api.exception.ValueCastException;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-import com.sap.cloud.environment.servicebinding.api.exception.ValueCastException;
+import javax.annotation.Nonnull;
+import java.lang.reflect.Method;
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatNoException;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.mock;
 
 class TypedMapViewTest

@@ -4,11 +4,10 @@
 
 package com.sap.cloud.environment.servicebinding.api;
 
+import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-
-import javax.annotation.Nonnull;
 
 /**
  * A {@link ServiceBindingAccessor} that combines the result of multiple other {@link ServiceBindingAccessor}s. How the

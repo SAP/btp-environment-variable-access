@@ -4,15 +4,20 @@
 
 package com.sap.cloud.environment.servicebinding.api;
 
-import java.util.*;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
+import com.sap.cloud.environment.servicebinding.api.exception.UnsupportedPropertyTypeException;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-
-import com.sap.cloud.environment.servicebinding.api.exception.UnsupportedPropertyTypeException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 /**
  * A {@link com.sap.cloud.environment.servicebinding.api.DefaultServiceBinding.MapSelectionBuilder} and

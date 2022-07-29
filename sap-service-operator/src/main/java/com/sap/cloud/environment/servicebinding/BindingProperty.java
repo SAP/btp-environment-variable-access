@@ -4,9 +4,8 @@
 
 package com.sap.cloud.environment.servicebinding;
 
-import java.util.Objects;
-
 import javax.annotation.Nonnull;
+import java.util.Objects;
 
 class BindingProperty
 {
