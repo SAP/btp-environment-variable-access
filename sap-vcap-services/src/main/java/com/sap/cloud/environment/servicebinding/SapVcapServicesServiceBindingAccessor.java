@@ -4,25 +4,28 @@
 
 package com.sap.cloud.environment.servicebinding;
 
-import com.sap.cloud.environment.servicebinding.api.DefaultServiceBinding;
-import com.sap.cloud.environment.servicebinding.api.ServiceBinding;
-import com.sap.cloud.environment.servicebinding.api.ServiceBindingAccessor;
-import com.sap.cloud.environment.servicebinding.api.exception.ServiceBindingAccessException;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import javax.annotation.Nonnull;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.sap.cloud.environment.servicebinding.api.DefaultServiceBinding;
+import com.sap.cloud.environment.servicebinding.api.ServiceBinding;
+import com.sap.cloud.environment.servicebinding.api.ServiceBindingAccessor;
+import com.sap.cloud.environment.servicebinding.api.exception.ServiceBindingAccessException;
+
 /**
- * A {@link ServiceBindingAccessor} that is able to load {@link ServiceBinding}s from SAP's {@code VCAP_SERVICES} structure.
+ * A {@link ServiceBindingAccessor} that is able to load {@link ServiceBinding}s from SAP's {@code VCAP_SERVICES}
+ * structure.
  */
 public class SapVcapServicesServiceBindingAccessor implements ServiceBindingAccessor
 {
@@ -42,7 +45,8 @@ public class SapVcapServicesServiceBindingAccessor implements ServiceBindingAcce
     private final Function<String, String> environmentVariableReader;
 
     /**
-     * Initializes a new {@link SapVcapServicesServiceBindingAccessor} instance that uses the {@link #DEFAULT_ENVIRONMENT_VARIABLE_READER}.
+     * Initializes a new {@link SapVcapServicesServiceBindingAccessor} instance that uses the
+     * {@link #DEFAULT_ENVIRONMENT_VARIABLE_READER}.
      */
     public SapVcapServicesServiceBindingAccessor()
     {
@@ -50,9 +54,11 @@ public class SapVcapServicesServiceBindingAccessor implements ServiceBindingAcce
     }
 
     /**
-     * Initializes a new {@link SapVcapServicesServiceBindingAccessor} instance that uses the given {@code environmentVariableReader}.
+     * Initializes a new {@link SapVcapServicesServiceBindingAccessor} instance that uses the given
+     * {@code environmentVariableReader}.
      *
-     * @param environmentVariableReader The {@link Function} that should be used to read environment variables.
+     * @param environmentVariableReader
+     *            The {@link Function} that should be used to read environment variables.
      */
     public SapVcapServicesServiceBindingAccessor( @Nonnull final Function<String, String> environmentVariableReader )
     {
@@ -81,16 +87,17 @@ public class SapVcapServicesServiceBindingAccessor implements ServiceBindingAcce
             return Collections.emptyList();
         }
 
-        return parsedVcapServices.keySet()
+        return parsedVcapServices
+            .keySet()
             .stream()
             .flatMap(serviceName -> extractServiceBindings(parsedVcapServices, serviceName).stream())
             .collect(Collectors.toList());
     }
 
     @Nonnull
-    private List<ServiceBinding> extractServiceBindings(
-        @Nonnull final JSONObject vcapServices,
-        @Nonnull final String serviceName )
+    private
+        List<ServiceBinding>
+        extractServiceBindings( @Nonnull final JSONObject vcapServices, @Nonnull final String serviceName )
     {
         final JSONArray jsonServiceBindings;
         try {
@@ -119,11 +126,12 @@ public class SapVcapServicesServiceBindingAccessor implements ServiceBindingAcce
     }
 
     @Nonnull
-    private ServiceBinding toServiceBinding(
-        @Nonnull final JSONObject jsonServiceBinding,
-        @Nonnull final String serviceName )
+    private
+        ServiceBinding
+        toServiceBinding( @Nonnull final JSONObject jsonServiceBinding, @Nonnull final String serviceName )
     {
-        return DefaultServiceBinding.builder()
+        return DefaultServiceBinding
+            .builder()
             .copy(jsonServiceBinding.toMap())
             .withNameKey("name")
             .withServiceName(serviceName)

@@ -140,7 +140,8 @@ class TypedListViewTest
         throws NoSuchMethodException
     {
         final TypedListView sut =
-            TypedListView.fromIterable(Collections.singletonList(BigDecimal.valueOf(Long.MAX_VALUE, Integer.MAX_VALUE)));
+            TypedListView
+                .fromIterable(Collections.singletonList(BigDecimal.valueOf(Long.MAX_VALUE, Integer.MAX_VALUE)));
 
         expectValueCastExceptionForAllBut(
             sut,

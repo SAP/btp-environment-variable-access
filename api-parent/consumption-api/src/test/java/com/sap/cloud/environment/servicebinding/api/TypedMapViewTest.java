@@ -4,14 +4,16 @@
 
 package com.sap.cloud.environment.servicebinding.api;
 
-import com.sap.cloud.environment.servicebinding.api.exception.ValueCastException;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
-
-import javax.annotation.Nonnull;
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.util.*;
+
+import javax.annotation.Nonnull;
+
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+
+import com.sap.cloud.environment.servicebinding.api.exception.ValueCastException;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.mock;
@@ -104,7 +106,8 @@ class TypedMapViewTest
     {
         final TypedMapView sut = TypedMapView.fromMap(Collections.singletonMap("Key", INTEGER));
 
-        expectValueCastExceptionForAllBut(sut,
+        expectValueCastExceptionForAllBut(
+            sut,
             "Key",
             TypedMapView.class.getDeclaredMethod("getInteger", String.class),
             TypedMapView.class.getDeclaredMethod("getDouble", String.class),
@@ -117,7 +120,8 @@ class TypedMapViewTest
     {
         final TypedMapView sut = TypedMapView.fromMap(Collections.singletonMap("Key", DOUBLE));
 
-        expectValueCastExceptionForAllBut(sut,
+        expectValueCastExceptionForAllBut(
+            sut,
             "Key",
             TypedMapView.class.getDeclaredMethod("getInteger", String.class),
             TypedMapView.class.getDeclaredMethod("getDouble", String.class),
@@ -128,13 +132,12 @@ class TypedMapViewTest
     void getNumber()
         throws NoSuchMethodException
     {
-        final TypedMapView
-            sut =
-            TypedMapView.fromMap(Collections.singletonMap(
-                "Key",
-                BigDecimal.valueOf(Long.MAX_VALUE, Integer.MAX_VALUE)));
+        final TypedMapView sut =
+            TypedMapView
+                .fromMap(Collections.singletonMap("Key", BigDecimal.valueOf(Long.MAX_VALUE, Integer.MAX_VALUE)));
 
-        expectValueCastExceptionForAllBut(sut,
+        expectValueCastExceptionForAllBut(
+            sut,
             "Key",
             TypedMapView.class.getDeclaredMethod("getNumber", String.class),
             TypedMapView.class.getDeclaredMethod("getInteger", String.class),
@@ -165,7 +168,8 @@ class TypedMapViewTest
     {
         final TypedMapView sut = TypedMapView.fromMap(Collections.singletonMap("Key", mock(TypedListView.class)));
 
-        expectValueCastExceptionForAllBut(sut,
+        expectValueCastExceptionForAllBut(
+            sut,
             "Key",
             TypedMapView.class.getDeclaredMethod("getListView", String.class));
     }
@@ -194,7 +198,9 @@ class TypedMapViewTest
     }
 
     private static void expectValueCastExceptionForAllBut(
-        @Nonnull final TypedMapView sut, @Nonnull final String key, @Nonnull final Method... methods )
+        @Nonnull final TypedMapView sut,
+        @Nonnull final String key,
+        @Nonnull final Method... methods )
     {
 
         final List<Method> expectedWorkingMethods = Arrays.asList(methods);
@@ -202,9 +208,8 @@ class TypedMapViewTest
             if( expectedWorkingMethods.contains(typedAccessor) ) {
                 assertThatNoException().isThrownBy(() -> typedAccessor.invoke(sut, key));
             } else {
-                assertThatThrownBy(() -> typedAccessor.invoke(
-                    sut,
-                    key)).hasCauseExactlyInstanceOf(ValueCastException.class);
+                assertThatThrownBy(() -> typedAccessor.invoke(sut, key))
+                    .hasCauseExactlyInstanceOf(ValueCastException.class);
             }
         }
     }

@@ -62,10 +62,14 @@ public final class TypedListView
 
     /**
      * Returns the item at the given {@code index} as a {@code boolean}.
-     * @param index The list index of the item.
+     * 
+     * @param index
+     *            The list index of the item.
      * @return The item at the given {@code index} as a {@code boolean}.
-     * @throws IndexOutOfBoundsException Thrown if the given {@code index} is out of bounds.
-     * @throws ValueCastException Thrown if the item is not a {@code boolean}.
+     * @throws IndexOutOfBoundsException
+     *             Thrown if the given {@code index} is out of bounds.
+     * @throws ValueCastException
+     *             Thrown if the item is not a {@code boolean}.
      */
     public boolean getBoolean( final int index )
         throws IndexOutOfBoundsException,
@@ -82,9 +86,12 @@ public final class TypedListView
 
     /**
      * Returns the item at the given {@code index}.
-     * @param index The list index of the item.
+     * 
+     * @param index
+     *            The list index of the item.
      * @return The item at the given {@code index}.
-     * @throws IndexOutOfBoundsException Thrown if the given {@code index} is out of bounds.
+     * @throws IndexOutOfBoundsException
+     *             Thrown if the given {@code index} is out of bounds.
      */
     @Nullable
     public Object get( final int index )
@@ -99,6 +106,7 @@ public final class TypedListView
 
     /**
      * Returns the size of the underlying {@link List}.
+     * 
      * @return The size of the underlying {@link List}.
      */
     public int getSize()
@@ -108,10 +116,14 @@ public final class TypedListView
 
     /**
      * Returns the item at the given {@code index} as an {@code int}.
-     * @param index The list index of the item.
+     * 
+     * @param index
+     *            The list index of the item.
      * @return The item at the given {@code index} as an {@code int}.
-     * @throws IndexOutOfBoundsException Thrown if the given {@code index} is out of bounds.
-     * @throws ValueCastException Thrown if the item is not an {@code int}.
+     * @throws IndexOutOfBoundsException
+     *             Thrown if the given {@code index} is out of bounds.
+     * @throws ValueCastException
+     *             Thrown if the item is not an {@code int}.
      */
     public int getInteger( final int index )
         throws IndexOutOfBoundsException,
@@ -122,10 +134,14 @@ public final class TypedListView
 
     /**
      * Returns the item at the given {@code index} as a {@link Number}.
-     * @param index The list index of the item.
+     * 
+     * @param index
+     *            The list index of the item.
      * @return The item at the given {@code index} as a {@link Number}.
-     * @throws IndexOutOfBoundsException Thrown if the given {@code index} is out of bounds.
-     * @throws ValueCastException Thrown if the item is not a {@link Number}.
+     * @throws IndexOutOfBoundsException
+     *             Thrown if the given {@code index} is out of bounds.
+     * @throws ValueCastException
+     *             Thrown if the item is not a {@link Number}.
      */
     @Nonnull
     public Number getNumber( final int index )
@@ -143,10 +159,14 @@ public final class TypedListView
 
     /**
      * Returns the item at the given {@code index} as a {@code double}.
-     * @param index The list index of the item.
+     * 
+     * @param index
+     *            The list index of the item.
      * @return The item at the given {@code index} as a {@code double}.
-     * @throws IndexOutOfBoundsException Thrown if the given {@code index} is out of bounds.
-     * @throws ValueCastException Thrown if the item is not a {@code double}.
+     * @throws IndexOutOfBoundsException
+     *             Thrown if the given {@code index} is out of bounds.
+     * @throws ValueCastException
+     *             Thrown if the item is not a {@code double}.
      */
     public double getDouble( final int index )
         throws IndexOutOfBoundsException,
@@ -157,10 +177,14 @@ public final class TypedListView
 
     /**
      * Returns the item at the given {@code index} as a {@link String}.
-     * @param index The list index of the item.
+     * 
+     * @param index
+     *            The list index of the item.
      * @return The item at the given {@code index} as a {@link String}.
-     * @throws IndexOutOfBoundsException Thrown if the given {@code index} is out of bounds.
-     * @throws ValueCastException Thrown if the item is not a {@link String}.
+     * @throws IndexOutOfBoundsException
+     *             Thrown if the given {@code index} is out of bounds.
+     * @throws ValueCastException
+     *             Thrown if the item is not a {@link String}.
      */
     @Nonnull
     public String getString( final int index )
@@ -178,10 +202,14 @@ public final class TypedListView
 
     /**
      * Returns the item at the given {@code index} as a {@link TypedMapView}.
-     * @param index The list index of the item.
+     * 
+     * @param index
+     *            The list index of the item.
      * @return The item at the given {@code index} as a {@link TypedMapView}.
-     * @throws IndexOutOfBoundsException Thrown if the given {@code index} is out of bounds.
-     * @throws ValueCastException Thrown if the item is not a {@link TypedMapView}.
+     * @throws IndexOutOfBoundsException
+     *             Thrown if the given {@code index} is out of bounds.
+     * @throws ValueCastException
+     *             Thrown if the item is not a {@link TypedMapView}.
      */
     @Nonnull
     public TypedMapView getMapView( final int index )
@@ -199,10 +227,14 @@ public final class TypedListView
 
     /**
      * Returns the item at the given {@code index} as a {@link TypedListView}.
-     * @param index The list index of the item.
+     * 
+     * @param index
+     *            The list index of the item.
      * @return The item at the given {@code index} as a {@link TypedListView}.
-     * @throws IndexOutOfBoundsException Thrown if the given {@code index} is out of bounds.
-     * @throws ValueCastException Thrown if the item is not a {@link TypedListView}.
+     * @throws IndexOutOfBoundsException
+     *             Thrown if the given {@code index} is out of bounds.
+     * @throws ValueCastException
+     *             Thrown if the item is not a {@link TypedListView}.
      */
     @Nonnull
     public TypedListView getListView( final int index )
@@ -220,9 +252,12 @@ public final class TypedListView
 
     /**
      * Returns all items that are of the given {@code itemType} - including sub-types.
-     * @param itemType The {@link Class} of the items that should be returned.
+     * 
+     * @param itemType
+     *            The {@link Class} of the items that should be returned.
      * @return All items contained in this {@link TypedMapView} that are of (a sub-)type of the given {@code itemType}.
-     * @param <T> The item type.
+     * @param <T>
+     *            The item type.
      */
     @SuppressWarnings( "unchecked" )
     @Nonnull

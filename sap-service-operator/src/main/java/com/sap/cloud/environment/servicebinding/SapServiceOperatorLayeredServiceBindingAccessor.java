@@ -4,13 +4,6 @@
 
 package com.sap.cloud.environment.servicebinding;
 
-import com.sap.cloud.environment.servicebinding.api.ServiceBinding;
-import com.sap.cloud.environment.servicebinding.api.ServiceBindingAccessor;
-import com.sap.cloud.environment.servicebinding.api.exception.ServiceBindingAccessException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import javax.annotation.Nonnull;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
@@ -24,6 +17,15 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
+import javax.annotation.Nonnull;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.sap.cloud.environment.servicebinding.api.ServiceBinding;
+import com.sap.cloud.environment.servicebinding.api.ServiceBindingAccessor;
+import com.sap.cloud.environment.servicebinding.api.exception.ServiceBindingAccessException;
 
 /**
  * A {@link ServiceBindingAccessor} that is able to load <b>layered</b> {@link ServiceBinding}s from the file system.
@@ -68,11 +70,14 @@ public class SapServiceOperatorLayeredServiceBindingAccessor implements ServiceB
      * The default {@link LayeredParsingStrategy}s.
      */
     @Nonnull
-    public static final Collection<LayeredParsingStrategy>
-        DEFAULT_PARSING_STRATEGIES =
-        Collections.unmodifiableCollection(Arrays.asList(LayeredSecretRootKeyParsingStrategy.newDefault(),
-            LayeredSecretKeyParsingStrategy.newDefault(),
-            LayeredDataParsingStrategy.newDefault()));
+    public static final Collection<LayeredParsingStrategy> DEFAULT_PARSING_STRATEGIES =
+        Collections
+            .unmodifiableCollection(
+                Arrays
+                    .asList(
+                        LayeredSecretRootKeyParsingStrategy.newDefault(),
+                        LayeredSecretKeyParsingStrategy.newDefault(),
+                        LayeredDataParsingStrategy.newDefault()));
 
     /**
      * The default {@link Charset} that should be used to read property files.
@@ -87,7 +92,8 @@ public class SapServiceOperatorLayeredServiceBindingAccessor implements ServiceB
     private final Collection<LayeredParsingStrategy> parsingStrategies;
 
     /**
-     * Initializes a new {@link SapServiceOperatorLayeredServiceBindingAccessor} instance that uses the {@link #DEFAULT_ROOT_PATH} and the {@link #DEFAULT_PARSING_STRATEGIES}.
+     * Initializes a new {@link SapServiceOperatorLayeredServiceBindingAccessor} instance that uses the
+     * {@link #DEFAULT_ROOT_PATH} and the {@link #DEFAULT_PARSING_STRATEGIES}.
      */
     public SapServiceOperatorLayeredServiceBindingAccessor()
     {
@@ -95,12 +101,17 @@ public class SapServiceOperatorLayeredServiceBindingAccessor implements ServiceB
     }
 
     /**
-     * Initializes a new {@link SapServiceOperatorLayeredServiceBindingAccessor} that uses the given {@code rootPath} and {@code parsingStrategies}.
-     * @param rootPath The service binding root {@link Path} that should be used.
-     * @param parsingStrategies The {@link LayeredParsingStrategy}s that should be used.
+     * Initializes a new {@link SapServiceOperatorLayeredServiceBindingAccessor} that uses the given {@code rootPath}
+     * and {@code parsingStrategies}.
+     * 
+     * @param rootPath
+     *            The service binding root {@link Path} that should be used.
+     * @param parsingStrategies
+     *            The {@link LayeredParsingStrategy}s that should be used.
      */
     public SapServiceOperatorLayeredServiceBindingAccessor(
-        @Nonnull final Path rootPath, @Nonnull final Collection<LayeredParsingStrategy> parsingStrategies )
+        @Nonnull final Path rootPath,
+        @Nonnull final Collection<LayeredParsingStrategy> parsingStrategies )
     {
         this.rootPath = rootPath;
         this.parsingStrategies = parsingStrategies;
@@ -129,20 +140,23 @@ public class SapServiceOperatorLayeredServiceBindingAccessor implements ServiceB
     private Stream<ServiceBinding> parseServiceBindings( @Nonnull final Path servicePath )
     {
         try {
-            return Files.list(servicePath)
+            return Files
+                .list(servicePath)
                 .filter(Files::isDirectory)
-                .map(bindingPath -> parsingStrategies.stream()
-                    .map(strategy -> applyStrategy(strategy, servicePath, bindingPath))
-                    .filter(Optional::isPresent)
-                    .findFirst()
-                    .orElse(Optional.empty()))
+                .map(
+                    bindingPath -> parsingStrategies
+                        .stream()
+                        .map(strategy -> applyStrategy(strategy, servicePath, bindingPath))
+                        .filter(Optional::isPresent)
+                        .findFirst()
+                        .orElse(Optional.empty()))
                 .filter(Optional::isPresent)
                 .map(Optional::get);
         }
         catch( final IOException e ) {
-            throw new ServiceBindingAccessException(String.format(
-                "Unable to access service binding files in '%s'.",
-                servicePath), e);
+            throw new ServiceBindingAccessException(
+                String.format("Unable to access service binding files in '%s'.", servicePath),
+                e);
         }
     }
 
@@ -153,10 +167,8 @@ public class SapServiceOperatorLayeredServiceBindingAccessor implements ServiceB
         @Nonnull final Path bindingPath )
     {
         try {
-            return strategy.parse(
-                servicePath.getFileName().toString(),
-                bindingPath.getFileName().toString(),
-                bindingPath);
+            return strategy
+                .parse(servicePath.getFileName().toString(), bindingPath.getFileName().toString(), bindingPath);
         }
         catch( final IOException e ) {
             return Optional.empty();

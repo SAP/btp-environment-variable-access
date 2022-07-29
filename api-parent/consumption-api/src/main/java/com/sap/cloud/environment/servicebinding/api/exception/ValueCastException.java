@@ -4,9 +4,10 @@
 
 package com.sap.cloud.environment.servicebinding.api.exception;
 
+import java.util.Optional;
+
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.Optional;
 
 /**
  * A {@link RuntimeException} that is thrown if a value cannot be cast to an expected target type.
@@ -22,10 +23,13 @@ public class ValueCastException extends RuntimeException
     private final Object actualObject;
 
     /**
-     * Initializes a new {@link ValueCastException} instance with the given {@code requestedType} and the {@code actualObject}.
+     * Initializes a new {@link ValueCastException} instance with the given {@code requestedType} and the
+     * {@code actualObject}.
      *
-     * @param requestedType The {@link Class}, which the {@code actualObject} should be cast to.
-     * @param actualObject  The actual object found, that couldn't be cast to the {@code requestedType}.
+     * @param requestedType
+     *            The {@link Class}, which the {@code actualObject} should be cast to.
+     * @param actualObject
+     *            The actual object found, that couldn't be cast to the {@code requestedType}.
      */
     public ValueCastException( @Nonnull final Class<?> requestedType, @Nullable final Object actualObject )
     {
@@ -56,9 +60,11 @@ public class ValueCastException extends RuntimeException
     }
 
     /**
-     * Returns an {@link Optional} that might contain the actual {@link Class} of the object (if present) that should have been cast.
+     * Returns an {@link Optional} that might contain the actual {@link Class} of the object (if present) that should
+     * have been cast.
      *
-     * @return An {@link Optional} that might contain the actual {@link Class} of the object (if present) that should have been cast.
+     * @return An {@link Optional} that might contain the actual {@link Class} of the object (if present) that should
+     *         have been cast.
      */
     @Nonnull
     public Optional<Class<?>> getActualType()
