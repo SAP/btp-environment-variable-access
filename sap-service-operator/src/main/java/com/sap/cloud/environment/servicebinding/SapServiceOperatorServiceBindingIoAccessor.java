@@ -32,10 +32,28 @@ import com.sap.cloud.environment.servicebinding.api.DefaultServiceBinding;
 import com.sap.cloud.environment.servicebinding.api.ServiceBinding;
 import com.sap.cloud.environment.servicebinding.api.ServiceBindingAccessor;
 import com.sap.cloud.environment.servicebinding.api.exception.ServiceBindingAccessException;
-import com.sap.cloud.environment.servicebinding.metadata.BindingMetadata;
-import com.sap.cloud.environment.servicebinding.metadata.BindingMetadataFactory;
-import com.sap.cloud.environment.servicebinding.metadata.BindingProperty;
 
+/**
+ * A {@link ServiceBindingAccessor} that is able to load {@link ServiceBinding}s that conform to the
+ * <a href="https://servicebinding.io/spec/core/1.0.0/">servicebinding.io</a> specification with the
+ * <a href="https://blogs.sap.com/2022/07/12/the-new-way-to-consume-service-bindings-on-kyma-runtime/">SAP metadata
+ * extension</a> from the file system. <br>
+ * The file system structure is assumed to look as follows:
+ * 
+ * <pre>
+ *     ${SERVICE-BINDING-ROOT}
+ *     ├-- {SERVICE-BINDING-NAME#1}
+ *     |   ├-- .metadata
+ *     |   ├-- {PROPERTY#1}
+ *     |   ├-- ...
+ *     |   └-- {PROPERTY#N}
+ *     └-- {SERVICE-BINDING-NAME#2}
+ *         ├-- .metadata
+ *         ├-- {PROPERTY#1}
+ *         ├-- ...
+ *         └-- {PROPERTY#N}
+ * </pre>
+ */
 public class SapServiceOperatorServiceBindingIoAccessor implements ServiceBindingAccessor
 {
     @Nonnull

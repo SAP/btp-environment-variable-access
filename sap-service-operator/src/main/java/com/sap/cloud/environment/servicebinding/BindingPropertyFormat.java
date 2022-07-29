@@ -2,11 +2,11 @@
  * Copyright (c) 2022 SAP SE or an SAP affiliate company. All rights reserved.
  */
 
-package com.sap.cloud.environment.servicebinding.metadata;
+package com.sap.cloud.environment.servicebinding;
 
 import javax.annotation.Nonnull;
 
-public enum PropertyFormat
+enum BindingPropertyFormat
 {
     TEXT("text"),
     JSON("json");
@@ -14,7 +14,7 @@ public enum PropertyFormat
     @Nonnull
     private final String value;
 
-    PropertyFormat( @Nonnull final String value )
+    BindingPropertyFormat( @Nonnull final String value )
     {
         this.value = value;
     }

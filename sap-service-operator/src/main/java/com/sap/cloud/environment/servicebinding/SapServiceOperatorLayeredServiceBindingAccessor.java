@@ -10,11 +10,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -27,6 +23,34 @@ import com.sap.cloud.environment.servicebinding.api.ServiceBinding;
 import com.sap.cloud.environment.servicebinding.api.ServiceBindingAccessor;
 import com.sap.cloud.environment.servicebinding.api.exception.ServiceBindingAccessException;
 
+/**
+ * A {@link ServiceBindingAccessor} that is able to load <b>layered</b> {@link ServiceBinding}s from the file system.
+ * <br>
+ * The <b>layered</b> structure is assumed to look as follows:
+ * 
+ * <pre>
+ *     {SERVICE-BINDING-ROOT}
+ *     ├-- {SERVICE-NAME#1}
+ *     |   ├-- {SERVICE-BINDING-NAME#1}
+ *     |   |   └-- {SERVICE-BINDING-CONTENT#1}
+ *     |   └-- {SERVICE-BINDING-NAME#2}
+ *     |       └-- {SERVICE-BINDING-CONTENT#2}
+ *     └-- {SERVICE-NAME#2}
+ *         └-- {SERVICE-BINDING-NAME#3}
+ *             └- {SERVICE-BINDING-CONTENT#3}
+ * </pre>
+ * 
+ * By default, {@code /etc/secrets/sapbtp} is used as the {@code SERVICE-BINDING-ROOT}. <br>
+ * The {@code {SERVICE-BINDING-CONTENT}} itself can also have different structures, which are supported through
+ * different {@link LayeredParsingStrategy}s. By default, following strategies are applied:
+ * <ol>
+ * <li>{@link LayeredSecretRootKeyParsingStrategy}</li>
+ * <li>{@link LayeredSecretKeyParsingStrategy}</li>
+ * <li>{@link LayeredDataParsingStrategy}</li>
+ * </ol>
+ * The <b>order</b> of the applied strategies <b>is important</b> as only the first parsed value for each service
+ * binding will be considered.
+ */
 public class SapServiceOperatorLayeredServiceBindingAccessor implements ServiceBindingAccessor
 {
     @Nonnull

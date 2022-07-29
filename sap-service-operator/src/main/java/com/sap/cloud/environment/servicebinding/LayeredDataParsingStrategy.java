@@ -9,11 +9,7 @@ import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
@@ -26,6 +22,10 @@ import org.slf4j.LoggerFactory;
 import com.sap.cloud.environment.servicebinding.api.DefaultServiceBinding;
 import com.sap.cloud.environment.servicebinding.api.ServiceBinding;
 
+/**
+ * A {@link LayeredParsingStrategy} that expects all property files to contain "plain" text (i.e. no JSON structures).
+ * Credentials and metadata of the {@link ServiceBinding} are distinguished by their name.
+ */
 public final class LayeredDataParsingStrategy implements LayeredParsingStrategy
 {
     @Nonnull
@@ -86,6 +86,11 @@ public final class LayeredDataParsingStrategy implements LayeredParsingStrategy
         this.fallbackPropertySetter = fallbackPropertySetter;
     }
 
+    /**
+     * Initializes a new {@link LayeredDataParsingStrategy} instance using the default configuration.
+     *
+     * @return A new {@link LayeredDataParsingStrategy} instance with default configuration.
+     */
     @Nonnull
     public static LayeredDataParsingStrategy newDefault()
     {

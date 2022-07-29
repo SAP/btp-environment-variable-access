@@ -25,6 +25,10 @@ import org.slf4j.LoggerFactory;
 import com.sap.cloud.environment.servicebinding.api.DefaultServiceBinding;
 import com.sap.cloud.environment.servicebinding.api.ServiceBinding;
 
+/**
+ * A {@link LayeredParsingStrategy} that expects <b>exactly one</b> JSON file that contains the credentials. All other
+ * properties (i.e. metadata) are expected to be contained in their own files.
+ */
 public final class LayeredSecretKeyParsingStrategy implements LayeredParsingStrategy
 {
     @Nonnull
@@ -41,6 +45,11 @@ public final class LayeredSecretKeyParsingStrategy implements LayeredParsingStra
         this.charset = charset;
     }
 
+    /**
+     * Initializes a new {@link LayeredSecretKeyParsingStrategy} instance using the default configuration.
+     *
+     * @return A new {@link LayeredSecretKeyParsingStrategy} instance with default configuration.
+     */
     @Nonnull
     public static LayeredSecretKeyParsingStrategy newDefault()
     {

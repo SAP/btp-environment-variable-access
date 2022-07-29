@@ -9,11 +9,7 @@ import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
@@ -27,6 +23,10 @@ import org.slf4j.LoggerFactory;
 import com.sap.cloud.environment.servicebinding.api.DefaultServiceBinding;
 import com.sap.cloud.environment.servicebinding.api.ServiceBinding;
 
+/**
+ * A {@link LayeredParsingStrategy} that expects <b>exactly one</b> JSON file that contains both credentials <b>and</b>
+ * metadata properties. Credentials and metadata of the {@link ServiceBinding} are distinguished by their name.
+ */
 public final class LayeredSecretRootKeyParsingStrategy implements LayeredParsingStrategy
 {
     @Nonnull
@@ -83,6 +83,11 @@ public final class LayeredSecretRootKeyParsingStrategy implements LayeredParsing
         this.fallbackPropertySetter = fallbackPropertySetter;
     }
 
+    /**
+     * Initializes a new {@link LayeredSecretRootKeyParsingStrategy} instance using the default configuration.
+     *
+     * @return A new {@link LayeredSecretRootKeyParsingStrategy} instance with default configuration.
+     */
     @Nonnull
     public static LayeredSecretRootKeyParsingStrategy newDefault()
     {

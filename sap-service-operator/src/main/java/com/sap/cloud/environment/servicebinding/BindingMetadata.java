@@ -2,7 +2,7 @@
  * Copyright (c) 2022 SAP SE or an SAP affiliate company. All rights reserved.
  */
 
-package com.sap.cloud.environment.servicebinding.metadata;
+package com.sap.cloud.environment.servicebinding;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -11,7 +11,7 @@ import java.util.List;
 
 import javax.annotation.Nonnull;
 
-public class BindingMetadata
+class BindingMetadata
 {
     @Nonnull
     private final List<BindingProperty> metadataProperties;
