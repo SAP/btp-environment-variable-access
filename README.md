@@ -2,7 +2,6 @@
 [![REUSE status](https://api.reuse.software/badge/github.com/SAP/btp-environment-variable-access)](https://api.reuse.software/info/github.com/SAP/btp-environment-variable-access)
 [![Java CI with Maven](https://github.com/SAP/btp-environment-variable-access/actions/workflows/ci-build.yml/badge.svg)](https://github.com/SAP/btp-environment-variable-access/actions/workflows/ci-build.yml)
 [![Language grade: Java](https://img.shields.io/lgtm/grade/java/g/SAP/btp-environment-variable-access.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/SAP/btp-environment-variable-access/context:java)
-[![CodeQL](https://github.com/SAP/btp-environment-variable-access/actions/workflows/codeql.yml/badge.svg)](https://github.com/SAP/btp-environment-variable-access/actions/workflows/codeql.yml)
 [![Fosstars security rating](https://raw.githubusercontent.com/SAP/btp-environment-variable-access/fosstars-report/fosstars_badge.svg)](https://github.com/SAP/btp-environment-variable-access/blob/fosstars-report/fosstars_report.md)
 
 # BTP Environment Service Binding Access for Java
