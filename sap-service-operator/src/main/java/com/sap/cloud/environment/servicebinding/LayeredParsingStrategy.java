@@ -4,15 +4,16 @@
 
 package com.sap.cloud.environment.servicebinding;
 
-import com.sap.cloud.environment.servicebinding.api.ServiceBinding;
-
-import javax.annotation.Nonnull;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Optional;
 
+import javax.annotation.Nonnull;
+
+import com.sap.cloud.environment.servicebinding.api.ServiceBinding;
+
 /**
- * Represents a method object to parse a {@link ServiceBinding} from a specific layered file structure (see
+ * Represents a strategy to read a {@link ServiceBinding} from a specific layered file structure (see
  * {@link SapServiceOperatorLayeredServiceBindingAccessor}).
  */
 @FunctionalInterface

@@ -4,11 +4,6 @@
 
 package com.sap.cloud.environment.servicebinding.api;
 
-import com.sap.cloud.environment.servicebinding.api.exception.ValueCastException;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
-
-import javax.annotation.Nonnull;
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -16,6 +11,13 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+
+import javax.annotation.Nonnull;
+
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+
+import com.sap.cloud.environment.servicebinding.api.exception.ValueCastException;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatNoException;

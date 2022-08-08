@@ -4,10 +4,10 @@
 
 package com.sap.cloud.environment.servicebinding;
 
+import javax.annotation.Nonnull;
+
 import org.json.JSONException;
 import org.junit.jupiter.api.Test;
-
-import javax.annotation.Nonnull;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;

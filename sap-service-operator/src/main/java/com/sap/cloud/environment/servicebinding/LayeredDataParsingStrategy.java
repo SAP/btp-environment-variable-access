@@ -4,14 +4,6 @@
 
 package com.sap.cloud.environment.servicebinding;
 
-import com.sap.cloud.environment.servicebinding.api.DefaultServiceBinding;
-import com.sap.cloud.environment.servicebinding.api.ServiceBinding;
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import javax.annotation.Nonnull;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
@@ -24,9 +16,20 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import javax.annotation.Nonnull;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.sap.cloud.environment.servicebinding.api.DefaultServiceBinding;
+import com.sap.cloud.environment.servicebinding.api.ServiceBinding;
+
 /**
  * A {@link LayeredParsingStrategy} that expects all property files to contain "plain" text (i.e. no JSON structures).
- * Credentials and metadata of the {@link ServiceBinding} are distinguished by their name.
+ * Credentials and metadata of the {@link ServiceBinding} are distinguished by their name - in contrast to the
+ * {@link LayeredSecretKeyParsingStrategy} where credentials and metadata are distinguished by their structure.
  */
 public final class LayeredDataParsingStrategy implements LayeredParsingStrategy
 {

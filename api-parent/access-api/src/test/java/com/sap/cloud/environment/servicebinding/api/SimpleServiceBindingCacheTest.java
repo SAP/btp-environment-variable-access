@@ -4,10 +4,6 @@
 
 package com.sap.cloud.environment.servicebinding.api;
 
-import com.sap.cloud.environment.servicebinding.api.exception.ServiceBindingAccessException;
-import org.junit.jupiter.api.Test;
-
-import javax.annotation.Nonnull;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.temporal.TemporalAmount;
@@ -21,6 +17,12 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.function.Supplier;
+
+import javax.annotation.Nonnull;
+
+import org.junit.jupiter.api.Test;
+
+import com.sap.cloud.environment.servicebinding.api.exception.ServiceBindingAccessException;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

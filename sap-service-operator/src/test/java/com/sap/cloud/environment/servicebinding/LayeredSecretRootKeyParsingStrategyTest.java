@@ -4,12 +4,13 @@
 
 package com.sap.cloud.environment.servicebinding;
 
-import com.sap.cloud.environment.servicebinding.api.ServiceBinding;
-import org.junit.jupiter.api.Test;
-
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Optional;
+
+import org.junit.jupiter.api.Test;
+
+import com.sap.cloud.environment.servicebinding.api.ServiceBinding;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

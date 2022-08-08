@@ -4,17 +4,18 @@
 
 package com.sap.cloud.environment.servicebinding.api;
 
-import com.sap.cloud.environment.servicebinding.api.exception.KeyNotFoundException;
-import com.sap.cloud.environment.servicebinding.api.exception.ValueCastException;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
+import com.sap.cloud.environment.servicebinding.api.exception.KeyNotFoundException;
+import com.sap.cloud.environment.servicebinding.api.exception.ValueCastException;
 
 /**
  * A utility class that allows type-safe access to entries of a {@link Map}.
@@ -32,7 +33,8 @@ public final class TypedMapView
     /**
      * Initializes a new {@link TypedMapView} instance from the given {@code serviceBinding}.
      *
-     * @param serviceBinding The {@link ServiceBinding}, which should be converted.
+     * @param serviceBinding
+     *            The {@link ServiceBinding}, which should be converted.
      * @return A new {@link TypedMapView} instance.
      */
     @Nonnull
@@ -55,7 +57,8 @@ public final class TypedMapView
      * Initializes a new {@link TypedMapView} instance from the {@link ServiceBinding#getCredentials()} of the given
      * {@code serviceBinding}.
      *
-     * @param serviceBinding The {@link ServiceBinding} to take the credentials from.
+     * @param serviceBinding
+     *            The {@link ServiceBinding} to take the credentials from.
      * @return A new {@link TypedMapView} instance.
      */
     @Nonnull
@@ -65,7 +68,9 @@ public final class TypedMapView
     }
 
     private static void insertElement(
-        @Nonnull final Map<String, Object> properties, @Nonnull final String key, @Nullable final Object value )
+        @Nonnull final Map<String, Object> properties,
+        @Nonnull final String key,
+        @Nullable final Object value )
     {
         if( value instanceof Map ) {
             properties.put(key, fromRawMap(value));
@@ -124,13 +129,17 @@ public final class TypedMapView
     /**
      * Returns the entry that is stored under the given {@code key} as a {@code boolean}.
      *
-     * @param key The key of the entry.
+     * @param key
+     *            The key of the entry.
      * @return The entry that is stored under the given {@code key} as a {@code boolean}.
-     * @throws KeyNotFoundException Thrown if the given {@code key} is not contained in this {@link TypedMapView}.
-     * @throws ValueCastException   Thrown if the entry is not a {@code boolean}.
+     * @throws KeyNotFoundException
+     *             Thrown if the given {@code key} is not contained in this {@link TypedMapView}.
+     * @throws ValueCastException
+     *             Thrown if the entry is not a {@code boolean}.
      */
     public boolean getBoolean( @Nonnull final String key )
-        throws KeyNotFoundException, ValueCastException
+        throws KeyNotFoundException,
+            ValueCastException
     {
         final Object value = get(key);
 
@@ -144,9 +153,11 @@ public final class TypedMapView
     /**
      * Returns the entry that is stored under the given {@code key}.
      *
-     * @param key The key of the entry.
+     * @param key
+     *            The key of the entry.
      * @return The entry that is stored under the given {@code key}.
-     * @throws KeyNotFoundException Thrown if the given {@code key} is not contained in this {@link TypedMapView}.
+     * @throws KeyNotFoundException
+     *             Thrown if the given {@code key} is not contained in this {@link TypedMapView}.
      */
     @Nullable
     public Object get( @Nonnull final String key )
@@ -162,7 +173,8 @@ public final class TypedMapView
     /**
      * Checks whether the given {@code key} is contained in this {@link TypedMapView}.
      *
-     * @param key The key to check.
+     * @param key
+     *            The key to check.
      * @return {@code true} if the key is contained, {@code false} otherwise.
      */
     public boolean containsKey( @Nonnull final String key )
@@ -173,13 +185,17 @@ public final class TypedMapView
     /**
      * Returns the entry that is stored under the given {@code key} as an {@code int}.
      *
-     * @param key The key of the entry.
+     * @param key
+     *            The key of the entry.
      * @return The entry that is stored under the given {@code key} as an {@code int}.
-     * @throws KeyNotFoundException Thrown if the given {@code key} is not contained in this {@link TypedMapView}.
-     * @throws ValueCastException   Thrown if the entry is not an {@code int}.
+     * @throws KeyNotFoundException
+     *             Thrown if the given {@code key} is not contained in this {@link TypedMapView}.
+     * @throws ValueCastException
+     *             Thrown if the entry is not an {@code int}.
      */
     public int getInteger( @Nonnull final String key )
-        throws KeyNotFoundException, ValueCastException
+        throws KeyNotFoundException,
+            ValueCastException
     {
         return getNumber(key).intValue();
     }
@@ -187,14 +203,18 @@ public final class TypedMapView
     /**
      * Returns the entry that is stored under the given {@code key} as a {@link Number}.
      *
-     * @param key The key of the entry.
+     * @param key
+     *            The key of the entry.
      * @return The entry that is stored under the given {@code key} as a {@link Number}.
-     * @throws KeyNotFoundException Thrown if the given {@code key} is not contained in this {@link TypedMapView}.
-     * @throws ValueCastException   Thrown if the entry is not a {@link Number}.
+     * @throws KeyNotFoundException
+     *             Thrown if the given {@code key} is not contained in this {@link TypedMapView}.
+     * @throws ValueCastException
+     *             Thrown if the entry is not a {@link Number}.
      */
     @Nonnull
     public Number getNumber( @Nonnull final String key )
-        throws KeyNotFoundException, ValueCastException
+        throws KeyNotFoundException,
+            ValueCastException
     {
         final Object value = get(key);
 
@@ -208,13 +228,17 @@ public final class TypedMapView
     /**
      * Returns the entry that is stored under the given {@code key} as a {@code double}.
      *
-     * @param key The key of the entry.
+     * @param key
+     *            The key of the entry.
      * @return The entry that is stored under the given {@code key} as a {@code double}.
-     * @throws KeyNotFoundException Thrown if the given {@code key} is not contained in this {@link TypedMapView}.
-     * @throws ValueCastException   Thrown if the entry is not a {@code double}.
+     * @throws KeyNotFoundException
+     *             Thrown if the given {@code key} is not contained in this {@link TypedMapView}.
+     * @throws ValueCastException
+     *             Thrown if the entry is not a {@code double}.
      */
     public double getDouble( @Nonnull final String key )
-        throws KeyNotFoundException, ValueCastException
+        throws KeyNotFoundException,
+            ValueCastException
     {
         return getNumber(key).doubleValue();
     }
@@ -222,14 +246,18 @@ public final class TypedMapView
     /**
      * Returns the entry that is stored under the given {@code key} as a {@link String}.
      *
-     * @param key The key of the entry.
+     * @param key
+     *            The key of the entry.
      * @return The entry that is stored under the given {@code key} as a {@link String}.
-     * @throws KeyNotFoundException Thrown if the given {@code key} is not contained in this {@link TypedMapView}.
-     * @throws ValueCastException   Thrown if the entry is not a {@link String}.
+     * @throws KeyNotFoundException
+     *             Thrown if the given {@code key} is not contained in this {@link TypedMapView}.
+     * @throws ValueCastException
+     *             Thrown if the entry is not a {@link String}.
      */
     @Nonnull
     public String getString( @Nonnull final String key )
-        throws KeyNotFoundException, ValueCastException
+        throws KeyNotFoundException,
+            ValueCastException
     {
         final Object value = get(key);
 
@@ -243,14 +271,18 @@ public final class TypedMapView
     /**
      * Returns the entry that is stored under the given {@code key} as a {@link TypedMapView}.
      *
-     * @param key The key of the entry.
+     * @param key
+     *            The key of the entry.
      * @return The entry that is stored under the given {@code key} as a {@link TypedMapView}.
-     * @throws KeyNotFoundException Thrown if the given {@code key} is not contained in this {@link TypedMapView}.
-     * @throws ValueCastException   Thrown if the entry is not a {@link TypedMapView}.
+     * @throws KeyNotFoundException
+     *             Thrown if the given {@code key} is not contained in this {@link TypedMapView}.
+     * @throws ValueCastException
+     *             Thrown if the entry is not a {@link TypedMapView}.
      */
     @Nonnull
     public TypedMapView getMapView( @Nonnull final String key )
-        throws KeyNotFoundException, ValueCastException
+        throws KeyNotFoundException,
+            ValueCastException
     {
         final Object value = get(key);
 
@@ -264,14 +296,18 @@ public final class TypedMapView
     /**
      * Returns the entry that is stored under the given {@code key} as a {@link TypedListView}.
      *
-     * @param key The key of the entry.
+     * @param key
+     *            The key of the entry.
      * @return The entry that is stored under the given {@code key} as a {@link TypedListView}.
-     * @throws KeyNotFoundException Thrown if the given {@code key} is not contained in this {@link TypedMapView}.
-     * @throws ValueCastException   Thrown if the entry is not a {@link TypedListView}.
+     * @throws KeyNotFoundException
+     *             Thrown if the given {@code key} is not contained in this {@link TypedMapView}.
+     * @throws ValueCastException
+     *             Thrown if the entry is not a {@link TypedListView}.
      */
     @Nonnull
     public TypedListView getListView( @Nonnull final String key )
-        throws KeyNotFoundException, ValueCastException
+        throws KeyNotFoundException,
+            ValueCastException
     {
         final Object value = get(key);
 
@@ -286,16 +322,19 @@ public final class TypedMapView
      * Returns a {@link Map} of entries (including their key) that are of the given {@code entryType} - including
      * sub-types.
      *
-     * @param entryType The {@link Class} of the entries that should be returned.
-     * @param <T>       The entry type.
+     * @param entryType
+     *            The {@link Class} of the entries that should be returned.
+     * @param <T>
+     *            The entry type.
      * @return A {@link Map} of all entries (including their keys) contained in this {@link TypedMapView} that are of (a
-     * sub-)type of the given {@code entryType}.
+     *         sub-)type of the given {@code entryType}.
      */
     @SuppressWarnings( "unchecked" )
     @Nonnull
     public <T> Map<String, T> getEntries( @Nonnull final Class<? extends T> entryType )
     {
-        return map.entrySet()
+        return map
+            .entrySet()
             .stream()
             .filter(e -> e.getValue() != null && entryType.isAssignableFrom(e.getValue().getClass()))
             .collect(Collectors.toMap(Map.Entry::getKey, e -> (T) e.getValue()));

@@ -4,12 +4,6 @@
 
 package com.sap.cloud.environment.servicebinding.api;
 
-import com.sap.cloud.environment.servicebinding.api.exception.ServiceBindingAccessException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.temporal.Temporal;
@@ -19,6 +13,14 @@ import java.util.Optional;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.function.Supplier;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.sap.cloud.environment.servicebinding.api.exception.ServiceBindingAccessException;
 
 /**
  * A {@link ServiceBindingAccessor} that caches the result of an other {@link ServiceBindingAccessor} for a certain

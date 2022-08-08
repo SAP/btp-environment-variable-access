@@ -4,9 +4,9 @@
 
 package com.sap.cloud.environment.servicebinding.api.exception;
 
-import com.sap.cloud.environment.servicebinding.api.TypedMapView;
-
 import javax.annotation.Nonnull;
+
+import com.sap.cloud.environment.servicebinding.api.TypedMapView;
 
 /**
  * A {@link RuntimeException} that is thrown if a specific key was not found in a {@link TypedMapView}.

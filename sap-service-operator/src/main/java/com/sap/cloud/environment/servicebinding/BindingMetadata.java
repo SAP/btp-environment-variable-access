@@ -4,11 +4,12 @@
 
 package com.sap.cloud.environment.servicebinding;
 
-import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+
+import javax.annotation.Nonnull;
 
 class BindingMetadata
 {

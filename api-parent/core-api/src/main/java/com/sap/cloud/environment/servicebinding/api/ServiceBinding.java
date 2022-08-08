@@ -4,11 +4,12 @@
 
 package com.sap.cloud.environment.servicebinding.api;
 
-import javax.annotation.Nonnull;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+
+import javax.annotation.Nonnull;
 
 /**
  * Represents an <bold>immutable</bold> collection of (secret) key-value properties. These properties can be used to

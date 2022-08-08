@@ -4,9 +4,10 @@
 
 package com.sap.cloud.environment.servicebinding.api.exception;
 
+import java.util.Optional;
+
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.Optional;
 
 /**
  * A {@link RuntimeException} that is thrown if a value cannot be cast to an expected target type.

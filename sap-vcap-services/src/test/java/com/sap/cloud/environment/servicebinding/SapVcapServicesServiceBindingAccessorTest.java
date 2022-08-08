@@ -4,14 +4,16 @@
 
 package com.sap.cloud.environment.servicebinding;
 
-import com.sap.cloud.environment.servicebinding.api.ServiceBinding;
-import org.junit.jupiter.api.Test;
-
-import javax.annotation.Nonnull;
 import java.util.Collection;
 import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+
+import javax.annotation.Nonnull;
+
+import org.junit.jupiter.api.Test;
+
+import com.sap.cloud.environment.servicebinding.api.ServiceBinding;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

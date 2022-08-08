@@ -4,14 +4,15 @@
 
 package com.sap.cloud.environment.servicebinding.api;
 
-import com.sap.cloud.environment.servicebinding.api.exception.ValueCastException;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
+import com.sap.cloud.environment.servicebinding.api.exception.ValueCastException;
 
 /**
  * A utility class that allows type-safe access to items of a {@link List}.

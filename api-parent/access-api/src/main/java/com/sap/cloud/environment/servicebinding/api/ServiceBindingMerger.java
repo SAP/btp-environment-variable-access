@@ -4,14 +4,30 @@
 
 package com.sap.cloud.environment.servicebinding.api;
 
-import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import javax.annotation.Nonnull;
+
 /**
- * A {@link ServiceBindingAccessor} that combines the result of multiple other {@link ServiceBindingAccessor}s. How the
- * individual results will be combined (merged) can be configured.
+ * A {@link ServiceBindingAccessor} that merges the result of multiple other {@link ServiceBindingAccessor}s. This is
+ * done in the following manner:
+ * <ol>
+ * <li>Create an empty {@link java.util.Set} of {@link ServiceBinding}s - this is the final result that should be
+ * returned by {@link #getServiceBindings()}.</li>
+ * <li>For each delegate {@link ServiceBindingAccessor}:</li>
+ * <ol>
+ * <li>Call {@link ServiceBindingAccessor#getServiceBindings()}.</li>
+ * <li>For each {@link ServiceBinding}:</li>
+ * <ol>
+ * <li>Check whether the given {@link ServiceBinding} already exists<b>*</b> in the result {@link java.util.Set}.</li>
+ * <li>If the {@link ServiceBinding} does not yet exist, add it to the result.</li>
+ * </ol>
+ * </ol>
+ * </ol>
+ * <b>*:</b> This class uses the {@link EqualityComparer} to determine whether a given {@link ServiceBinding} already
+ * exists in the result {@link java.util.Set}.
  */
 public class ServiceBindingMerger implements ServiceBindingAccessor
 {

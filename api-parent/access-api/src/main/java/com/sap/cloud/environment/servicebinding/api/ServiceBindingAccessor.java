@@ -4,10 +4,11 @@
 
 package com.sap.cloud.environment.servicebinding.api;
 
-import com.sap.cloud.environment.servicebinding.api.exception.ServiceBindingAccessException;
+import java.util.List;
 
 import javax.annotation.Nonnull;
-import java.util.List;
+
+import com.sap.cloud.environment.servicebinding.api.exception.ServiceBindingAccessException;
 
 /**
  * Represents a source for {@link ServiceBinding}s.

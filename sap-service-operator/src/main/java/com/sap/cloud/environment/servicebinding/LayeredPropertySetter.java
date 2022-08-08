@@ -4,12 +4,13 @@
 
 package com.sap.cloud.environment.servicebinding;
 
-import org.json.JSONArray;
-
-import javax.annotation.Nonnull;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import javax.annotation.Nonnull;
+
+import org.json.JSONArray;
 
 @FunctionalInterface
 interface LayeredPropertySetter
