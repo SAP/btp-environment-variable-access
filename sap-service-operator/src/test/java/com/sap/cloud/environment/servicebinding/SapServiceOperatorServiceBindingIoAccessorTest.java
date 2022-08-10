@@ -11,6 +11,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -419,6 +420,7 @@ class SapServiceOperatorServiceBindingIoAccessorTest
         assertThat(dataXsuaaBinding.getCredentials().get("domains"))
             .asList()
             .containsExactlyInAnyOrder("data-xsuaa-domain-1", "data-xsuaa-domain-2");
+        assertThat(dataXsuaaBinding.getCredentials().get("uaa")).isInstanceOf(Map.class);
     }
 
     private static void assertContainsSecretKeyXsuaaBinding( @Nonnull final List<ServiceBinding> serviceBindings )

@@ -23,6 +23,7 @@ import java.util.stream.Stream;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -248,7 +249,7 @@ public class SapServiceOperatorServiceBindingIoAccessor implements ServiceBindin
 
         if( !property.isContainer() ) {
             // property is not a container, so the content should be attached as a flat value
-            properties.put(property.getName(), jsonObject.get("content"));
+            properties.put(property.getName(), getJsonProperty(jsonObject, "content"));
             return;
         }
 
@@ -260,8 +261,24 @@ public class SapServiceOperatorServiceBindingIoAccessor implements ServiceBindin
         }
 
         for( final String key : content.keySet() ) {
-            properties.put(key, content.get(key));
+            properties.put(key, getJsonProperty(content, key));
         }
+    }
+
+    @Nullable
+    private Object getJsonProperty( @Nonnull final JSONObject jsonObject, @Nonnull final String key )
+    {
+        final Object property = jsonObject.get(key);
+
+        if( property instanceof JSONObject ) {
+            return ((JSONObject) property).toMap();
+        }
+
+        if( property instanceof JSONArray ) {
+            return ((JSONArray) property).toList();
+        }
+
+        return property;
     }
 
     @Nonnull
