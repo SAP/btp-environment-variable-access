@@ -35,6 +35,10 @@
         {
             "name": "domains",
             "format": "json"
+        },
+        {
+            "name": "uaa",
+            "format": "json"
         }
     ]
 }
