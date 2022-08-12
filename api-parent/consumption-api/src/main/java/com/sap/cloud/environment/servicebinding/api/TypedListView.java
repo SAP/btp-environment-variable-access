@@ -14,6 +14,9 @@ import javax.annotation.Nullable;
 
 import com.sap.cloud.environment.servicebinding.api.exception.ValueCastException;
 
+/**
+ * A utility class that allows type-safe access to items of a {@link List}.
+ */
 public final class TypedListView
 {
     @Nonnull
@@ -25,38 +28,49 @@ public final class TypedListView
     }
 
     @Nonnull
-    static TypedListView fromList( @Nonnull final List<Object> list )
+    static TypedListView fromIterable( @Nonnull final Iterable<Object> list )
     {
-        final List<Object> elements = new ArrayList<>(list.size());
-        for( final Object element : list ) {
-            if( element instanceof Map ) {
-                elements.add(TypedMapView.fromRawMap(element));
+        final List<Object> items = new ArrayList<>();
+        for( final Object item : list ) {
+            if( item instanceof Map ) {
+                items.add(TypedMapView.fromRawMap(item));
                 continue;
             }
 
-            if( element instanceof List ) {
-                elements.add(fromRawList(element));
+            if( item instanceof List ) {
+                items.add(fromRawIterable(item));
                 continue;
             }
 
-            elements.add(element);
+            items.add(item);
         }
 
-        return new TypedListView(elements);
+        return new TypedListView(items);
     }
 
     @Nonnull
     @SuppressWarnings( "unchecked" )
-    static TypedListView fromRawList( @Nonnull final Object rawList )
+    static TypedListView fromRawIterable( @Nonnull final Object rawIterable )
     {
         try {
-            return fromList((List<Object>) rawList);
+            return fromIterable((Iterable<Object>) rawIterable);
         }
         catch( final ClassCastException e ) {
-            throw new ValueCastException();
+            throw new ValueCastException(Iterable.class, rawIterable);
         }
     }
 
+    /**
+     * Returns the item at the given {@code index} as a {@code boolean}.
+     * 
+     * @param index
+     *            The list index of the item.
+     * @return The item at the given {@code index} as a {@code boolean}.
+     * @throws IndexOutOfBoundsException
+     *             Thrown if the given {@code index} is out of bounds.
+     * @throws ValueCastException
+     *             Thrown if the item is not a {@code boolean}.
+     */
     public boolean getBoolean( final int index )
         throws IndexOutOfBoundsException,
             ValueCastException
@@ -67,9 +81,18 @@ public final class TypedListView
             return (boolean) value;
         }
 
-        throw new ValueCastException();
+        throw new ValueCastException(Boolean.class, value);
     }
 
+    /**
+     * Returns the item at the given {@code index}.
+     * 
+     * @param index
+     *            The list index of the item.
+     * @return The item at the given {@code index}.
+     * @throws IndexOutOfBoundsException
+     *             Thrown if the given {@code index} is out of bounds.
+     */
     @Nullable
     public Object get( final int index )
         throws IndexOutOfBoundsException
@@ -81,11 +104,27 @@ public final class TypedListView
         return list.get(index);
     }
 
+    /**
+     * Returns the size of the underlying {@link List}.
+     * 
+     * @return The size of the underlying {@link List}.
+     */
     public int getSize()
     {
         return list.size();
     }
 
+    /**
+     * Returns the item at the given {@code index} as an {@code int}.
+     * 
+     * @param index
+     *            The list index of the item.
+     * @return The item at the given {@code index} as an {@code int}.
+     * @throws IndexOutOfBoundsException
+     *             Thrown if the given {@code index} is out of bounds.
+     * @throws ValueCastException
+     *             Thrown if the item is not an {@code int}.
+     */
     public int getInteger( final int index )
         throws IndexOutOfBoundsException,
             ValueCastException
@@ -93,6 +132,17 @@ public final class TypedListView
         return getNumber(index).intValue();
     }
 
+    /**
+     * Returns the item at the given {@code index} as a {@link Number}.
+     * 
+     * @param index
+     *            The list index of the item.
+     * @return The item at the given {@code index} as a {@link Number}.
+     * @throws IndexOutOfBoundsException
+     *             Thrown if the given {@code index} is out of bounds.
+     * @throws ValueCastException
+     *             Thrown if the item is not a {@link Number}.
+     */
     @Nonnull
     public Number getNumber( final int index )
         throws IndexOutOfBoundsException,
@@ -104,9 +154,20 @@ public final class TypedListView
             return (Number) value;
         }
 
-        throw new ValueCastException();
+        throw new ValueCastException(Number.class, value);
     }
 
+    /**
+     * Returns the item at the given {@code index} as a {@code double}.
+     * 
+     * @param index
+     *            The list index of the item.
+     * @return The item at the given {@code index} as a {@code double}.
+     * @throws IndexOutOfBoundsException
+     *             Thrown if the given {@code index} is out of bounds.
+     * @throws ValueCastException
+     *             Thrown if the item is not a {@code double}.
+     */
     public double getDouble( final int index )
         throws IndexOutOfBoundsException,
             ValueCastException
@@ -114,6 +175,17 @@ public final class TypedListView
         return getNumber(index).doubleValue();
     }
 
+    /**
+     * Returns the item at the given {@code index} as a {@link String}.
+     * 
+     * @param index
+     *            The list index of the item.
+     * @return The item at the given {@code index} as a {@link String}.
+     * @throws IndexOutOfBoundsException
+     *             Thrown if the given {@code index} is out of bounds.
+     * @throws ValueCastException
+     *             Thrown if the item is not a {@link String}.
+     */
     @Nonnull
     public String getString( final int index )
         throws IndexOutOfBoundsException,
@@ -125,9 +197,20 @@ public final class TypedListView
             return (String) value;
         }
 
-        throw new ValueCastException();
+        throw new ValueCastException(String.class, value);
     }
 
+    /**
+     * Returns the item at the given {@code index} as a {@link TypedMapView}.
+     * 
+     * @param index
+     *            The list index of the item.
+     * @return The item at the given {@code index} as a {@link TypedMapView}.
+     * @throws IndexOutOfBoundsException
+     *             Thrown if the given {@code index} is out of bounds.
+     * @throws ValueCastException
+     *             Thrown if the item is not a {@link TypedMapView}.
+     */
     @Nonnull
     public TypedMapView getMapView( final int index )
         throws IndexOutOfBoundsException,
@@ -139,9 +222,20 @@ public final class TypedListView
             return (TypedMapView) value;
         }
 
-        throw new ValueCastException();
+        throw new ValueCastException(TypedMapView.class, value);
     }
 
+    /**
+     * Returns the item at the given {@code index} as a {@link TypedListView}.
+     * 
+     * @param index
+     *            The list index of the item.
+     * @return The item at the given {@code index} as a {@link TypedListView}.
+     * @throws IndexOutOfBoundsException
+     *             Thrown if the given {@code index} is out of bounds.
+     * @throws ValueCastException
+     *             Thrown if the item is not a {@link TypedListView}.
+     */
     @Nonnull
     public TypedListView getListView( final int index )
         throws IndexOutOfBoundsException,
@@ -153,16 +247,25 @@ public final class TypedListView
             return (TypedListView) value;
         }
 
-        throw new ValueCastException();
+        throw new ValueCastException(TypedListView.class, value);
     }
 
+    /**
+     * Returns all items that are of the given {@code itemType} - including sub-types.
+     * 
+     * @param itemType
+     *            The {@link Class} of the items that should be returned.
+     * @return All items contained in this {@link TypedMapView} that are of (a sub-)type of the given {@code itemType}.
+     * @param <T>
+     *            The item type.
+     */
     @SuppressWarnings( "unchecked" )
     @Nonnull
-    public <T> List<T> getItems( @Nonnull final Class<? extends T> listType )
+    public <T> List<T> getItems( @Nonnull final Class<? extends T> itemType )
     {
         return list
             .stream()
-            .filter(item -> item != null && item.getClass() == listType)
+            .filter(item -> item != null && itemType.isAssignableFrom(item.getClass()))
             .map(item -> (T) item)
             .collect(Collectors.toList());
     }

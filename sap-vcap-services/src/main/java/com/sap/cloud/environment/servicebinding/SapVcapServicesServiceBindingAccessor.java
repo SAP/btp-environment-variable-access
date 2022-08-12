@@ -23,11 +23,20 @@ import com.sap.cloud.environment.servicebinding.api.ServiceBinding;
 import com.sap.cloud.environment.servicebinding.api.ServiceBindingAccessor;
 import com.sap.cloud.environment.servicebinding.api.exception.ServiceBindingAccessException;
 
+/**
+ * A {@link ServiceBindingAccessor} that is able to load {@link ServiceBinding}s from SAP's {@code VCAP_SERVICES}
+ * structure. Please refer to
+ * <a href="https://docs.cloudfoundry.org/devguide/deploy-apps/environment-variable.html#VCAP-SERVICES">the official
+ * documentation</a> for more details about the {@code VCAP_SERVICES} structure.
+ */
 public class SapVcapServicesServiceBindingAccessor implements ServiceBindingAccessor
 {
     @Nonnull
     private static final Logger logger = LoggerFactory.getLogger(SapVcapServicesServiceBindingAccessor.class);
 
+    /**
+     * The default {@link Function} to read environment variables.
+     */
     @Nonnull
     public static final Function<String, String> DEFAULT_ENVIRONMENT_VARIABLE_READER = System::getenv;
 
@@ -37,11 +46,22 @@ public class SapVcapServicesServiceBindingAccessor implements ServiceBindingAcce
     @Nonnull
     private final Function<String, String> environmentVariableReader;
 
+    /**
+     * Initializes a new {@link SapVcapServicesServiceBindingAccessor} instance that uses the
+     * {@link #DEFAULT_ENVIRONMENT_VARIABLE_READER}.
+     */
     public SapVcapServicesServiceBindingAccessor()
     {
         this(DEFAULT_ENVIRONMENT_VARIABLE_READER);
     }
 
+    /**
+     * Initializes a new {@link SapVcapServicesServiceBindingAccessor} instance that uses the given
+     * {@code environmentVariableReader}.
+     *
+     * @param environmentVariableReader
+     *            The {@link Function} that should be used to read environment variables.
+     */
     public SapVcapServicesServiceBindingAccessor( @Nonnull final Function<String, String> environmentVariableReader )
     {
         this.environmentVariableReader = environmentVariableReader;

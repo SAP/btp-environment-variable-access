@@ -36,6 +36,8 @@ class TypedMapViewTest
 
     private static final double DOUBLE = 13.37d;
 
+    private static final BigDecimal BIG_DECIMAL = BigDecimal.valueOf(Long.MAX_VALUE, Integer.MAX_VALUE);
+
     @BeforeAll
     static void beforeAll()
         throws NoSuchMethodException
@@ -43,7 +45,7 @@ class TypedMapViewTest
         PRIMITIVE_VALUES.put("Boolean", true);
         PRIMITIVE_VALUES.put("Integer", INTEGER);
         PRIMITIVE_VALUES.put("Double", DOUBLE);
-        PRIMITIVE_VALUES.put("Number", BigDecimal.valueOf(Long.MAX_VALUE, Integer.MAX_VALUE));
+        PRIMITIVE_VALUES.put("Number", BIG_DECIMAL);
         PRIMITIVE_VALUES.put("String", "Value");
         PRIMITIVE_VALUES.put("Object", null);
 
@@ -104,23 +106,6 @@ class TypedMapViewTest
         final TypedMapView sut = TypedMapView.fromMap(Collections.singletonMap("Key", true));
 
         expectValueCastExceptionForAllBut(sut, "Key", TypedMapView.class.getDeclaredMethod("getBoolean", String.class));
-    }
-
-    private static void expectValueCastExceptionForAllBut(
-        @Nonnull final TypedMapView sut,
-        @Nonnull final String key,
-        @Nonnull final Method... methods )
-    {
-
-        final List<Method> expectedWorkingMethods = Arrays.asList(methods);
-        for( final Method typedAccessor : TYPED_ACCESSORS ) {
-            if( expectedWorkingMethods.contains(typedAccessor) ) {
-                assertThatNoException().isThrownBy(() -> typedAccessor.invoke(sut, key));
-            } else {
-                assertThatThrownBy(() -> typedAccessor.invoke(sut, key))
-                    .hasCauseExactlyInstanceOf(ValueCastException.class);
-            }
-        }
     }
 
     @Test
@@ -200,7 +185,7 @@ class TypedMapViewTest
     @Test
     void getEntries()
     {
-        final Map<String, Object> primitiveValues = Collections.synchronizedMap(PRIMITIVE_VALUES);
+        final Map<String, Object> primitiveValues = new HashMap<>(PRIMITIVE_VALUES);
         primitiveValues.put("String2", "Value2");
 
         final TypedMapView sut = TypedMapView.fromMap(primitiveValues);
@@ -208,5 +193,32 @@ class TypedMapViewTest
         assertThat(stringMap).hasSize(2);
         assertThat(stringMap.get("String")).isEqualTo("Value");
         assertThat(stringMap.get("String2")).isEqualTo("Value2");
+    }
+
+    @Test
+    void getEntriesAlsoReturnsSubTypes()
+    {
+        final TypedMapView sut = TypedMapView.fromMap(PRIMITIVE_VALUES);
+
+        assertThat(sut.getEntries(Integer.class).values()).containsExactlyInAnyOrder(INTEGER);
+        assertThat(sut.getEntries(Double.class).values()).containsExactlyInAnyOrder(DOUBLE);
+        assertThat(sut.getEntries(Number.class).values()).containsExactlyInAnyOrder(INTEGER, DOUBLE, BIG_DECIMAL);
+    }
+
+    private static void expectValueCastExceptionForAllBut(
+        @Nonnull final TypedMapView sut,
+        @Nonnull final String key,
+        @Nonnull final Method... methods )
+    {
+
+        final List<Method> expectedWorkingMethods = Arrays.asList(methods);
+        for( final Method typedAccessor : TYPED_ACCESSORS ) {
+            if( expectedWorkingMethods.contains(typedAccessor) ) {
+                assertThatNoException().isThrownBy(() -> typedAccessor.invoke(sut, key));
+            } else {
+                assertThatThrownBy(() -> typedAccessor.invoke(sut, key))
+                    .hasCauseExactlyInstanceOf(ValueCastException.class);
+            }
+        }
     }
 }

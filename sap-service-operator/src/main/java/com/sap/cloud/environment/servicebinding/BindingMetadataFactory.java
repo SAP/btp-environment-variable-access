@@ -2,7 +2,7 @@
  * Copyright (c) 2022 SAP SE or an SAP affiliate company. All rights reserved.
  */
 
-package com.sap.cloud.environment.servicebinding.metadata;
+package com.sap.cloud.environment.servicebinding;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -22,7 +22,7 @@ import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public final class BindingMetadataFactory
+final class BindingMetadataFactory
 {
     @Nonnull
     private static final Logger logger = LoggerFactory.getLogger(BindingMetadataFactory.class);
@@ -118,7 +118,7 @@ public final class BindingMetadataFactory
 
             final String name = readNameField(jsonMetadataProperty);
             final String sourceName = readSourceNameField(jsonMetadataProperty).orElse(name);
-            final PropertyFormat format = readFormatField(jsonMetadataProperty);
+            final BindingPropertyFormat format = readFormatField(jsonMetadataProperty);
             final boolean isContainer = readContainerField(jsonMetadataProperty);
 
             if( !isValidName(name) || !isValidSourceName(sourceName) || !isValidFormat(format, isContainer) ) {
@@ -138,7 +138,7 @@ public final class BindingMetadataFactory
     }
 
     @Nullable
-    private static PropertyFormat readFormatField( @Nonnull final JSONObject jsonProperty )
+    private static BindingPropertyFormat readFormatField( @Nonnull final JSONObject jsonProperty )
     {
         final String rawFormat = jsonProperty.optString("format", null);
         if( rawFormat == null ) {
@@ -146,7 +146,7 @@ public final class BindingMetadataFactory
         }
 
         return Arrays
-            .stream(PropertyFormat.values())
+            .stream(BindingPropertyFormat.values())
             .filter(format -> format.getValue().equalsIgnoreCase(rawFormat))
             .findFirst()
             .orElse(null);
@@ -173,7 +173,7 @@ public final class BindingMetadataFactory
         return isValidName(sourceName);
     }
 
-    private static boolean isValidFormat( @Nullable final PropertyFormat format, final boolean isContainer )
+    private static boolean isValidFormat( @Nullable final BindingPropertyFormat format, final boolean isContainer )
     {
         if( format == null ) {
             return false;
@@ -183,6 +183,6 @@ public final class BindingMetadataFactory
             return true;
         }
 
-        return format == PropertyFormat.JSON;
+        return format == BindingPropertyFormat.JSON;
     }
 }

@@ -26,6 +26,11 @@ import org.slf4j.LoggerFactory;
 import com.sap.cloud.environment.servicebinding.api.DefaultServiceBinding;
 import com.sap.cloud.environment.servicebinding.api.ServiceBinding;
 
+/**
+ * A {@link LayeredParsingStrategy} that expects all property files to contain "plain" text (i.e. no JSON structures).
+ * Credentials and metadata of the {@link ServiceBinding} are distinguished by their name - in contrast to the
+ * {@link LayeredSecretKeyParsingStrategy} where credentials and metadata are distinguished by their structure.
+ */
 public final class LayeredDataParsingStrategy implements LayeredParsingStrategy
 {
     @Nonnull
@@ -86,6 +91,11 @@ public final class LayeredDataParsingStrategy implements LayeredParsingStrategy
         this.fallbackPropertySetter = fallbackPropertySetter;
     }
 
+    /**
+     * Initializes a new {@link LayeredDataParsingStrategy} instance using the default configuration.
+     *
+     * @return A new {@link LayeredDataParsingStrategy} instance with default configuration.
+     */
     @Nonnull
     public static LayeredDataParsingStrategy newDefault()
     {

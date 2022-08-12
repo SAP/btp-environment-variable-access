@@ -22,6 +22,10 @@ import org.slf4j.LoggerFactory;
 
 import com.sap.cloud.environment.servicebinding.api.exception.ServiceBindingAccessException;
 
+/**
+ * A {@link ServiceBindingAccessor} that caches the result of an other {@link ServiceBindingAccessor} for a certain
+ * amount of time.
+ */
 public class SimpleServiceBindingCache implements ServiceBindingAccessor
 {
     @Nonnull
@@ -51,6 +55,13 @@ public class SimpleServiceBindingCache implements ServiceBindingAccessor
     @Nullable
     private LocalDateTime lastCacheRenewal = null;
 
+    /**
+     * Initializes a new {@link SimpleServiceBindingCache} instance that retrieves {@link ServiceBinding}s from the
+     * given {@code delegateAccessor} and caches them for 5 minutes.
+     *
+     * @param delegateAccessor
+     *            The {@link ServiceBindingAccessor} to retrieve the {@link ServiceBinding}s from.
+     */
     public SimpleServiceBindingCache( @Nonnull final ServiceBindingAccessor delegateAccessor )
     {
         this(delegateAccessor, DEFAULT_CACHE_DURATION, DEFAULT_LOCAL_DATE_TIME_SUPPLIER);
@@ -66,6 +77,15 @@ public class SimpleServiceBindingCache implements ServiceBindingAccessor
         this.localDateTimeSupplier = localDateTimeSupplier;
     }
 
+    /**
+     * Initializes a new {@link SimpleServiceBindingCache} instance that retrieves {@link ServiceBinding}s from the
+     * given {@code delegateAccessor} and caches them for the given {@code cacheDuration}.
+     *
+     * @param delegateAccessor
+     *            The {@link ServiceBindingAccessor} to retrieve the {@link ServiceBinding}s from.
+     * @param cacheDuration
+     *            The cahing {@link Duration}.
+     */
     public SimpleServiceBindingCache(
         @Nonnull final ServiceBindingAccessor delegateAccessor,
         @Nonnull final Duration cacheDuration )
@@ -133,6 +153,9 @@ public class SimpleServiceBindingCache implements ServiceBindingAccessor
         return cacheDuration.minus(durationSinceLastCacheRenewal).isNegative();
     }
 
+    /**
+     * Invalidate the cache.
+     */
     public void invalidate()
     {
         logger.debug("Invalidating service binding cache.");

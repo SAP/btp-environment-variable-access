@@ -33,18 +33,42 @@ import com.sap.cloud.environment.servicebinding.api.DefaultServiceBinding;
 import com.sap.cloud.environment.servicebinding.api.ServiceBinding;
 import com.sap.cloud.environment.servicebinding.api.ServiceBindingAccessor;
 import com.sap.cloud.environment.servicebinding.api.exception.ServiceBindingAccessException;
-import com.sap.cloud.environment.servicebinding.metadata.BindingMetadata;
-import com.sap.cloud.environment.servicebinding.metadata.BindingMetadataFactory;
-import com.sap.cloud.environment.servicebinding.metadata.BindingProperty;
 
+/**
+ * A {@link ServiceBindingAccessor} that is able to load {@link ServiceBinding}s that conform to the
+ * <a href="https://servicebinding.io/spec/core/1.0.0/">servicebinding.io</a> specification with the
+ * <a href="https://blogs.sap.com/2022/07/12/the-new-way-to-consume-service-bindings-on-kyma-runtime/">SAP metadata
+ * extension</a> from the file system. <br>
+ * The file system structure is assumed to look as follows:
+ *
+ * <pre>
+ *     ${SERVICE-BINDING-ROOT}
+ *     ├-- {SERVICE-BINDING-NAME#1}
+ *     |   ├-- .metadata
+ *     |   ├-- {PROPERTY#1}
+ *     |   ├-- ...
+ *     |   └-- {PROPERTY#N}
+ *     └-- {SERVICE-BINDING-NAME#2}
+ *         ├-- .metadata
+ *         ├-- {PROPERTY#1}
+ *         ├-- ...
+ *         └-- {PROPERTY#N}
+ * </pre>
+ */
 public class SapServiceOperatorServiceBindingIoAccessor implements ServiceBindingAccessor
 {
     @Nonnull
     private static final Logger logger = LoggerFactory.getLogger(SapServiceOperatorServiceBindingIoAccessor.class);
 
+    /**
+     * The default {@link Function} to read environment variables.
+     */
     @Nonnull
     public static final Function<String, String> DEFAULT_ENVIRONMENT_VARIABLE_READER = System::getenv;
 
+    /**
+     * The default {@link Charset} that should be used to read property files.
+     */
     @Nonnull
     public static final Charset DEFAULT_CHARSET = StandardCharsets.UTF_8;
 
@@ -69,11 +93,24 @@ public class SapServiceOperatorServiceBindingIoAccessor implements ServiceBindin
     @Nonnull
     private final Charset charset;
 
+    /**
+     * Initializes a new {@link SapServiceOperatorServiceBindingIoAccessor} instance that uses the
+     * {@link #DEFAULT_ENVIRONMENT_VARIABLE_READER} and the {@link #DEFAULT_CHARSET}.
+     */
     public SapServiceOperatorServiceBindingIoAccessor()
     {
         this(DEFAULT_ENVIRONMENT_VARIABLE_READER, DEFAULT_CHARSET);
     }
 
+    /**
+     * Initializes a new {@link SapServiceOperatorServiceBindingIoAccessor} instance that uses the given
+     * {@code environmentVariableReader} and the given {@code charset}.
+     *
+     * @param environmentVariableReader
+     *            The {@link Function} that should be used to read environment variables.
+     * @param charset
+     *            The {@link Charset} that should be used to read property files.
+     */
     public SapServiceOperatorServiceBindingIoAccessor(
         @Nonnull final Function<String, String> environmentVariableReader,
         @Nonnull final Charset charset )

@@ -2,14 +2,12 @@
  * Copyright (c) 2022 SAP SE or an SAP affiliate company. All rights reserved.
  */
 
-package com.sap.cloud.environment.servicebinding.metadata;
+package com.sap.cloud.environment.servicebinding;
 
 import javax.annotation.Nonnull;
 
 import org.json.JSONException;
 import org.junit.jupiter.api.Test;
-
-import com.sap.cloud.environment.servicebinding.TestResource;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;

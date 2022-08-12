@@ -2,13 +2,13 @@
  * Copyright (c) 2022 SAP SE or an SAP affiliate company. All rights reserved.
  */
 
-package com.sap.cloud.environment.servicebinding.metadata;
+package com.sap.cloud.environment.servicebinding;
 
 import java.util.Objects;
 
 import javax.annotation.Nonnull;
 
-public class BindingProperty
+class BindingProperty
 {
     @Nonnull
     private final String name;
@@ -17,7 +17,7 @@ public class BindingProperty
     private final String sourceName;
 
     @Nonnull
-    private final PropertyFormat format;
+    private final BindingPropertyFormat format;
 
     private final boolean isContainer;
 
@@ -30,7 +30,7 @@ public class BindingProperty
     @Nonnull
     public static BindingProperty container( @Nonnull final String name, @Nonnull final String sourceName )
     {
-        return new BindingProperty(name, sourceName, PropertyFormat.JSON, true);
+        return new BindingProperty(name, sourceName, BindingPropertyFormat.JSON, true);
     }
 
     @Nonnull
@@ -42,7 +42,7 @@ public class BindingProperty
     @Nonnull
     public static BindingProperty text( @Nonnull final String name, @Nonnull final String sourceName )
     {
-        return new BindingProperty(name, sourceName, PropertyFormat.TEXT, false);
+        return new BindingProperty(name, sourceName, BindingPropertyFormat.TEXT, false);
     }
 
     @Nonnull
@@ -54,13 +54,13 @@ public class BindingProperty
     @Nonnull
     public static BindingProperty json( @Nonnull final String name, @Nonnull final String sourceName )
     {
-        return new BindingProperty(name, sourceName, PropertyFormat.JSON, false);
+        return new BindingProperty(name, sourceName, BindingPropertyFormat.JSON, false);
     }
 
     BindingProperty(
         @Nonnull final String name,
         @Nonnull final String sourceName,
-        @Nonnull final PropertyFormat format,
+        @Nonnull final BindingPropertyFormat format,
         final boolean isContainer )
     {
         this.name = name;
@@ -82,7 +82,7 @@ public class BindingProperty
     }
 
     @Nonnull
-    public PropertyFormat getFormat()
+    public BindingPropertyFormat getFormat()
     {
         return format;
     }
