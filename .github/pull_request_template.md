@@ -1,11 +1,3 @@
----
-name: Bugfix
-about: fix a bug
-title: 'Fix: '
-labels: ''
-assignees: ''
----
-
 ## Context
 
 Fixes #<TODO: Insert Issue Number>
@@ -28,4 +20,5 @@ Fixes #<TODO: Insert Issue Number>
 
 - [ ] Feature scope is implemented
 - [ ] Feature scope is tested
+- [ ] Feature scope is documented
 - [ ] Release notes are created
