@@ -65,6 +65,8 @@
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
 
+        <slf4j-simple.version>1.7.36</slf4j-simple.version>
+
         <maven-compiler-plugin.version>3.10.1</maven-compiler-plugin.version>
         <maven-resources-plugin.version>3.3.0</maven-resources-plugin.version>
         <maven-source-plugin.version>3.2.1</maven-source-plugin.version>
@@ -82,6 +84,7 @@
 
     <dependencyManagement>
         <dependencies>
+            <!-- Scope: Import -->
             <dependency>
                 <groupId>com.sap.cloud.environment.servicebinding</groupId>
                 <artifactId>java-bom</artifactId>
@@ -89,8 +92,24 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
+
+            <!-- Scope: Test -->
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-simple</artifactId>
+                <version>${slf4j-simple.version}</version>
+                <scope>test</scope>
+            </dependency>
         </dependencies>
     </dependencyManagement>
+
+    <dependencies>
+        <!-- Scope: Test -->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-simple</artifactId>
+        </dependency>
+    </dependencies>
 
     <build>
         <resources>
@@ -391,6 +410,9 @@
                         <failOnWarning>true</failOnWarning>
                         <failBuild>true</failBuild>
                         <ignoreNonCompile>true</ignoreNonCompile>
+                        <ignoredUnusedDeclaredDependencies>
+                            <dependency>org.slf4j:slf4j-simple</dependency>
+                        </ignoredUnusedDeclaredDependencies>
                     </configuration>
                 </plugin>
                 <plugin>
