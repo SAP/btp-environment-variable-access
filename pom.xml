@@ -114,6 +114,7 @@
     <build>
         <resources>
             <resource>
+                <filtering>false</filtering>
                 <directory>${project.basedir}/src/main/resources</directory>
             </resource>
             <!--  include LICENSE in all jar files  -->
@@ -141,6 +142,9 @@
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-resources-plugin</artifactId>
                     <version>${maven-resources-plugin.version}</version>
+                    <configuration>
+                        <addDefaultExcludes>false</addDefaultExcludes>
+                    </configuration>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
