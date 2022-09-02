@@ -15,10 +15,10 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -91,6 +91,9 @@ public class SapServiceOperatorLayeredServiceBindingAccessor implements ServiceB
     @Nonnull
     private final Collection<LayeredParsingStrategy> parsingStrategies;
 
+    @Nonnull
+    private final DirectoryBasedCache cache;
+
     /**
      * Initializes a new {@link SapServiceOperatorLayeredServiceBindingAccessor} instance that uses the
      * {@link #DEFAULT_ROOT_PATH} and the {@link #DEFAULT_PARSING_STRATEGIES}.
@@ -103,7 +106,7 @@ public class SapServiceOperatorLayeredServiceBindingAccessor implements ServiceB
     /**
      * Initializes a new {@link SapServiceOperatorLayeredServiceBindingAccessor} that uses the given {@code rootPath}
      * and {@code parsingStrategies}.
-     * 
+     *
      * @param rootPath
      *            The service binding root {@link Path} that should be used.
      * @param parsingStrategies
@@ -113,8 +116,17 @@ public class SapServiceOperatorLayeredServiceBindingAccessor implements ServiceB
         @Nonnull final Path rootPath,
         @Nonnull final Collection<LayeredParsingStrategy> parsingStrategies )
     {
+        this(rootPath, parsingStrategies, null);
+    }
+
+    SapServiceOperatorLayeredServiceBindingAccessor(
+        @Nonnull final Path rootPath,
+        @Nonnull final Collection<LayeredParsingStrategy> parsingStrategies,
+        @Nullable final DirectoryBasedCache cache )
+    {
         this.rootPath = rootPath;
         this.parsingStrategies = parsingStrategies;
+        this.cache = Optional.ofNullable(cache).orElse(new FileSystemWatcherCache(this::parseServiceBinding));
     }
 
     @Nonnull
@@ -128,8 +140,8 @@ public class SapServiceOperatorLayeredServiceBindingAccessor implements ServiceB
             return Collections.emptyList();
         }
 
-        try( final Stream<Path> files = Files.list(rootPath) ) {
-            return files.filter(Files::isDirectory).flatMap(this::parseServiceBindings).collect(Collectors.toList());
+        try( final Stream<Path> servicePaths = Files.list(rootPath).filter(Files::isDirectory) ) {
+            return parseServiceBindings(servicePaths);
         }
         catch( final SecurityException | IOException e ) {
             throw new ServiceBindingAccessException("Unable to access service binding files.", e);
@@ -137,27 +149,33 @@ public class SapServiceOperatorLayeredServiceBindingAccessor implements ServiceB
     }
 
     @Nonnull
-    private Stream<ServiceBinding> parseServiceBindings( @Nonnull final Path servicePath )
+    private List<ServiceBinding> parseServiceBindings( @Nonnull final Stream<Path> servicePaths )
     {
-        try {
-            return Files
-                .list(servicePath)
-                .filter(Files::isDirectory)
-                .map(
-                    bindingPath -> parsingStrategies
-                        .stream()
-                        .map(strategy -> applyStrategy(strategy, servicePath, bindingPath))
-                        .filter(Optional::isPresent)
-                        .findFirst()
-                        .orElse(Optional.empty()))
-                .filter(Optional::isPresent)
-                .map(Optional::get);
-        }
-        catch( final IOException e ) {
-            throw new ServiceBindingAccessException(
-                String.format("Unable to access service binding files in '%s'.", servicePath),
-                e);
-        }
+        final Stream<Path> bindingRoots = servicePaths.flatMap(servicePath -> {
+            try {
+                return Files.list(servicePath);
+            }
+            catch( final IOException e ) {
+                throw new ServiceBindingAccessException(
+                    String.format("Unable to access files in '%s'.", servicePath),
+                    e);
+            }
+        });
+
+        return cache.getServiceBindings(bindingRoots.filter(Files::isDirectory));
+    }
+
+    @Nullable
+    private ServiceBinding parseServiceBinding( @Nonnull final Path bindingRoot )
+    {
+        final Path servicePath = bindingRoot.getParent();
+        return parsingStrategies
+            .stream()
+            .map(strategy -> applyStrategy(strategy, servicePath, bindingRoot))
+            .filter(Optional::isPresent)
+            .findFirst()
+            .orElse(Optional.empty())
+            .orElse(null);
     }
 
     @Nonnull

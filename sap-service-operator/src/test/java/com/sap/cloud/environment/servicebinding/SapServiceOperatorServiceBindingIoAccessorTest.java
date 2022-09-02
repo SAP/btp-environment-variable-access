@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.annotation.Nonnull;
 
@@ -396,6 +397,34 @@ class SapServiceOperatorServiceBindingIoAccessorTest
         // assert
         assertThat(serviceBindings).isNotNull();
         assertThat(serviceBindings).isEmpty();
+    }
+
+    @Test
+    @SuppressWarnings( "unchecked" )
+    void serviceBindingsAreServedFromCache( @Nonnull @TempDir final Path rootDirectory )
+        throws IOException
+    {
+        Files.createDirectory(rootDirectory.resolve("dir"));
+
+        final List<ServiceBinding> serviceBindings = Collections.singletonList(mock(ServiceBinding.class));
+        final DirectoryBasedCache mockedCache = mock(DirectoryBasedCache.class);
+        when(mockedCache.getServiceBindings((Stream<Path>) any())).thenReturn(serviceBindings);
+
+        final Function<String, String> reader = mock(Function.class);
+        when(reader.apply(eq("SERVICE_BINDING_ROOT"))).thenReturn(rootDirectory.toString());
+
+        // setup subject under test
+        final SapServiceOperatorServiceBindingIoAccessor sut =
+            new SapServiceOperatorServiceBindingIoAccessor(
+                reader,
+                SapServiceOperatorServiceBindingIoAccessor.DEFAULT_CHARSET,
+                mockedCache);
+
+        assertThat(sut.getServiceBindings()).isSameAs(serviceBindings);
+        verify(mockedCache, times(1)).getServiceBindings((Stream<Path>) any());
+
+        assertThat(sut.getServiceBindings()).isSameAs(serviceBindings);
+        verify(mockedCache, times(2)).getServiceBindings((Stream<Path>) any());
     }
 
     private static void assertContainsDataXsuaaBinding( @Nonnull final List<ServiceBinding> serviceBindings )
