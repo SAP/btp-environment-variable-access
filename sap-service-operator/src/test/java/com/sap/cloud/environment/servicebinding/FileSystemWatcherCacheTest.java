@@ -81,19 +81,32 @@ class FileSystemWatcherCacheTest
         // manually create cache entries
         sut.cachedServiceBindings.put(dir, mock(ServiceBinding.class));
 
-        final WatchEvent<Path> mockedWatchEvent = (WatchEvent<Path>) mock(WatchEvent.class);
-        when(mockedWatchEvent.kind()).thenReturn(ENTRY_CREATE);
-
         final WatchKey mockedWatchKey = mock(WatchKey.class);
         when(mockedWatchKey.isValid()).thenReturn(true);
-        when(mockedWatchKey.pollEvents()).thenReturn(Collections.singletonList(mockedWatchEvent));
+        // file system has not been changed
+        when(mockedWatchKey.pollEvents()).thenReturn(Collections.emptyList());
 
         sut.directoryWatchKeys.put(dir, mockedWatchKey);
 
         final List<ServiceBinding> firstBindings = sut.getServiceBindings(getAllDirectories(rootDirectory));
 
         assertThat(firstBindings.size()).isEqualTo(1);
+        // service binding is not reloaded
+        verify(mockedLoader, times(0)).apply(eq(dir));
+        verify(mockedWatchKey, times(1)).pollEvents();
+
+        // mark the file system as changed
+        final WatchEvent<Path> mockedWatchEvent = (WatchEvent<Path>) mock(WatchEvent.class);
+        when(mockedWatchEvent.kind()).thenReturn(ENTRY_CREATE);
+        when(mockedWatchKey.pollEvents()).thenReturn(Collections.singletonList(mockedWatchEvent));
+
+        // load again
+        final List<ServiceBinding> secondBindings = sut.getServiceBindings(getAllDirectories(rootDirectory));
+
+        assertThat(secondBindings.size()).isEqualTo(1);
+        // service binding is reloaded
         verify(mockedLoader, times(1)).apply(eq(dir));
+        verify(mockedWatchKey, times(2)).pollEvents();
     }
 
     @Test
@@ -109,19 +122,32 @@ class FileSystemWatcherCacheTest
         // manually create cache entries
         sut.cachedServiceBindings.put(dir, mock(ServiceBinding.class));
 
-        final WatchEvent<Path> mockedWatchEvent = (WatchEvent<Path>) mock(WatchEvent.class);
-        when(mockedWatchEvent.kind()).thenReturn(ENTRY_MODIFY);
-
         final WatchKey mockedWatchKey = mock(WatchKey.class);
         when(mockedWatchKey.isValid()).thenReturn(true);
-        when(mockedWatchKey.pollEvents()).thenReturn(Collections.singletonList(mockedWatchEvent));
+        // file system has not been changed
+        when(mockedWatchKey.pollEvents()).thenReturn(Collections.emptyList());
 
         sut.directoryWatchKeys.put(dir, mockedWatchKey);
 
         final List<ServiceBinding> firstBindings = sut.getServiceBindings(getAllDirectories(rootDirectory));
 
         assertThat(firstBindings.size()).isEqualTo(1);
+        // service binding is not reloaded
+        verify(mockedLoader, times(0)).apply(eq(dir));
+        verify(mockedWatchKey, times(1)).pollEvents();
+
+        // mark the file system as changed
+        final WatchEvent<Path> mockedWatchEvent = (WatchEvent<Path>) mock(WatchEvent.class);
+        when(mockedWatchEvent.kind()).thenReturn(ENTRY_MODIFY);
+        when(mockedWatchKey.pollEvents()).thenReturn(Collections.singletonList(mockedWatchEvent));
+
+        // load again
+        final List<ServiceBinding> secondBindings = sut.getServiceBindings(getAllDirectories(rootDirectory));
+
+        assertThat(secondBindings.size()).isEqualTo(1);
+        // service binding is reloaded
         verify(mockedLoader, times(1)).apply(eq(dir));
+        verify(mockedWatchKey, times(2)).pollEvents();
     }
 
     @Test
@@ -137,19 +163,32 @@ class FileSystemWatcherCacheTest
         // manually create cache entries
         sut.cachedServiceBindings.put(dir, mock(ServiceBinding.class));
 
-        final WatchEvent<Path> mockedWatchEvent = (WatchEvent<Path>) mock(WatchEvent.class);
-        when(mockedWatchEvent.kind()).thenReturn(ENTRY_DELETE);
-
         final WatchKey mockedWatchKey = mock(WatchKey.class);
         when(mockedWatchKey.isValid()).thenReturn(true);
-        when(mockedWatchKey.pollEvents()).thenReturn(Collections.singletonList(mockedWatchEvent));
+        // file system has not been changed
+        when(mockedWatchKey.pollEvents()).thenReturn(Collections.emptyList());
 
         sut.directoryWatchKeys.put(dir, mockedWatchKey);
 
         final List<ServiceBinding> firstBindings = sut.getServiceBindings(getAllDirectories(rootDirectory));
 
         assertThat(firstBindings.size()).isEqualTo(1);
+        // service binding is not reloaded
+        verify(mockedLoader, times(0)).apply(eq(dir));
+        verify(mockedWatchKey, times(1)).pollEvents();
+
+        // mark the file system as changed
+        final WatchEvent<Path> mockedWatchEvent = (WatchEvent<Path>) mock(WatchEvent.class);
+        when(mockedWatchEvent.kind()).thenReturn(ENTRY_DELETE);
+        when(mockedWatchKey.pollEvents()).thenReturn(Collections.singletonList(mockedWatchEvent));
+
+        // load again
+        final List<ServiceBinding> secondBindings = sut.getServiceBindings(getAllDirectories(rootDirectory));
+
+        assertThat(secondBindings.size()).isEqualTo(1);
+        // service binding is reloaded
         verify(mockedLoader, times(1)).apply(eq(dir));
+        verify(mockedWatchKey, times(2)).pollEvents();
     }
 
     @Test
