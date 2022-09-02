@@ -15,7 +15,6 @@ import java.util.stream.Stream;
 
 import javax.annotation.Nonnull;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
@@ -32,19 +31,11 @@ import static org.mockito.Mockito.when;
 
 class FileSystemWatcherCacheTest
 {
-    private Function<Path, ServiceBinding> mockedLoader;
-
-    @BeforeEach
-    @SuppressWarnings( "unchecked" )
-    void setupMockedLoader()
-    {
-        mockedLoader = (Function<Path, ServiceBinding>) mock(Function.class);
-        when(mockedLoader.apply(any())).thenReturn(mock(ServiceBinding.class));
-    }
-
     @Test
     void initialLoadWillHitTheFileSystem( @Nonnull @TempDir final Path rootDirectory )
     {
+        final Function<Path, ServiceBinding> mockedLoader = mockedServiceBindingLoader();
+
         final Path dir1 = rootDirectory.resolve("dir1");
         final Path dir2 = rootDirectory.resolve("dir2");
         write(dir1.resolve("file1"), "foo");
@@ -61,6 +52,8 @@ class FileSystemWatcherCacheTest
     @Test
     void subsequentLoadWillHitTheCache( @Nonnull @TempDir final Path rootDirectory )
     {
+        final Function<Path, ServiceBinding> mockedLoader = mockedServiceBindingLoader();
+
         final Path dir1 = rootDirectory.resolve("dir1");
         final Path dir2 = rootDirectory.resolve("dir2");
         write(dir1.resolve("file1"), "foo");
@@ -83,6 +76,8 @@ class FileSystemWatcherCacheTest
     @Test
     void loadWillHitFileSystemWhenFileIsCreated( @Nonnull @TempDir final Path rootDirectory )
     {
+        final Function<Path, ServiceBinding> mockedLoader = mockedServiceBindingLoader();
+
         final Path dir = rootDirectory.resolve("dir1");
         write(dir.resolve("file1"), "foo");
 
@@ -103,6 +98,8 @@ class FileSystemWatcherCacheTest
     @Test
     void loadWillHitFileSystemWhenFileIsModified( @Nonnull @TempDir final Path rootDirectory )
     {
+        final Function<Path, ServiceBinding> mockedLoader = mockedServiceBindingLoader();
+
         final Path dir = rootDirectory.resolve("dir1");
         final Path file = write(dir.resolve("file1"), "foo");
 
@@ -124,6 +121,8 @@ class FileSystemWatcherCacheTest
     void loadWillHitFileSystemWhenFileIsDeleted( @Nonnull @TempDir final Path rootDirectory )
         throws IOException
     {
+        final Function<Path, ServiceBinding> mockedLoader = mockedServiceBindingLoader();
+
         final Path dir = rootDirectory.resolve("dir1");
         final Path file = write(dir.resolve("file1"), "foo");
 
@@ -144,6 +143,8 @@ class FileSystemWatcherCacheTest
     @Test
     void loadWillRemoveCacheEntry( @Nonnull @TempDir final Path rootDirectory )
     {
+        final Function<Path, ServiceBinding> mockedLoader = mockedServiceBindingLoader();
+
         final Path dir = rootDirectory.resolve("dir1");
         write(dir.resolve("file1"), "foo");
 
@@ -183,6 +184,16 @@ class FileSystemWatcherCacheTest
 
         assertThat(bindings.size()).isEqualTo(0);
         verify(loader, times(1)).apply(eq(dir));
+    }
+
+    @Nonnull
+    @SuppressWarnings( "unchecked" )
+    private static Function<Path, ServiceBinding> mockedServiceBindingLoader()
+    {
+        final Function<Path, ServiceBinding> mock = (Function<Path, ServiceBinding>) mock(Function.class);
+        when(mock.apply(any())).thenReturn(mock(ServiceBinding.class));
+
+        return mock;
     }
 
     @Nonnull
