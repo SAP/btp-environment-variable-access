@@ -37,9 +37,11 @@ class FileSystemWatcherCache implements DirectoryBasedCache
     @Nonnull
     private final Function<Path, ServiceBinding> serviceBindingLoader;
     @Nonnull
-    private final Map<Path, ServiceBinding> cachedServiceBindings = new HashMap<>();
+    // internal for simplified testing
+    final Map<Path, ServiceBinding> cachedServiceBindings = new HashMap<>();
     @Nonnull
-    private final Map<Path, WatchKey> directoryWatchKeys = new HashMap<>();
+    // internal for simplified testing
+    final Map<Path, WatchKey> directoryWatchKeys = new HashMap<>();
     @Nonnull
     private final WatchService watchService;
 

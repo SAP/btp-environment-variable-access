@@ -5,9 +5,10 @@
 package com.sap.cloud.environment.servicebinding;
 
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.WatchEvent;
+import java.nio.file.WatchKey;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Function;
@@ -15,11 +16,14 @@ import java.util.stream.Stream;
 
 import javax.annotation.Nonnull;
 
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
 import com.sap.cloud.environment.servicebinding.api.ServiceBinding;
+
+import static java.nio.file.StandardWatchEventKinds.ENTRY_CREATE;
+import static java.nio.file.StandardWatchEventKinds.ENTRY_DELETE;
+import static java.nio.file.StandardWatchEventKinds.ENTRY_MODIFY;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -33,142 +37,142 @@ class FileSystemWatcherCacheTest
 {
     @Test
     void initialLoadWillHitTheFileSystem( @Nonnull @TempDir final Path rootDirectory )
+        throws IOException
     {
         final Function<Path, ServiceBinding> mockedLoader = mockedServiceBindingLoader();
-
-        final Path dir1 = rootDirectory.resolve("dir1");
-        final Path dir2 = rootDirectory.resolve("dir2");
-        write(dir1.resolve("file1"), "foo");
-        write(dir2.resolve("file2"), "bar");
+        final Path dir = Files.createDirectories(rootDirectory.resolve("dir"));
 
         final DirectoryBasedCache sut = new FileSystemWatcherCache(mockedLoader);
         final List<ServiceBinding> bindings = sut.getServiceBindings(getAllDirectories(rootDirectory));
 
-        assertThat(bindings.size()).isEqualTo(2);
-        verify(mockedLoader, times(1)).apply(eq(dir1));
-        verify(mockedLoader, times(1)).apply(eq(dir2));
+        assertThat(bindings.size()).isEqualTo(1);
+        verify(mockedLoader, times(1)).apply(eq(dir));
     }
 
     @Test
     void subsequentLoadWillHitTheCache( @Nonnull @TempDir final Path rootDirectory )
+        throws IOException
     {
         final Function<Path, ServiceBinding> mockedLoader = mockedServiceBindingLoader();
-
-        final Path dir1 = rootDirectory.resolve("dir1");
-        final Path dir2 = rootDirectory.resolve("dir2");
-        write(dir1.resolve("file1"), "foo");
-        write(dir2.resolve("file2"), "bar");
+        final Path dir = Files.createDirectories(rootDirectory.resolve("dir"));
 
         final DirectoryBasedCache sut = new FileSystemWatcherCache(mockedLoader);
         final List<ServiceBinding> firstBindings = sut.getServiceBindings(getAllDirectories(rootDirectory));
 
-        assertThat(firstBindings.size()).isEqualTo(2);
-        verify(mockedLoader, times(1)).apply(eq(dir1));
-        verify(mockedLoader, times(1)).apply(eq(dir2));
+        assertThat(firstBindings.size()).isEqualTo(1);
+        verify(mockedLoader, times(1)).apply(eq(dir));
 
         final List<ServiceBinding> secondBindings = sut.getServiceBindings(getAllDirectories(rootDirectory));
 
-        assertThat(secondBindings.size()).isEqualTo(2);
-        verify(mockedLoader, times(1)).apply(eq(dir1));
-        verify(mockedLoader, times(1)).apply(eq(dir2));
+        assertThat(secondBindings.size()).isEqualTo(1);
+        verify(mockedLoader, times(1)).apply(eq(dir));
     }
 
     @Test
-    @Disabled( "This test doesn't work properly when executed via GH actions." )
+    @SuppressWarnings( "unchecked" )
     void loadWillHitFileSystemWhenFileIsCreated( @Nonnull @TempDir final Path rootDirectory )
+        throws IOException
     {
         final Function<Path, ServiceBinding> mockedLoader = mockedServiceBindingLoader();
+        final Path dir = Files.createDirectories(rootDirectory.resolve("dir"));
 
-        final Path dir = rootDirectory.resolve("dir1");
-        write(dir.resolve("file1"), "foo");
+        final FileSystemWatcherCache sut = new FileSystemWatcherCache(mockedLoader);
 
-        final DirectoryBasedCache sut = new FileSystemWatcherCache(mockedLoader);
+        // manually create cache entries
+        sut.cachedServiceBindings.put(dir, mock(ServiceBinding.class));
+
+        final WatchEvent<Path> mockedWatchEvent = (WatchEvent<Path>) mock(WatchEvent.class);
+        when(mockedWatchEvent.kind()).thenReturn(ENTRY_CREATE);
+
+        final WatchKey mockedWatchKey = mock(WatchKey.class);
+        when(mockedWatchKey.isValid()).thenReturn(true);
+        when(mockedWatchKey.pollEvents()).thenReturn(Collections.singletonList(mockedWatchEvent));
+
+        sut.directoryWatchKeys.put(dir, mockedWatchKey);
+
         final List<ServiceBinding> firstBindings = sut.getServiceBindings(getAllDirectories(rootDirectory));
 
         assertThat(firstBindings.size()).isEqualTo(1);
         verify(mockedLoader, times(1)).apply(eq(dir));
-
-        // create a new file
-        write(dir.resolve("file2"), "bar");
-        final List<ServiceBinding> secondBindings = sut.getServiceBindings(getAllDirectories(rootDirectory));
-
-        assertThat(secondBindings.size()).isEqualTo(1);
-        verify(mockedLoader, times(2)).apply(eq(dir));
     }
 
     @Test
-    @Disabled( "This test doesn't work properly when executed via GH actions." )
+    @SuppressWarnings( "unchecked" )
     void loadWillHitFileSystemWhenFileIsModified( @Nonnull @TempDir final Path rootDirectory )
+        throws IOException
     {
         final Function<Path, ServiceBinding> mockedLoader = mockedServiceBindingLoader();
+        final Path dir = Files.createDirectories(rootDirectory.resolve("dir"));
 
-        final Path dir = rootDirectory.resolve("dir1");
-        final Path file = write(dir.resolve("file1"), "foo");
+        final FileSystemWatcherCache sut = new FileSystemWatcherCache(mockedLoader);
 
-        final DirectoryBasedCache sut = new FileSystemWatcherCache(mockedLoader);
+        // manually create cache entries
+        sut.cachedServiceBindings.put(dir, mock(ServiceBinding.class));
+
+        final WatchEvent<Path> mockedWatchEvent = (WatchEvent<Path>) mock(WatchEvent.class);
+        when(mockedWatchEvent.kind()).thenReturn(ENTRY_MODIFY);
+
+        final WatchKey mockedWatchKey = mock(WatchKey.class);
+        when(mockedWatchKey.isValid()).thenReturn(true);
+        when(mockedWatchKey.pollEvents()).thenReturn(Collections.singletonList(mockedWatchEvent));
+
+        sut.directoryWatchKeys.put(dir, mockedWatchKey);
+
         final List<ServiceBinding> firstBindings = sut.getServiceBindings(getAllDirectories(rootDirectory));
 
         assertThat(firstBindings.size()).isEqualTo(1);
         verify(mockedLoader, times(1)).apply(eq(dir));
-
-        // modify existing file
-        write(file, "bar");
-        final List<ServiceBinding> secondBindings = sut.getServiceBindings(getAllDirectories(rootDirectory));
-
-        assertThat(secondBindings.size()).isEqualTo(1);
-        verify(mockedLoader, times(2)).apply(eq(dir));
     }
 
     @Test
-    @Disabled( "This test doesn't work properly when executed via GH actions." )
+    @SuppressWarnings( "unchecked" )
     void loadWillHitFileSystemWhenFileIsDeleted( @Nonnull @TempDir final Path rootDirectory )
         throws IOException
     {
         final Function<Path, ServiceBinding> mockedLoader = mockedServiceBindingLoader();
+        final Path dir = Files.createDirectories(rootDirectory.resolve("dir"));
 
-        final Path dir = rootDirectory.resolve("dir1");
-        final Path file = write(dir.resolve("file1"), "foo");
+        final FileSystemWatcherCache sut = new FileSystemWatcherCache(mockedLoader);
 
-        final DirectoryBasedCache sut = new FileSystemWatcherCache(mockedLoader);
+        // manually create cache entries
+        sut.cachedServiceBindings.put(dir, mock(ServiceBinding.class));
+
+        final WatchEvent<Path> mockedWatchEvent = (WatchEvent<Path>) mock(WatchEvent.class);
+        when(mockedWatchEvent.kind()).thenReturn(ENTRY_DELETE);
+
+        final WatchKey mockedWatchKey = mock(WatchKey.class);
+        when(mockedWatchKey.isValid()).thenReturn(true);
+        when(mockedWatchKey.pollEvents()).thenReturn(Collections.singletonList(mockedWatchEvent));
+
+        sut.directoryWatchKeys.put(dir, mockedWatchKey);
+
         final List<ServiceBinding> firstBindings = sut.getServiceBindings(getAllDirectories(rootDirectory));
 
         assertThat(firstBindings.size()).isEqualTo(1);
         verify(mockedLoader, times(1)).apply(eq(dir));
-
-        // delete existing file
-        Files.delete(file);
-        final List<ServiceBinding> secondBindings = sut.getServiceBindings(getAllDirectories(rootDirectory));
-
-        assertThat(secondBindings.size()).isEqualTo(1);
-        verify(mockedLoader, times(2)).apply(eq(dir));
     }
 
     @Test
     void loadWillRemoveCacheEntry( @Nonnull @TempDir final Path rootDirectory )
+        throws IOException
     {
         final Function<Path, ServiceBinding> mockedLoader = mockedServiceBindingLoader();
+        final Path dir = Files.createDirectories(rootDirectory.resolve("dir"));
 
-        final Path dir = rootDirectory.resolve("dir1");
-        write(dir.resolve("file1"), "foo");
+        final FileSystemWatcherCache sut = new FileSystemWatcherCache(mockedLoader);
 
-        final DirectoryBasedCache sut = new FileSystemWatcherCache(mockedLoader);
-        final List<ServiceBinding> firstBindings = sut.getServiceBindings(getAllDirectories(rootDirectory));
+        // manually create cache entries
+        sut.cachedServiceBindings.put(dir, mock(ServiceBinding.class));
 
-        assertThat(firstBindings.size()).isEqualTo(1);
-        verify(mockedLoader, times(1)).apply(eq(dir));
+        final WatchKey mockedWatchKey = mock(WatchKey.class);
+        sut.directoryWatchKeys.put(dir, mockedWatchKey);
 
-        // load without the existing directory will remove the cache entry
-        final List<ServiceBinding> secondBindings = sut.getServiceBindings(Collections.emptyList());
+        sut.getServiceBindings(Collections.emptyList());
 
-        assertThat(secondBindings.size()).isEqualTo(0);
-        verify(mockedLoader, times(1)).apply(eq(dir));
+        assertThat(sut.directoryWatchKeys).isEmpty();
+        assertThat(sut.cachedServiceBindings).isEmpty();
 
-        // load with the existing directory will hit the file system,
-        // even though the file system has not been changed in the meanwhile
-        final List<ServiceBinding> thirdBindings = sut.getServiceBindings(getAllDirectories(rootDirectory));
-
-        assertThat(thirdBindings.size()).isEqualTo(1);
-        verify(mockedLoader, times(2)).apply(eq(dir));
+        verify(mockedWatchKey, times(1)).cancel();
     }
 
     @Test
@@ -197,22 +201,6 @@ class FileSystemWatcherCacheTest
         when(mock.apply(any())).thenReturn(mock(ServiceBinding.class));
 
         return mock;
-    }
-
-    @Nonnull
-    private static Path write( @Nonnull final Path filePath, @Nonnull final String content )
-    {
-        try {
-            if( !Files.exists(filePath.getParent()) ) {
-                Files.createDirectories(filePath.getParent());
-            }
-
-            Files.write(filePath, Collections.singletonList(content), StandardCharsets.UTF_8);
-            return filePath;
-        }
-        catch( final IOException e ) {
-            throw new AssertionError(String.format("Failed to write content to test file '%s'.", filePath), e);
-        }
     }
 
     @Nonnull
