@@ -205,9 +205,25 @@ class FileSystemWatcherCacheTest
             }
 
             Files.write(filePath, Collections.singletonList(content), StandardCharsets.UTF_8);
+
+            // make sure the changes are actually reflected in the file system
+            boolean changesAreApplied = false;
+            for( int i = 0; i < 10; ++i ) {
+                final String actualContent = String.join("\n", Files.readAllLines(filePath, StandardCharsets.UTF_8));
+                if( actualContent.equals(content) ) {
+                    changesAreApplied = true;
+                    break;
+                }
+
+                Thread.sleep(100);
+            }
+
+            assertThat(changesAreApplied)
+                .withFailMessage("Changes to the file '%s' have not been applied.", filePath)
+                .isTrue();
             return filePath;
         }
-        catch( final IOException e ) {
+        catch( final IOException | InterruptedException e ) {
             fail("Failed to write test file content.", e);
             throw new AssertionError("Should not be reached.");
         }
