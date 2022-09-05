@@ -108,6 +108,16 @@ class TypedListViewTest
     }
 
     @Test
+    void getMaybeBoolean()
+    {
+        final TypedListView sut = TypedListView.fromIterable(Arrays.asList(true, "invalid"));
+
+        assertThat(sut.getMaybeBoolean(0)).isPresent();
+        assertThat(sut.getMaybeBoolean(1)).isEmpty(); // value cast error
+        assertThat(sut.getMaybeBoolean(2)).isEmpty(); // index out of bounds error
+    }
+
+    @Test
     void getInteger()
         throws NoSuchMethodException
     {
@@ -122,6 +132,16 @@ class TypedListViewTest
     }
 
     @Test
+    void getMaybeInteger()
+    {
+        final TypedListView sut = TypedListView.fromIterable(Arrays.asList(INTEGER, "invalid"));
+
+        assertThat(sut.getMaybeInteger(0)).isPresent();
+        assertThat(sut.getMaybeInteger(1)).isEmpty(); // value cast error
+        assertThat(sut.getMaybeInteger(2)).isEmpty(); // index out of bounds error
+    }
+
+    @Test
     void getDouble()
         throws NoSuchMethodException
     {
@@ -133,6 +153,16 @@ class TypedListViewTest
             TypedListView.class.getDeclaredMethod("getInteger", int.class),
             TypedListView.class.getDeclaredMethod("getDouble", int.class),
             TypedListView.class.getDeclaredMethod("getNumber", int.class));
+    }
+
+    @Test
+    void getMaybeDouble()
+    {
+        final TypedListView sut = TypedListView.fromIterable(Arrays.asList(DOUBLE, "invalid"));
+
+        assertThat(sut.getMaybeDouble(0)).isPresent();
+        assertThat(sut.getMaybeDouble(1)).isEmpty(); // value cast error
+        assertThat(sut.getMaybeDouble(2)).isEmpty(); // index out of bounds error
     }
 
     @Test
@@ -152,12 +182,32 @@ class TypedListViewTest
     }
 
     @Test
+    void getMaybeNumber()
+    {
+        final TypedListView sut = TypedListView.fromIterable(Arrays.asList(BIG_DECIMAL, "invalid"));
+
+        assertThat(sut.getMaybeNumber(0)).isPresent();
+        assertThat(sut.getMaybeNumber(1)).isEmpty(); // value cast error
+        assertThat(sut.getMaybeNumber(2)).isEmpty(); // index out of bounds error
+    }
+
+    @Test
     void getString()
         throws NoSuchMethodException
     {
         final TypedListView sut = TypedListView.fromIterable(Collections.singletonList("Value"));
 
         expectValueCastExceptionForAllBut(sut, 0, TypedListView.class.getDeclaredMethod("getString", int.class));
+    }
+
+    @Test
+    void getMaybeString()
+    {
+        final TypedListView sut = TypedListView.fromIterable(Arrays.asList("string", BIG_DECIMAL));
+
+        assertThat(sut.getMaybeString(0)).isPresent();
+        assertThat(sut.getMaybeString(1)).isEmpty(); // value cast error
+        assertThat(sut.getMaybeString(2)).isEmpty(); // index out of bounds error
     }
 
     @Test
@@ -170,12 +220,32 @@ class TypedListViewTest
     }
 
     @Test
+    void getMaybeMapView()
+    {
+        final TypedListView sut = TypedListView.fromIterable(Arrays.asList(mock(TypedMapView.class), "invalid"));
+
+        assertThat(sut.getMaybeMapView(0)).isPresent();
+        assertThat(sut.getMaybeMapView(1)).isEmpty(); // value cast error
+        assertThat(sut.getMaybeMapView(2)).isEmpty(); // index out of bounds error
+    }
+
+    @Test
     void getListView()
         throws NoSuchMethodException
     {
         final TypedListView sut = TypedListView.fromIterable(Collections.singletonList(mock(TypedListView.class)));
 
         expectValueCastExceptionForAllBut(sut, 0, TypedListView.class.getDeclaredMethod("getListView", int.class));
+    }
+
+    @Test
+    void getMaybeListView()
+    {
+        final TypedListView sut = TypedListView.fromIterable(Arrays.asList(mock(TypedListView.class), "invalid"));
+
+        assertThat(sut.getMaybeListView(0)).isPresent();
+        assertThat(sut.getMaybeListView(1)).isEmpty(); // value cast error
+        assertThat(sut.getMaybeListView(2)).isEmpty(); // index out of bounds error
     }
 
     @Test

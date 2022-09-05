@@ -109,6 +109,20 @@ class TypedMapViewTest
     }
 
     @Test
+    void getMaybeBoolean()
+    {
+        final Map<String, Object> map = new HashMap<>();
+        map.put("valid", true);
+        map.put("invalid", "value");
+
+        final TypedMapView sut = TypedMapView.fromMap(map);
+
+        assertThat(sut.getMaybeBoolean("valid")).isPresent();
+        assertThat(sut.getMaybeBoolean("invalid")).isEmpty(); // cast error
+        assertThat(sut.getMaybeBoolean("foo")).isEmpty(); // key does not exist
+    }
+
+    @Test
     void getInteger()
         throws NoSuchMethodException
     {
@@ -123,6 +137,20 @@ class TypedMapViewTest
     }
 
     @Test
+    void getMaybeInteger()
+    {
+        final Map<String, Object> map = new HashMap<>();
+        map.put("valid", INTEGER);
+        map.put("invalid", "value");
+
+        final TypedMapView sut = TypedMapView.fromMap(map);
+
+        assertThat(sut.maybeInteger("valid")).isPresent();
+        assertThat(sut.maybeInteger("invalid")).isEmpty(); // cast error
+        assertThat(sut.maybeInteger("foo")).isEmpty(); // key does not exist
+    }
+
+    @Test
     void getDouble()
         throws NoSuchMethodException
     {
@@ -134,6 +162,20 @@ class TypedMapViewTest
             TypedMapView.class.getDeclaredMethod("getInteger", String.class),
             TypedMapView.class.getDeclaredMethod("getDouble", String.class),
             TypedMapView.class.getDeclaredMethod("getNumber", String.class));
+    }
+
+    @Test
+    void getMaybeDouble()
+    {
+        final Map<String, Object> map = new HashMap<>();
+        map.put("valid", DOUBLE);
+        map.put("invalid", "value");
+
+        final TypedMapView sut = TypedMapView.fromMap(map);
+
+        assertThat(sut.getMaybeDouble("valid")).isPresent();
+        assertThat(sut.getMaybeDouble("invalid")).isEmpty(); // cast error
+        assertThat(sut.getMaybeDouble("foo")).isEmpty(); // key does not exist
     }
 
     @Test
@@ -153,12 +195,40 @@ class TypedMapViewTest
     }
 
     @Test
+    void getMaybeNumber()
+    {
+        final Map<String, Object> map = new HashMap<>();
+        map.put("valid", BIG_DECIMAL);
+        map.put("invalid", "value");
+
+        final TypedMapView sut = TypedMapView.fromMap(map);
+
+        assertThat(sut.getMaybeNumber("valid")).isPresent();
+        assertThat(sut.getMaybeNumber("invalid")).isEmpty(); // cast error
+        assertThat(sut.getMaybeNumber("foo")).isEmpty(); // key does not exist
+    }
+
+    @Test
     void getString()
         throws NoSuchMethodException
     {
         final TypedMapView sut = TypedMapView.fromMap(Collections.singletonMap("Key", "Value"));
 
         expectValueCastExceptionForAllBut(sut, "Key", TypedMapView.class.getDeclaredMethod("getString", String.class));
+    }
+
+    @Test
+    void getMaybeString()
+    {
+        final Map<String, Object> map = new HashMap<>();
+        map.put("valid", "string");
+        map.put("invalid", BIG_DECIMAL);
+
+        final TypedMapView sut = TypedMapView.fromMap(map);
+
+        assertThat(sut.getMaybeString("valid")).isPresent();
+        assertThat(sut.getMaybeString("invalid")).isEmpty(); // cast error
+        assertThat(sut.getMaybeString("foo")).isEmpty(); // key does not exist
     }
 
     @Test
@@ -171,6 +241,20 @@ class TypedMapViewTest
     }
 
     @Test
+    void getMaybeMapView()
+    {
+        final Map<String, Object> map = new HashMap<>();
+        map.put("valid", mock(TypedMapView.class));
+        map.put("invalid", "value");
+
+        final TypedMapView sut = TypedMapView.fromMap(map);
+
+        assertThat(sut.getMaybeMapView("valid")).isPresent();
+        assertThat(sut.getMaybeMapView("invalid")).isEmpty(); // cast error
+        assertThat(sut.getMaybeMapView("foo")).isEmpty(); // key does not exist
+    }
+
+    @Test
     void getListView()
         throws NoSuchMethodException
     {
@@ -180,6 +264,20 @@ class TypedMapViewTest
             sut,
             "Key",
             TypedMapView.class.getDeclaredMethod("getListView", String.class));
+    }
+
+    @Test
+    void getMaybeListView()
+    {
+        final Map<String, Object> map = new HashMap<>();
+        map.put("valid", mock(TypedListView.class));
+        map.put("invalid", "value");
+
+        final TypedMapView sut = TypedMapView.fromMap(map);
+
+        assertThat(sut.getMaybeListView("valid")).isPresent();
+        assertThat(sut.getMaybeListView("invalid")).isEmpty(); // cast error
+        assertThat(sut.getMaybeListView("foo")).isEmpty(); // key does not exist
     }
 
     @Test

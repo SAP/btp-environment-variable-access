@@ -7,6 +7,7 @@ package com.sap.cloud.environment.servicebinding.api;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
@@ -127,6 +128,52 @@ public final class TypedMapView
     }
 
     /**
+     * Checks whether the given {@code key} is contained in this {@link TypedMapView}.
+     *
+     * @param key
+     *            The key to check.
+     * @return {@code true} if the key is contained, {@code false} otherwise.
+     */
+    public boolean containsKey( @Nonnull final String key )
+    {
+        return map.containsKey(key);
+    }
+
+    /**
+     * Returns the entry that is stored under the given {@code key}.
+     *
+     * @param key
+     *            The key of the entry.
+     * @return The entry that is stored under the given {@code key}.
+     * @throws KeyNotFoundException
+     *             Thrown if the given {@code key} is not contained in this {@link TypedMapView}.
+     */
+    @Nullable
+    public Object get( @Nonnull final String key )
+        throws KeyNotFoundException
+    {
+        if( !containsKey(key) ) {
+            throw new KeyNotFoundException(this, key);
+        }
+
+        return map.get(key);
+    }
+
+    /**
+     * Returns an {@link Optional}, which may contain an entry that is stored under the given {@code key}.
+     *
+     * @param key
+     *            The key of the entry.
+     * @return An {@link Optional#ofNullable(Object)} that contains the entry if it exists, {@link Optional#empty()}
+     *         otherwise.
+     */
+    @Nonnull
+    public Optional<Object> getMaybe( @Nonnull final String key )
+    {
+        return Optional.ofNullable(map.get(key));
+    }
+
+    /**
      * Returns the entry that is stored under the given {@code key} as a {@code boolean}.
      *
      * @param key
@@ -151,35 +198,19 @@ public final class TypedMapView
     }
 
     /**
-     * Returns the entry that is stored under the given {@code key}.
+     * Returns an {@link Optional}, which may contain a {@link Boolean} entry that is stored under the given
+     * {@code key}. The returned {@link Optional} is empty if the entry is either not a {@link Boolean} or does not even
+     * exist in the first place.
      *
      * @param key
      *            The key of the entry.
-     * @return The entry that is stored under the given {@code key}.
-     * @throws KeyNotFoundException
-     *             Thrown if the given {@code key} is not contained in this {@link TypedMapView}.
+     * @return An {@link Optional} that contains the entry if it exists and actually is a {@link Boolean},
+     *         {@link Optional#empty()} otherwise.
      */
-    @Nullable
-    public Object get( @Nonnull final String key )
-        throws KeyNotFoundException
+    @Nonnull
+    public Optional<Boolean> getMaybeBoolean( @Nonnull final String key )
     {
-        if( !containsKey(key) ) {
-            throw new KeyNotFoundException(this, key);
-        }
-
-        return map.get(key);
-    }
-
-    /**
-     * Checks whether the given {@code key} is contained in this {@link TypedMapView}.
-     *
-     * @param key
-     *            The key to check.
-     * @return {@code true} if the key is contained, {@code false} otherwise.
-     */
-    public boolean containsKey( @Nonnull final String key )
-    {
-        return map.containsKey(key);
+        return getMaybe(key).filter(Boolean.class::isInstance).map(Boolean.class::cast);
     }
 
     /**
@@ -198,6 +229,55 @@ public final class TypedMapView
             ValueCastException
     {
         return getNumber(key).intValue();
+    }
+
+    /**
+     * Returns an {@link Optional}, which may contain an {@link Integer} entry that is stored under the given
+     * {@code key}. The returned {@link Optional} is empty if the entry is either not an {@link Integer} or does not
+     * even exist in the first place.
+     *
+     * @param key
+     *            The key of the entry.
+     * @return An {@link Optional} that contains the entry if it exists and actually is an {@link Integer},
+     *         {@link Optional#empty()} otherwise.
+     */
+    public Optional<Integer> maybeInteger( @Nonnull final String key )
+    {
+        return getMaybeNumber(key).map(Number::intValue);
+    }
+
+    /**
+     * Returns the entry that is stored under the given {@code key} as a {@code double}.
+     *
+     * @param key
+     *            The key of the entry.
+     * @return The entry that is stored under the given {@code key} as a {@code double}.
+     * @throws KeyNotFoundException
+     *             Thrown if the given {@code key} is not contained in this {@link TypedMapView}.
+     * @throws ValueCastException
+     *             Thrown if the entry is not a {@code double}.
+     */
+    public double getDouble( @Nonnull final String key )
+        throws KeyNotFoundException,
+            ValueCastException
+    {
+        return getNumber(key).doubleValue();
+    }
+
+    /**
+     * Returns an {@link Optional}, which may contain a {@link Double} entry that is stored under the given {@code key}.
+     * The returned {@link Optional} is empty if the entry is either not a {@link Double} or does not even exist in the
+     * first place.
+     *
+     * @param key
+     *            The key of the entry.
+     * @return An {@link Optional} that contains the entry if it exists and actually is a {@link Double},
+     *         {@link Optional#empty()} otherwise.
+     */
+    @Nonnull
+    public Optional<Double> getMaybeDouble( @Nonnull final String key )
+    {
+        return getMaybeNumber(key).map(Number::doubleValue);
     }
 
     /**
@@ -226,21 +306,19 @@ public final class TypedMapView
     }
 
     /**
-     * Returns the entry that is stored under the given {@code key} as a {@code double}.
+     * Returns an {@link Optional}, which may contain a {@link Number} entry that is stored under the given {@code key}.
+     * The returned {@link Optional} is empty if the entry is either not a {@link Number} or does not even exist in the
+     * first place.
      *
      * @param key
      *            The key of the entry.
-     * @return The entry that is stored under the given {@code key} as a {@code double}.
-     * @throws KeyNotFoundException
-     *             Thrown if the given {@code key} is not contained in this {@link TypedMapView}.
-     * @throws ValueCastException
-     *             Thrown if the entry is not a {@code double}.
+     * @return An {@link Optional} that contains the entry if it exists and actually is a {@link Number},
+     *         {@link Optional#empty()} otherwise.
      */
-    public double getDouble( @Nonnull final String key )
-        throws KeyNotFoundException,
-            ValueCastException
+    @Nonnull
+    public Optional<Number> getMaybeNumber( @Nonnull final String key )
     {
-        return getNumber(key).doubleValue();
+        return getMaybe(key).filter(Number.class::isInstance).map(Number.class::cast);
     }
 
     /**
@@ -269,6 +347,22 @@ public final class TypedMapView
     }
 
     /**
+     * Returns an {@link Optional}, which may contain a {@link String} entry that is stored under the given {@code key}.
+     * The returned {@link Optional} is empty if the entry is either not a {@link String} or does not even exist in the
+     * first place.
+     *
+     * @param key
+     *            The key of the entry.
+     * @return An {@link Optional} that contains the entry if it exists and actually is a {@link String},
+     *         {@link Optional#empty()} otherwise.
+     */
+    @Nonnull
+    public Optional<String> getMaybeString( @Nonnull final String key )
+    {
+        return getMaybe(key).filter(String.class::isInstance).map(String.class::cast);
+    }
+
+    /**
      * Returns the entry that is stored under the given {@code key} as a {@link TypedMapView}.
      *
      * @param key
@@ -294,6 +388,22 @@ public final class TypedMapView
     }
 
     /**
+     * Returns an {@link Optional}, which may contain a {@link TypedMapView} entry that is stored under the given
+     * {@code key}. The returned {@link Optional} is empty if the entry is either not a {@link TypedMapView} or does not
+     * even exist in the first place.
+     *
+     * @param key
+     *            The key of the entry.
+     * @return An {@link Optional} that contains the entry if it exists and actually is a {@link TypedMapView},
+     *         {@link Optional#empty()} otherwise.
+     */
+    @Nonnull
+    public Optional<TypedMapView> getMaybeMapView( @Nonnull final String key )
+    {
+        return getMaybe(key).filter(TypedMapView.class::isInstance).map(TypedMapView.class::cast);
+    }
+
+    /**
      * Returns the entry that is stored under the given {@code key} as a {@link TypedListView}.
      *
      * @param key
@@ -316,6 +426,22 @@ public final class TypedMapView
         }
 
         throw new ValueCastException(TypedListView.class, value);
+    }
+
+    /**
+     * Returns an {@link Optional}, which may contain a {@link TypedListView} entry that is stored under the given
+     * {@code key}. The returned {@link Optional} is empty if the entry is either not a {@link TypedListView} or does
+     * not even exist in the first place.
+     *
+     * @param key
+     *            The key of the entry.
+     * @return An {@link Optional} that contains the entry if it exists and actually is a {@link TypedListView},
+     *         {@link Optional#empty()} otherwise.
+     */
+    @Nonnull
+    public Optional<TypedListView> getMaybeListView( @Nonnull final String key )
+    {
+        return getMaybe(key).filter(TypedListView.class::isInstance).map(TypedListView.class::cast);
     }
 
     /**
