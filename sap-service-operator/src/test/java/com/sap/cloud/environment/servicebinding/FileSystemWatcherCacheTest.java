@@ -196,22 +196,27 @@ class FileSystemWatcherCacheTest
         throws IOException
     {
         final Function<Path, ServiceBinding> mockedLoader = mockedServiceBindingLoader();
-        final Path dir = Files.createDirectories(rootDirectory.resolve("dir"));
+        final Path dir1 = Files.createDirectories(rootDirectory.resolve("dir1"));
+        final Path dir2 = Files.createDirectories(rootDirectory.resolve("dir2"));
 
         final FileSystemWatcherCache sut = new FileSystemWatcherCache(mockedLoader);
 
         // manually create cache entries
-        sut.cachedServiceBindings.put(dir, mock(ServiceBinding.class));
+        sut.cachedServiceBindings.put(dir1, mock(ServiceBinding.class));
+        sut.cachedServiceBindings.put(dir2, mock(ServiceBinding.class));
 
-        final WatchKey mockedWatchKey = mock(WatchKey.class);
-        sut.directoryWatchKeys.put(dir, mockedWatchKey);
+        final WatchKey mockedWatchKey1 = mock(WatchKey.class);
+        final WatchKey mockedWatchKey2 = mock(WatchKey.class);
+        sut.directoryWatchKeys.put(dir1, mockedWatchKey1);
+        sut.directoryWatchKeys.put(dir2, mockedWatchKey2);
 
         sut.getServiceBindings(Collections.emptyList());
 
         assertThat(sut.directoryWatchKeys).isEmpty();
         assertThat(sut.cachedServiceBindings).isEmpty();
 
-        verify(mockedWatchKey, times(1)).cancel();
+        verify(mockedWatchKey1, times(1)).cancel();
+        verify(mockedWatchKey2, times(1)).cancel();
     }
 
     @Test

@@ -75,25 +75,19 @@ class FileSystemWatcherCache implements DirectoryBasedCache
 
     private void removeOutdatedWatchKeys( @Nonnull final Collection<Path> directoriesOfInterest )
     {
-        for( final Map.Entry<Path, WatchKey> entry : directoryWatchKeys.entrySet() ) {
+        directoryWatchKeys.entrySet().removeIf(entry -> {
             if( directoriesOfInterest.contains(entry.getKey()) ) {
-                continue;
+                return false;
             }
 
             entry.getValue().cancel();
-            directoryWatchKeys.remove(entry.getKey());
-        }
+            return true;
+        });
     }
 
     private void removeOutdatedServiceBindings( @Nonnull final Collection<Path> directoriesOfInterest )
     {
-        for( final Map.Entry<Path, ServiceBinding> entry : cachedServiceBindings.entrySet() ) {
-            if( directoriesOfInterest.contains(entry.getKey()) ) {
-                continue;
-            }
-
-            cachedServiceBindings.remove(entry.getKey());
-        }
+        cachedServiceBindings.entrySet().removeIf(entry -> !directoriesOfInterest.contains(entry.getKey()));
     }
 
     private void renewCachedServiceBindingIfNeeded( @Nonnull final Path directory )
