@@ -126,7 +126,7 @@ public class SapServiceOperatorLayeredServiceBindingAccessor implements ServiceB
     {
         this.rootPath = rootPath;
         this.parsingStrategies = parsingStrategies;
-        this.cache = Optional.ofNullable(cache).orElse(new FileSystemWatcherCache(this::parseServiceBinding));
+        this.cache = cache != null ? cache : new FileSystemWatcherCache(this::parseServiceBinding);
     }
 
     @Nonnull
@@ -151,7 +151,7 @@ public class SapServiceOperatorLayeredServiceBindingAccessor implements ServiceB
     @Nonnull
     private List<ServiceBinding> parseServiceBindings( @Nonnull final Stream<Path> servicePaths )
     {
-        final Stream<Path> bindingRoots = servicePaths.flatMap(servicePath -> {
+        return cache.getServiceBindings(servicePaths.flatMap(servicePath -> {
             try {
                 return Files.list(servicePath);
             }
@@ -160,9 +160,7 @@ public class SapServiceOperatorLayeredServiceBindingAccessor implements ServiceB
                     String.format("Unable to access files in '%s'.", servicePath),
                     e);
             }
-        });
-
-        return cache.getServiceBindings(bindingRoots.filter(Files::isDirectory));
+        }));
     }
 
     @Nullable

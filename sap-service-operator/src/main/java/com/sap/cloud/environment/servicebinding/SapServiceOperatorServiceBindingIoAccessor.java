@@ -17,7 +17,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.function.Function;
-import java.util.stream.Stream;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -127,7 +126,7 @@ public class SapServiceOperatorServiceBindingIoAccessor implements ServiceBindin
     {
         this.environmentVariableReader = environmentVariableReader;
         this.charset = charset;
-        this.cache = Optional.ofNullable(cache).orElse(new FileSystemWatcherCache(this::parseServiceBinding));
+        this.cache = cache != null ? cache : new FileSystemWatcherCache(this::parseServiceBinding);
     }
 
     @Nonnull
@@ -141,8 +140,8 @@ public class SapServiceOperatorServiceBindingIoAccessor implements ServiceBindin
         }
 
         logger.debug("Reading service bindings from '{}'.", rootDirectory);
-        try( final Stream<Path> bindingRoots = Files.list(rootDirectory).filter(Files::isDirectory) ) {
-            return cache.getServiceBindings(bindingRoots);
+        try {
+            return cache.getServiceBindings(Files.list(rootDirectory));
         }
         catch( final IOException e ) {
             return Collections.emptyList();

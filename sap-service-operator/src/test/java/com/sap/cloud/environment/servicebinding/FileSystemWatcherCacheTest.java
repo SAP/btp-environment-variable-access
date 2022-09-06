@@ -243,11 +243,10 @@ class FileSystemWatcherCacheTest
     }
 
     @Nonnull
-    @SuppressWarnings( "resource" )
     private static Stream<Path> getAllDirectories( @Nonnull final Path rootDirectory )
     {
         try {
-            return Files.list(rootDirectory).filter(Files::isDirectory);
+            return Files.list(rootDirectory);
         }
         catch( final IOException e ) {
             throw new AssertionError(String.format("Unable to get all directories in '%s'.", rootDirectory), e);
