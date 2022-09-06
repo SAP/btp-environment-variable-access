@@ -9,9 +9,11 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.WatchEvent;
 import java.nio.file.WatchKey;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import javax.annotation.Nonnull;
@@ -248,10 +250,10 @@ class FileSystemWatcherCacheTest
     }
 
     @Nonnull
-    private static Stream<Path> getAllDirectories( @Nonnull final Path rootDirectory )
+    private static Collection<Path> getAllDirectories( @Nonnull final Path rootDirectory )
     {
-        try {
-            return Files.list(rootDirectory);
+        try( final Stream<Path> dirs = Files.list(rootDirectory).filter(Files::isDirectory) ) {
+            return dirs.collect(Collectors.toList());
         }
         catch( final IOException e ) {
             throw new AssertionError(String.format("Unable to get all directories in '%s'.", rootDirectory), e);

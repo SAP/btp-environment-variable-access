@@ -15,6 +15,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import javax.annotation.Nonnull;
@@ -151,7 +152,7 @@ public class SapServiceOperatorLayeredServiceBindingAccessor implements ServiceB
     @Nonnull
     private List<ServiceBinding> parseServiceBindings( @Nonnull final Stream<Path> servicePaths )
     {
-        return cache.getServiceBindings(servicePaths.flatMap(servicePath -> {
+        final List<Path> serviceBindingRoots = servicePaths.flatMap(servicePath -> {
             try {
                 return Files.list(servicePath);
             }
@@ -160,7 +161,8 @@ public class SapServiceOperatorLayeredServiceBindingAccessor implements ServiceB
                     String.format("Unable to access files in '%s'.", servicePath),
                     e);
             }
-        }));
+        }).collect(Collectors.toList());
+        return cache.getServiceBindings(serviceBindingRoots);
     }
 
     @Nullable

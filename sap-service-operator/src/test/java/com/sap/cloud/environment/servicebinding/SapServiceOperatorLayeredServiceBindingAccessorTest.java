@@ -10,7 +10,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Stream;
 
 import javax.annotation.Nonnull;
 
@@ -106,7 +105,6 @@ class SapServiceOperatorLayeredServiceBindingAccessorTest
     }
 
     @Test
-    @SuppressWarnings( "unchecked" )
     void serviceBindingsAreServedFromCache( @Nonnull @TempDir final Path rootDirectory )
         throws IOException
     {
@@ -114,16 +112,16 @@ class SapServiceOperatorLayeredServiceBindingAccessorTest
 
         final List<ServiceBinding> serviceBindings = Collections.singletonList(mock(ServiceBinding.class));
         final DirectoryBasedCache mockedCache = mock(DirectoryBasedCache.class);
-        when(mockedCache.getServiceBindings((Stream<Path>) any())).thenReturn(serviceBindings);
+        when(mockedCache.getServiceBindings(any())).thenReturn(serviceBindings);
 
         final ServiceBindingAccessor sut =
             new SapServiceOperatorLayeredServiceBindingAccessor(rootDirectory, DEFAULT_PARSING_STRATEGIES, mockedCache);
 
         assertThat(sut.getServiceBindings()).isSameAs(serviceBindings);
-        verify(mockedCache, times(1)).getServiceBindings((Stream<Path>) any());
+        verify(mockedCache, times(1)).getServiceBindings(any());
 
         assertThat(sut.getServiceBindings()).isSameAs(serviceBindings);
-        verify(mockedCache, times(2)).getServiceBindings((Stream<Path>) any());
+        verify(mockedCache, times(2)).getServiceBindings(any());
     }
 
     private static void assertContainsSecretKeyBinding( @Nonnull final List<ServiceBinding> serviceBindings )

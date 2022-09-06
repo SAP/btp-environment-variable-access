@@ -14,7 +14,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import javax.annotation.Nonnull;
 
@@ -408,7 +407,7 @@ class SapServiceOperatorServiceBindingIoAccessorTest
 
         final List<ServiceBinding> serviceBindings = Collections.singletonList(mock(ServiceBinding.class));
         final DirectoryBasedCache mockedCache = mock(DirectoryBasedCache.class);
-        when(mockedCache.getServiceBindings((Stream<Path>) any())).thenReturn(serviceBindings);
+        when(mockedCache.getServiceBindings(any())).thenReturn(serviceBindings);
 
         final Function<String, String> reader = mock(Function.class);
         when(reader.apply(eq("SERVICE_BINDING_ROOT"))).thenReturn(rootDirectory.toString());
@@ -421,10 +420,10 @@ class SapServiceOperatorServiceBindingIoAccessorTest
                 mockedCache);
 
         assertThat(sut.getServiceBindings()).isSameAs(serviceBindings);
-        verify(mockedCache, times(1)).getServiceBindings((Stream<Path>) any());
+        verify(mockedCache, times(1)).getServiceBindings(any());
 
         assertThat(sut.getServiceBindings()).isSameAs(serviceBindings);
-        verify(mockedCache, times(2)).getServiceBindings((Stream<Path>) any());
+        verify(mockedCache, times(2)).getServiceBindings(any());
     }
 
     private static void assertContainsDataXsuaaBinding( @Nonnull final List<ServiceBinding> serviceBindings )

@@ -17,6 +17,8 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.function.Function;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -140,8 +142,8 @@ public class SapServiceOperatorServiceBindingIoAccessor implements ServiceBindin
         }
 
         logger.debug("Reading service bindings from '{}'.", rootDirectory);
-        try {
-            return cache.getServiceBindings(Files.list(rootDirectory));
+        try( final Stream<Path> bindingRoots = Files.list(rootDirectory).filter(Files::isDirectory) ) {
+            return cache.getServiceBindings(bindingRoots.collect(Collectors.toList()));
         }
         catch( final IOException e ) {
             return Collections.emptyList();
