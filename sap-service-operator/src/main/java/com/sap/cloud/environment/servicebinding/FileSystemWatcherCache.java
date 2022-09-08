@@ -87,7 +87,7 @@ class FileSystemWatcherCache implements DirectoryBasedCache
 
     private void removeOutdatedServiceBindings( @Nonnull final Collection<Path> directoriesOfInterest )
     {
-        cachedServiceBindings.entrySet().removeIf(entry -> !directoriesOfInterest.contains(entry.getKey()));
+        cachedServiceBindings.keySet().removeIf(key -> !directoriesOfInterest.contains(key));
     }
 
     private void renewCachedServiceBindingIfNeeded( @Nonnull final Path directory )
