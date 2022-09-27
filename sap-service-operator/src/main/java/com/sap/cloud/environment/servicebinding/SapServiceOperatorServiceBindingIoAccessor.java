@@ -93,6 +93,9 @@ public class SapServiceOperatorServiceBindingIoAccessor implements ServiceBindin
     @Nonnull
     private final Charset charset;
 
+    @Nonnull
+    private final DirectoryBasedCache cache;
+
     /**
      * Initializes a new {@link SapServiceOperatorServiceBindingIoAccessor} instance that uses the
      * {@link #DEFAULT_ENVIRONMENT_VARIABLE_READER} and the {@link #DEFAULT_CHARSET}.
@@ -115,8 +118,17 @@ public class SapServiceOperatorServiceBindingIoAccessor implements ServiceBindin
         @Nonnull final Function<String, String> environmentVariableReader,
         @Nonnull final Charset charset )
     {
+        this(environmentVariableReader, charset, null);
+    }
+
+    SapServiceOperatorServiceBindingIoAccessor(
+        @Nonnull final Function<String, String> environmentVariableReader,
+        @Nonnull final Charset charset,
+        @Nullable final DirectoryBasedCache cache )
+    {
         this.environmentVariableReader = environmentVariableReader;
         this.charset = charset;
+        this.cache = cache != null ? cache : new FileSystemWatcherCache(this::parseServiceBinding);
     }
 
     @Nonnull
@@ -131,11 +143,7 @@ public class SapServiceOperatorServiceBindingIoAccessor implements ServiceBindin
 
         logger.debug("Reading service bindings from '{}'.", rootDirectory);
         try( final Stream<Path> bindingRoots = Files.list(rootDirectory).filter(Files::isDirectory) ) {
-            return bindingRoots
-                .map(this::parseServiceBinding)
-                .filter(Optional::isPresent)
-                .map(Optional::get)
-                .collect(Collectors.toList());
+            return cache.getServiceBindings(bindingRoots.collect(Collectors.toList()));
         }
         catch( final IOException e ) {
             return Collections.emptyList();
@@ -168,22 +176,22 @@ public class SapServiceOperatorServiceBindingIoAccessor implements ServiceBindin
         return rootDirectory;
     }
 
-    @Nonnull
-    private Optional<ServiceBinding> parseServiceBinding( @Nonnull final Path rootDirectory )
+    @Nullable
+    private ServiceBinding parseServiceBinding( @Nonnull final Path rootDirectory )
     {
         logger.debug("Trying to read service binding from '{}'.", rootDirectory);
         final Path metadataFile = rootDirectory.resolve(METADATA_FILE);
         if( !Files.exists(metadataFile) || !Files.isRegularFile(metadataFile) ) {
             // every service binding must contain a metadata file
             logger.debug("Skipping '{}': The directory does not contain a '{}' file.", rootDirectory, METADATA_FILE);
-            return Optional.empty();
+            return null;
         }
 
         final Optional<BindingMetadata> maybeBindingMetadata = BindingMetadataFactory.tryFromJsonFile(metadataFile);
         if( !maybeBindingMetadata.isPresent() ) {
             // metadata file cannot be parsed
             logger.debug("Skipping '{}': Unable to parse the '{}' file.", rootDirectory, METADATA_FILE);
-            return Optional.empty();
+            return null;
         }
 
         final String bindingName = rootDirectory.getFileName().toString();
@@ -199,7 +207,7 @@ public class SapServiceOperatorServiceBindingIoAccessor implements ServiceBindin
         if( !maybeServiceName.isPresent() ) {
             // the service name property is mandatory
             logger.debug("Skipping '{}': No '{}' property found.", rootDirectory, SERVICE_NAME_KEY);
-            return Optional.empty();
+            return null;
         }
 
         final Map<String, Object> rawCredentials = new HashMap<>();
@@ -209,7 +217,7 @@ public class SapServiceOperatorServiceBindingIoAccessor implements ServiceBindin
         if( rawCredentials.isEmpty() ) {
             // bindings must always have credentials
             logger.debug("Skipping '{}': No credentials property found.", rootDirectory);
-            return Optional.empty();
+            return null;
         }
 
         final String credentialsKey = generateNewKey(rawServiceBinding);
@@ -226,7 +234,7 @@ public class SapServiceOperatorServiceBindingIoAccessor implements ServiceBindin
                 .withCredentialsKey(credentialsKey)
                 .build();
         logger.debug("Successfully read service binding from '{}'.", rootDirectory);
-        return Optional.of(serviceBinding);
+        return serviceBinding;
     }
 
     private void addProperty(
