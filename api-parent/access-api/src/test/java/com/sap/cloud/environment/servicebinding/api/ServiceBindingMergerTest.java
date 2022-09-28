@@ -19,6 +19,7 @@ import javax.annotation.Nullable;
 
 import org.junit.jupiter.api.Test;
 
+import static com.sap.cloud.environment.servicebinding.api.ServiceBindingMerger.KEEP_EVERYTHING;
 import static com.sap.cloud.environment.servicebinding.api.ServiceBindingMerger.KEEP_UNIQUE;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
@@ -101,7 +102,7 @@ class ServiceBindingMergerTest
     {
         final ServiceBinding binding = serviceBinding("XSUAA", "lite");
 
-        assertThat(ServiceBindingMerger.KEEP_EVERYTHING.areEqual(binding, binding)).isFalse();
+        assertThat(KEEP_EVERYTHING.areEqual(binding, binding)).isFalse();
     }
 
     @Test
