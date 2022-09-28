@@ -38,6 +38,14 @@ public class ServiceBindingMerger implements ServiceBindingAccessor
     @Nonnull
     public static final EqualityComparer KEEP_EVERYTHING = ( a, b ) -> false;
 
+    /**
+     * A {@link EqualityComparer} that compares {@link ServiceBinding} instance by using the
+     * {@link Object#equals(Object)} implementation. Therefore, duplicated (i.e. non-unique) {@link ServiceBinding}s
+     * will <b>not</b> be included in the combined result set.
+     */
+    @Nonnull
+    public static final EqualityComparer KEEP_UNIQUE = Object::equals;
+
     @Nonnull
     private final Collection<ServiceBindingAccessor> accessors;
 
