@@ -7,7 +7,6 @@ updates:
       time: "10:00"
       timezone: Etc/UCT
     reviewers:
-      - "nenaraab"
       - "Johannes-Schneider"
     open-pull-requests-limit: 10
     ignore:
