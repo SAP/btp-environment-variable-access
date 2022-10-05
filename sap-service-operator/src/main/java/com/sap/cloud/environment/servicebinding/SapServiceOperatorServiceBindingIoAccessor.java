@@ -42,6 +42,7 @@ import com.sap.cloud.environment.servicebinding.api.exception.ServiceBindingAcce
  * The file system structure is assumed to look as follows:
  *
  * <pre>
+ * {@code
  *     ${SERVICE-BINDING-ROOT}
  *     ├-- {SERVICE-BINDING-NAME#1}
  *     |   ├-- .metadata
@@ -53,6 +54,7 @@ import com.sap.cloud.environment.servicebinding.api.exception.ServiceBindingAcce
  *         ├-- {PROPERTY#1}
  *         ├-- ...
  *         └-- {PROPERTY#N}
+ * }
  * </pre>
  */
 public class SapServiceOperatorServiceBindingIoAccessor implements ServiceBindingAccessor

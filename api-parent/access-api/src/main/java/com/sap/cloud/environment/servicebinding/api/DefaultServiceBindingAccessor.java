@@ -15,15 +15,17 @@ import org.slf4j.LoggerFactory;
 
 /**
  * A static access point for the default {@link ServiceBindingAccessor}. The statically stored instance inside this
- * class can both be retrieved ({@link DefaultServiceBindingAccessor#getInstance()}) <bold>and</bold> manipulated
+ * class can both be retrieved ({@link DefaultServiceBindingAccessor#getInstance()}) <b>and</b> manipulated
  * ({@link DefaultServiceBindingAccessor#setInstance(ServiceBindingAccessor)}). Applications might want to overwrite the
  * default instance during startup to tweak the default behavior of libraries that are relying on it. <br>
- * <bold>Please note:</bold> It is considered best practice to offer APIs that accept a dedicated
+ * <b>Please note:</b> It is considered best practice to offer APIs that accept a dedicated
  * {@link ServiceBindingAccessor} instance instead of using the globally available instance stored inside this class.
  * For example, libraries that are using {@link ServiceBindingAccessor}s should offer APIs such as the following:
  *
  * <pre>
+ * {@code
  * public ReturnType doSomethingWithServiceBindings( @Nonnull final ServiceBindingAccessor accessor );
+ * }
  * </pre>
  * <p>
  * If that is, for some reason, not feasible, only then should this static default instance be used.
