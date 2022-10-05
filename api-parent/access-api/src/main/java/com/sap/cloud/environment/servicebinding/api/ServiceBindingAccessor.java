@@ -28,18 +28,15 @@ public interface ServiceBindingAccessor
      * <b>Example:</b>
      * 
      * <pre>
-     * {@code
-     *     final List<ServiceBindingAccessor> defaultInstances = ServiceBindingAccessor.getInstancesViaServiceLoader();
-     *     if( defaultInstances.removeIf(SapVcapServicesServiceBindingAccessor.class::isInstance) ) {
-     *         defaultInstances.add(new SapVcapServicesServiceBindingAccessor(customEnvironmentVariableReader));
-     *     }
-     *
-     *     final ServiceBindingMerger merger =
-     *         new ServiceBindingMerger(defaultInstances, ServiceBindingMerger.KEEP_UNIQUE);
-     *     final SimpleServiceBindingCache cache = new SimpleServiceBindingCache(merger);
-     *
-     *     DefaultServiceBindingAccessor.setInstance(cache);
+     * final List&lt;ServiceBindingAccessor&gt; defaultInstances = ServiceBindingAccessor.getInstancesViaServiceLoader();
+     * if( defaultInstances.removeIf(SapVcapServicesServiceBindingAccessor.class::isInstance) ) {
+     *     defaultInstances.add(new SapVcapServicesServiceBindingAccessor(customEnvironmentVariableReader));
      * }
+     *
+     * final ServiceBindingMerger merger = new ServiceBindingMerger(defaultInstances, ServiceBindingMerger.KEEP_UNIQUE);
+     * final SimpleServiceBindingCache cache = new SimpleServiceBindingCache(merger);
+     *
+     * DefaultServiceBindingAccessor.setInstance(cache);
      * </pre>
      *
      * @return A {@link List} of {@link ServiceBindingAccessor} instances created from implementations that are exposed

@@ -23,9 +23,7 @@ import org.slf4j.LoggerFactory;
  * For example, libraries that are using {@link ServiceBindingAccessor}s should offer APIs such as the following:
  *
  * <pre>
- * {@code
  * public ReturnType doSomethingWithServiceBindings( @Nonnull final ServiceBindingAccessor accessor );
- * }
  * </pre>
  * <p>
  * If that is, for some reason, not feasible, only then should this static default instance be used.

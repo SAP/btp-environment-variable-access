@@ -34,7 +34,6 @@ import com.sap.cloud.environment.servicebinding.api.exception.ServiceBindingAcce
  * The <b>layered</b> structure is assumed to look as follows:
  *
  * <pre>
- * {@code
  *     {SERVICE-BINDING-ROOT}
  *     ├-- {SERVICE-NAME#1}
  *     |   ├-- {SERVICE-BINDING-NAME#1}
@@ -44,7 +43,6 @@ import com.sap.cloud.environment.servicebinding.api.exception.ServiceBindingAcce
  *     └-- {SERVICE-NAME#2}
  *         └-- {SERVICE-BINDING-NAME#3}
  *             └- {SERVICE-BINDING-CONTENT#3}
- * }
  * </pre>
  * <p>
  * By default, {@code /etc/secrets/sapbtp} is used as the {@code SERVICE-BINDING-ROOT}. <br>
