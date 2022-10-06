@@ -21,6 +21,7 @@ import java.util.stream.Stream;
 
 import javax.annotation.Nonnull;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
@@ -285,6 +286,7 @@ class FileSystemWatcherCacheTest
         assertThat(sut.directoryWatchKeys).isEmpty();
     }
 
+    @Disabled( "This test doesn't work reliably in the CI/CD pipeline. It can still be used for manual testing." )
     @Test
     @SuppressWarnings( "unchecked" )
     void watchKeysAreCancelledOnGcRun()
