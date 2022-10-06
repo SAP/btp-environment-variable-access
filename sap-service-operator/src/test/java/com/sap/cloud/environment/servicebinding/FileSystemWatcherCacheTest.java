@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.nio.file.FileSystem;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.nio.file.WatchEvent;
 import java.nio.file.WatchKey;
 import java.nio.file.WatchService;
@@ -263,6 +264,44 @@ class FileSystemWatcherCacheTest
         // using a different FileSystem will create a new WatchService
         new FileSystemWatcherCache(loader, fileSystemB);
         verify(fileSystemB, times(1)).newWatchService();
+    }
+
+    @Test
+    @SuppressWarnings( "unchecked" )
+    void finalizeCancelsWatchKeys()
+    {
+        final Function<Path, ServiceBinding> loader = (Function<Path, ServiceBinding>) mock(Function.class);
+        when(loader.apply(any())).thenReturn(null);
+
+        final WatchKey watchKey = mock(WatchKey.class);
+
+        final FileSystemWatcherCache sut = new FileSystemWatcherCache(loader);
+
+        sut.directoryWatchKeys.put(Paths.get("some", "imaginary", "path"), watchKey);
+
+        sut.finalize();
+
+        verify(watchKey, times(1)).cancel();
+        assertThat(sut.directoryWatchKeys).isEmpty();
+    }
+
+    @Test
+    @SuppressWarnings( "unchecked" )
+    void watchKeysAreCancelledOnGcRun()
+    {
+        final Function<Path, ServiceBinding> loader = (Function<Path, ServiceBinding>) mock(Function.class);
+        when(loader.apply(any())).thenReturn(null);
+
+        final WatchKey watchKey = mock(WatchKey.class);
+
+        FileSystemWatcherCache sut = new FileSystemWatcherCache(loader);
+
+        sut.directoryWatchKeys.put(Paths.get("some", "imaginary", "path"), watchKey);
+
+        sut = null;
+
+        System.gc();
+        verify(watchKey, times(1)).cancel();
     }
 
     @Nonnull

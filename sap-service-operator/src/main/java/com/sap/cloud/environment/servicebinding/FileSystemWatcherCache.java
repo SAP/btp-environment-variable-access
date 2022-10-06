@@ -165,4 +165,11 @@ class FileSystemWatcherCache implements DirectoryBasedCache
 
         return events.stream().map(WatchEvent::kind).anyMatch(MODIFICATION_EVENTS::contains);
     }
+
+    @Override
+    protected void finalize()
+    {
+        directoryWatchKeys.values().forEach(WatchKey::cancel);
+        directoryWatchKeys.clear();
+    }
 }
