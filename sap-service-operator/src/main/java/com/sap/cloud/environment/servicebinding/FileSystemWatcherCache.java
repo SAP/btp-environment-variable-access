@@ -167,7 +167,7 @@ class FileSystemWatcherCache implements DirectoryBasedCache
     }
 
     @Override
-    protected void finalize()
+    protected synchronized void finalize()
     {
         directoryWatchKeys.values().forEach(WatchKey::cancel);
         directoryWatchKeys.clear();
