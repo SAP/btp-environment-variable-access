@@ -5,10 +5,12 @@
 package com.sap.cloud.environment.servicebinding;
 
 import java.io.IOException;
+import java.nio.file.FileSystem;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.WatchEvent;
 import java.nio.file.WatchKey;
+import java.nio.file.WatchService;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -237,6 +239,30 @@ class FileSystemWatcherCacheTest
 
         assertThat(bindings.size()).isEqualTo(0);
         verify(loader, times(1)).apply(eq(dir));
+    }
+
+    @Test
+    @SuppressWarnings( "unchecked" )
+    void watchServiceIsCached()
+        throws Exception
+    {
+        final Function<Path, ServiceBinding> loader = (Function<Path, ServiceBinding>) mock(Function.class);
+        final FileSystem fileSystemA = mock(FileSystem.class);
+        final FileSystem fileSystemB = mock(FileSystem.class);
+        final WatchService watchService = mock(WatchService.class);
+
+        when(fileSystemA.newWatchService()).thenReturn(watchService);
+        when(fileSystemB.newWatchService()).thenReturn(watchService);
+
+        new FileSystemWatcherCache(loader, fileSystemA);
+        verify(fileSystemA, times(1)).newWatchService();
+
+        new FileSystemWatcherCache(loader, fileSystemA);
+        verify(fileSystemA, times(1)).newWatchService();
+
+        // using a different FileSystem will create a new WatchService
+        new FileSystemWatcherCache(loader, fileSystemB);
+        verify(fileSystemB, times(1)).newWatchService();
     }
 
     @Nonnull
