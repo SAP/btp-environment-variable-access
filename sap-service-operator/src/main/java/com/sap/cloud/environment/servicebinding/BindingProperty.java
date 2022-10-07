@@ -8,8 +8,7 @@ import java.util.Objects;
 
 import javax.annotation.Nonnull;
 
-class BindingProperty
-{
+class BindingProperty {
     @Nonnull
     private final String name;
 
