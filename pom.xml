@@ -68,6 +68,7 @@
         <slf4j-simple.version>2.0.3</slf4j-simple.version>
 
         <maven-compiler-plugin.version>3.10.1</maven-compiler-plugin.version>
+        <maven-install-plugin.version>3.0.1</maven-install-plugin.version>
         <maven-resources-plugin.version>3.3.0</maven-resources-plugin.version>
         <maven-source-plugin.version>3.2.1</maven-source-plugin.version>
         <maven-javadoc-plugin.version>3.4.1</maven-javadoc-plugin.version>
@@ -136,6 +137,28 @@
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-compiler-plugin</artifactId>
                     <version>${maven-compiler-plugin.version}</version>
+                    <executions>
+                        <execution>
+                            <id>default-compile</id>
+                            <phase>compile</phase>
+                            <goals>
+                                <goal>compile</goal>
+                            </goals>
+                            <configuration>
+                                <skipMain>true</skipMain>
+                            </configuration>
+                        </execution>
+                        <execution>
+                            <id>default-testCompile</id>
+                            <phase>test-compile</phase>
+                            <goals>
+                                <goal>testCompile</goal>
+                            </goals>
+                            <configuration>
+                                <skip>true</skip>
+                            </configuration>
+                        </execution>
+                    </executions>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
@@ -143,6 +166,7 @@
                     <version>${maven-resources-plugin.version}</version>
                     <configuration>
                         <addDefaultExcludes>false</addDefaultExcludes>
+                        <skip>true</skip>
                     </configuration>
                 </plugin>
                 <plugin>
@@ -412,7 +436,7 @@
                     <configuration>
                         <failOnWarning>true</failOnWarning>
                         <failBuild>true</failBuild>
-                        <ignoreNonCompile>true</ignoreNonCompile>
+                        <ignoreNonCompile>false</ignoreNonCompile>
                         <ignoredUnusedDeclaredDependencies>
                             <dependency>org.slf4j:slf4j-simple</dependency>
                         </ignoredUnusedDeclaredDependencies>
@@ -438,18 +462,66 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-compiler-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>default-compile</id>
+                                <phase>compile</phase>
+                                <goals>
+                                    <goal>compile</goal>
+                                </goals>
+                                <configuration>
+                                    <skipMain>false</skipMain>
+                                </configuration>
+                            </execution>
+                        </executions>
                     </plugin>
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-resources-plugin</artifactId>
-                    </plugin>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-surefire-plugin</artifactId>
+                        <configuration>
+                            <skip>false</skip>
+                        </configuration>
                     </plugin>
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-source-plugin</artifactId>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>test</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-compiler-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>default-testCompile</id>
+                                <phase>test-compile</phase>
+                                <goals>
+                                    <goal>testCompile</goal>
+                                </goals>
+                                <configuration>
+                                    <skip>false</skip>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-resources-plugin</artifactId>
+                        <configuration>
+                            <skip>false</skip>
+                        </configuration>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-surefire-plugin</artifactId>
                     </plugin>
                 </plugins>
             </build>
@@ -532,10 +604,35 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-compiler-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>default-compile</id>
+                                <phase>compile</phase>
+                                <goals>
+                                    <goal>compile</goal>
+                                </goals>
+                                <configuration>
+                                    <skipMain>false</skipMain>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>default-testCompile</id>
+                                <phase>test-compile</phase>
+                                <goals>
+                                    <goal>testCompile</goal>
+                                </goals>
+                                <configuration>
+                                    <skip>false</skip>
+                                </configuration>
+                            </execution>
+                        </executions>
                     </plugin>
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-resources-plugin</artifactId>
+                        <configuration>
+                            <skip>false</skip>
+                        </configuration>
                     </plugin>
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
@@ -574,10 +671,35 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-compiler-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>default-compile</id>
+                                <phase>compile</phase>
+                                <goals>
+                                    <goal>compile</goal>
+                                </goals>
+                                <configuration>
+                                    <skipMain>false</skipMain>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>default-testCompile</id>
+                                <phase>test-compile</phase>
+                                <goals>
+                                    <goal>testCompile</goal>
+                                </goals>
+                                <configuration>
+                                    <skip>false</skip>
+                                </configuration>
+                            </execution>
+                        </executions>
                     </plugin>
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-resources-plugin</artifactId>
+                        <configuration>
+                            <skip>false</skip>
+                        </configuration>
                     </plugin>
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
