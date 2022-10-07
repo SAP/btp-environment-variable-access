@@ -25,16 +25,7 @@ jobs:
         run: mvn clean install -Dgpg.skip
       - name: Check for source code changes
         run: |
-          changed_files=$(git diff --name-only)
-          
-          # remove leading whitespaces
-          changed_files="${changed_files#"${changed_files%%[![:space:]]*}"}"
-          # remove trailing whitespaces
-          changed_files="${changed_files%"${changed_files##*[![:space:]]}"}"
-          
-          changed_files=$(printf "%s" "$changed_files")
-          
-          if [ -n $changed_files ]; then
-            echo "Following files need to be formatted: \n$changed_files"
+          if [ -n $(git status --porcelain) ]; then
+            echo -e "Following files need to be formatted: \n$(git diff --name-only)"
             exit 1
           fi
