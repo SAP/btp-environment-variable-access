@@ -25,7 +25,7 @@ jobs:
         run: mvn clean install -Dgpg.skip
       - name: Check for source code changes
         run: |
-          if [ $(git status --porcelain) ]; then
+          if [[ `git status --porcelain` ]]; then
             echo -e "Following files need to be formatted: \n$(git diff --name-only)"
             exit 1
           fi
