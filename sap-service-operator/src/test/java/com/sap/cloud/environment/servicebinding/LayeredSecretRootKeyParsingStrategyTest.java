@@ -3,12 +3,12 @@
  */
 
 package com.sap.cloud.environment.servicebinding;
-import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Optional;
 
+import org.junit.jupiter.api.Test;
 
 import com.sap.cloud.environment.servicebinding.api.ServiceBinding;
 
