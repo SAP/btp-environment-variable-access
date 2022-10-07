@@ -25,8 +25,4 @@ jobs:
         run: mvn clean install -Dgpg.skip
       - name: Check for source code changes
         run: |
-          changed_files=$(git diff --name-only)
-          if [ -n $changed_files ]; then
-            echo "Following files need to be formatted: \n" + $changed_files
-            exit 1
-          fi
+          git diff --name-only
