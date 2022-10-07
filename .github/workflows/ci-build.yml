@@ -28,7 +28,7 @@ jobs:
           echo -e "debug (git diff): $(git diff --name-only)"
           echo -e "debug (git status): $(git status --porcelain)"
           
-          if [ $(git status --porcelain) ]; then
+          if [[ `git status --porcelain` ]]; then
             echo -e "Following files need to be formatted: \n$(git diff --name-only)"
             exit 1
           fi
