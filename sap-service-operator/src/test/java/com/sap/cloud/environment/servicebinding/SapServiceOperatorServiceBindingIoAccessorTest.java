@@ -417,13 +417,110 @@ class SapServiceOperatorServiceBindingIoAccessorTest
             new SapServiceOperatorServiceBindingIoAccessor(
                 reader,
                 SapServiceOperatorServiceBindingIoAccessor.DEFAULT_CHARSET,
-                mockedCache);
+                mockedCache,
+                null);
 
         assertThat(sut.getServiceBindings()).isSameAs(serviceBindings);
         verify(mockedCache, times(1)).getServiceBindings(any());
 
         assertThat(sut.getServiceBindings()).isSameAs(serviceBindings);
         verify(mockedCache, times(2)).getServiceBindings(any());
+    }
+
+    @Test
+    @SuppressWarnings( "unchecked" )
+    void fallbackRootPathIsUsedWhenRootPathIsNotDefined( @Nonnull @TempDir final Path rootDirectory )
+    {
+        // setup file system
+        final Path bindingRoot = rootDirectory.resolve("binding");
+        write(
+            bindingRoot.resolve(".metadata"),
+            "{\n"
+                + "    \"metaDataProperties\": [\n"
+                + "        {\n"
+                + "            \"name\": \"type\",\n"
+                + "            \"format\": \"text\"\n"
+                + "        }\n"
+                + "    ],\n"
+                + "    \"credentialProperties\": [\n"
+                + "        {\n"
+                + "            \"name\": \"token\",\n"
+                + "            \"format\": \"text\"\n"
+                + "        }\n"
+                + "    ]\n"
+                + "}");
+        write(bindingRoot.resolve("type"), "xsuaa");
+        write(bindingRoot.resolve("token"), "auth-token");
+
+        // setup environment variable reader
+        final Function<String, String> reader = mock(Function.class);
+        when(reader.apply(eq("SERVICE_BINDING_ROOT"))).thenReturn(null);
+
+        final SapServiceOperatorServiceBindingIoAccessor sut =
+            new SapServiceOperatorServiceBindingIoAccessor(
+                reader,
+                SapServiceOperatorServiceBindingIoAccessor.DEFAULT_CHARSET,
+                null,
+                rootDirectory);
+
+        final List<ServiceBinding> serviceBindings = sut.getServiceBindings();
+
+        assertThat(serviceBindings.size()).isEqualTo(1);
+
+        final ServiceBinding serviceBinding = serviceBindings.get(0);
+        assertThat(serviceBinding.getKeys().size()).isEqualTo(2);
+        assertThat(serviceBinding.getKeys()).contains("type");
+
+        assertThat(serviceBinding.getServiceName().orElse(null)).isEqualTo("xsuaa");
+        assertThat(serviceBinding.getCredentials().get("token")).isEqualTo("auth-token");
+
+        verify(reader, times(1)).apply("SERVICE_BINDING_ROOT");
+    }
+
+    @Test
+    @SuppressWarnings( "unchecked" )
+    void fallbackRootPathIsNotUsedWhenRootPathIsDefinedButDoesNotExist( @Nonnull @TempDir final Path rootDirectory )
+    {
+        // setup file system
+        final Path bindingRoot = rootDirectory.resolve("binding");
+        write(
+            bindingRoot.resolve(".metadata"),
+            "{\n"
+                + "    \"metaDataProperties\": [\n"
+                + "        {\n"
+                + "            \"name\": \"type\",\n"
+                + "            \"format\": \"text\"\n"
+                + "        }\n"
+                + "    ],\n"
+                + "    \"credentialProperties\": [\n"
+                + "        {\n"
+                + "            \"name\": \"token\",\n"
+                + "            \"format\": \"text\"\n"
+                + "        }\n"
+                + "    ]\n"
+                + "}");
+        write(bindingRoot.resolve("type"), "xsuaa");
+        write(bindingRoot.resolve("token"), "auth-token");
+
+        final Path nonExistingPath = rootDirectory.resolve("this-directory-does-not-exist");
+        assertThat(Files.exists(nonExistingPath)).isFalse();
+
+        // setup environment variable reader
+        final Function<String, String> reader = mock(Function.class);
+        when(reader.apply(eq("SERVICE_BINDING_ROOT"))).thenReturn(nonExistingPath.toString());
+
+        final SapServiceOperatorServiceBindingIoAccessor sut =
+            new SapServiceOperatorServiceBindingIoAccessor(
+                reader,
+                SapServiceOperatorServiceBindingIoAccessor.DEFAULT_CHARSET,
+                null,
+                rootDirectory);
+
+        final List<ServiceBinding> serviceBindings = sut.getServiceBindings();
+
+        // assert that the fallback path is NOT used even though the SERVICE_BINDING_ROOT does not exist
+        assertThat(serviceBindings).isEmpty();
+        verify(reader, times(1)).apply("SERVICE_BINDING_ROOT");
     }
 
     private static void assertContainsDataXsuaaBinding( @Nonnull final List<ServiceBinding> serviceBindings )

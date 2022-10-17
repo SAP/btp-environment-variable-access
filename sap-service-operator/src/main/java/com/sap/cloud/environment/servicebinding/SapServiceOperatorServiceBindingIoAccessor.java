@@ -66,6 +66,9 @@ public class SapServiceOperatorServiceBindingIoAccessor implements ServiceBindin
     @Nonnull
     public static final Function<String, String> DEFAULT_ENVIRONMENT_VARIABLE_READER = System::getenv;
 
+    @Nonnull
+    private static final Path FALLBACK_BINDING_ROOT_PATH = Paths.get("/etc/secrets/sapbtp");
+
     /**
      * The default {@link Charset} that should be used to read property files.
      */
@@ -96,6 +99,9 @@ public class SapServiceOperatorServiceBindingIoAccessor implements ServiceBindin
     @Nonnull
     private final DirectoryBasedCache cache;
 
+    @Nullable
+    private final Path fallbackBindingRootPath;
+
     /**
      * Initializes a new {@link SapServiceOperatorServiceBindingIoAccessor} instance that uses the
      * {@link #DEFAULT_ENVIRONMENT_VARIABLE_READER} and the {@link #DEFAULT_CHARSET}.
@@ -118,17 +124,19 @@ public class SapServiceOperatorServiceBindingIoAccessor implements ServiceBindin
         @Nonnull final Function<String, String> environmentVariableReader,
         @Nonnull final Charset charset )
     {
-        this(environmentVariableReader, charset, null);
+        this(environmentVariableReader, charset, null, FALLBACK_BINDING_ROOT_PATH);
     }
 
     SapServiceOperatorServiceBindingIoAccessor(
         @Nonnull final Function<String, String> environmentVariableReader,
         @Nonnull final Charset charset,
-        @Nullable final DirectoryBasedCache cache )
+        @Nullable final DirectoryBasedCache cache,
+        @Nullable final Path fallbackBindingRootPath )
     {
         this.environmentVariableReader = environmentVariableReader;
         this.charset = charset;
         this.cache = cache != null ? cache : new FileSystemWatcherCache(this::parseServiceBinding);
+        this.fallbackBindingRootPath = fallbackBindingRootPath;
     }
 
     @Nonnull
@@ -160,7 +168,7 @@ public class SapServiceOperatorServiceBindingIoAccessor implements ServiceBindin
         final String maybeRootDirectory = environmentVariableReader.apply(ROOT_DIRECTORY_KEY);
         if( maybeRootDirectory == null || maybeRootDirectory.isEmpty() ) {
             logger.debug("Environment variable '{}' is not defined.", ROOT_DIRECTORY_KEY);
-            return null;
+            return getFallbackRootDirectory();
         }
 
         final Path rootDirectory = Paths.get(maybeRootDirectory);
@@ -174,6 +182,22 @@ public class SapServiceOperatorServiceBindingIoAccessor implements ServiceBindin
         }
 
         return rootDirectory;
+    }
+
+    @Nullable
+    private Path getFallbackRootDirectory()
+    {
+        if( fallbackBindingRootPath == null ) {
+            return null;
+        }
+
+        logger.debug("Trying to fall back to '{}'.", fallbackBindingRootPath);
+        if( !Files.exists(fallbackBindingRootPath) || !Files.isDirectory(fallbackBindingRootPath) ) {
+            logger.debug("Fallback '{}' ('{}') cannot be found.", ROOT_DIRECTORY_KEY, fallbackBindingRootPath);
+            return null;
+        }
+
+        return fallbackBindingRootPath;
     }
 
     @Nullable
