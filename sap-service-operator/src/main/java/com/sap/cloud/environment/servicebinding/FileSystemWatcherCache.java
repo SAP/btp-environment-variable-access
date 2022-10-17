@@ -5,6 +5,7 @@
 package com.sap.cloud.environment.servicebinding;
 
 import java.io.IOException;
+import java.nio.file.FileSystem;
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
 import java.nio.file.WatchEvent;
@@ -16,6 +17,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -35,6 +37,24 @@ class FileSystemWatcherCache implements DirectoryBasedCache
         Arrays.asList(ENTRY_CREATE, ENTRY_MODIFY, ENTRY_DELETE);
 
     @Nonnull
+    private static final ConcurrentHashMap<FileSystem, WatchService> watchServices = new ConcurrentHashMap<>();
+
+    @Nonnull
+    private static WatchService getOrCreateWatchService( @Nonnull final FileSystem fileSystem )
+    {
+        return watchServices.computeIfAbsent(fileSystem, fs -> {
+            try {
+                return fs.newWatchService();
+            }
+            catch( final IOException e ) {
+                throw new IllegalStateException(
+                    String.format("Unable to create new instance of '%s'.", WatchService.class.getSimpleName()),
+                    e);
+            }
+        });
+    }
+
+    @Nonnull
     private final Function<Path, ServiceBinding> serviceBindingLoader;
     @Nonnull
     // package-private for simplified testing
@@ -47,16 +67,15 @@ class FileSystemWatcherCache implements DirectoryBasedCache
 
     public FileSystemWatcherCache( @Nonnull final Function<Path, ServiceBinding> serviceBindingLoader )
     {
-        this.serviceBindingLoader = serviceBindingLoader;
+        this(serviceBindingLoader, FileSystems.getDefault());
+    }
 
-        try {
-            watchService = FileSystems.getDefault().newWatchService();
-        }
-        catch( final IOException e ) {
-            throw new IllegalStateException(
-                String.format("Unable to create new instance of '%s'.", WatchService.class.getSimpleName()),
-                e);
-        }
+    FileSystemWatcherCache(
+        @Nonnull final Function<Path, ServiceBinding> serviceBindingLoader,
+        @Nonnull final FileSystem fileSystem )
+    {
+        this.serviceBindingLoader = serviceBindingLoader;
+        watchService = getOrCreateWatchService(fileSystem);
     }
 
     @Nonnull
@@ -145,5 +164,12 @@ class FileSystemWatcherCache implements DirectoryBasedCache
         watchKey.reset();
 
         return events.stream().map(WatchEvent::kind).anyMatch(MODIFICATION_EVENTS::contains);
+    }
+
+    @Override
+    protected synchronized void finalize()
+    {
+        directoryWatchKeys.values().forEach(WatchKey::cancel);
+        directoryWatchKeys.clear();
     }
 }
