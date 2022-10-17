@@ -54,6 +54,10 @@ import com.sap.cloud.environment.servicebinding.api.exception.ServiceBindingAcce
  *         ├-- ...
  *         └-- {PROPERTY#N}
  * </pre>
+ *
+ * <b>Note:</b> This class will attempt to read service bindings from {@code /etc/secrets/sapbtp} <b>if</b> the
+ * {@code SERVICE_BINDING_ROOT} environment variable is not defined (i.e.
+ * {@code System.getenv("SERVICE_BINDING_ROOT") == null}).
  */
 public class SapServiceOperatorServiceBindingIoAccessor implements ServiceBindingAccessor
 {
@@ -65,6 +69,9 @@ public class SapServiceOperatorServiceBindingIoAccessor implements ServiceBindin
      */
     @Nonnull
     public static final Function<String, String> DEFAULT_ENVIRONMENT_VARIABLE_READER = System::getenv;
+
+    @Nonnull
+    private static final Path FALLBACK_BINDING_ROOT_PATH = Paths.get("/etc/secrets/sapbtp");
 
     /**
      * The default {@link Charset} that should be used to read property files.
@@ -96,6 +103,9 @@ public class SapServiceOperatorServiceBindingIoAccessor implements ServiceBindin
     @Nonnull
     private final DirectoryBasedCache cache;
 
+    @Nullable
+    private final Path fallbackBindingRootPath;
+
     /**
      * Initializes a new {@link SapServiceOperatorServiceBindingIoAccessor} instance that uses the
      * {@link #DEFAULT_ENVIRONMENT_VARIABLE_READER} and the {@link #DEFAULT_CHARSET}.
@@ -118,17 +128,19 @@ public class SapServiceOperatorServiceBindingIoAccessor implements ServiceBindin
         @Nonnull final Function<String, String> environmentVariableReader,
         @Nonnull final Charset charset )
     {
-        this(environmentVariableReader, charset, null);
+        this(environmentVariableReader, charset, null, FALLBACK_BINDING_ROOT_PATH);
     }
 
     SapServiceOperatorServiceBindingIoAccessor(
         @Nonnull final Function<String, String> environmentVariableReader,
         @Nonnull final Charset charset,
-        @Nullable final DirectoryBasedCache cache )
+        @Nullable final DirectoryBasedCache cache,
+        @Nullable final Path fallbackBindingRootPath )
     {
         this.environmentVariableReader = environmentVariableReader;
         this.charset = charset;
         this.cache = cache != null ? cache : new FileSystemWatcherCache(this::parseServiceBinding);
+        this.fallbackBindingRootPath = fallbackBindingRootPath;
     }
 
     @Nonnull
@@ -160,11 +172,11 @@ public class SapServiceOperatorServiceBindingIoAccessor implements ServiceBindin
         final String maybeRootDirectory = environmentVariableReader.apply(ROOT_DIRECTORY_KEY);
         if( maybeRootDirectory == null || maybeRootDirectory.isEmpty() ) {
             logger.debug("Environment variable '{}' is not defined.", ROOT_DIRECTORY_KEY);
-            return null;
+            return getFallbackRootDirectory();
         }
 
         final Path rootDirectory = Paths.get(maybeRootDirectory);
-        if( !Files.exists(rootDirectory) || !Files.isDirectory(rootDirectory) ) {
+        if( !Files.isDirectory(rootDirectory) ) {
             logger
                 .debug(
                     "Environment variable '{}' ('{}') does not point to a valid directory.",
@@ -177,11 +189,27 @@ public class SapServiceOperatorServiceBindingIoAccessor implements ServiceBindin
     }
 
     @Nullable
+    private Path getFallbackRootDirectory()
+    {
+        if( fallbackBindingRootPath == null ) {
+            return null;
+        }
+
+        logger.debug("Trying to fall back to '{}'.", fallbackBindingRootPath);
+        if( !Files.isDirectory(fallbackBindingRootPath) ) {
+            logger.debug("Fallback '{}' ('{}') is not a valid directory.", ROOT_DIRECTORY_KEY, fallbackBindingRootPath);
+            return null;
+        }
+
+        return fallbackBindingRootPath;
+    }
+
+    @Nullable
     private ServiceBinding parseServiceBinding( @Nonnull final Path rootDirectory )
     {
         logger.debug("Trying to read service binding from '{}'.", rootDirectory);
         final Path metadataFile = rootDirectory.resolve(METADATA_FILE);
-        if( !Files.exists(metadataFile) || !Files.isRegularFile(metadataFile) ) {
+        if( !Files.isRegularFile(metadataFile) ) {
             // every service binding must contain a metadata file
             logger.debug("Skipping '{}': The directory does not contain a '{}' file.", rootDirectory, METADATA_FILE);
             return null;
@@ -332,7 +360,7 @@ public class SapServiceOperatorServiceBindingIoAccessor implements ServiceBindin
         getPropertyFilePath( @Nonnull final Path rootDirectory, @Nonnull final BindingProperty property )
     {
         final Path propertyFile = rootDirectory.resolve(property.getSourceName());
-        if( !Files.exists(propertyFile) || !Files.isRegularFile(propertyFile) ) {
+        if( !Files.isRegularFile(propertyFile) ) {
             return Optional.empty();
         }
 
