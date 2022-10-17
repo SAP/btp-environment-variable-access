@@ -54,6 +54,10 @@ import com.sap.cloud.environment.servicebinding.api.exception.ServiceBindingAcce
  *         ├-- ...
  *         └-- {PROPERTY#N}
  * </pre>
+ *
+ * <b>Note:</b> This class will attempt to read service bindings from {@code /etc/secrets/sapbtp} <b>if</b> the
+ * {@code SERVICE_BINDING_ROOT} environment variable is not defined (i.e.
+ * {@code System.getenv("SERVICE_BINDING_ROOT") == null}).
  */
 public class SapServiceOperatorServiceBindingIoAccessor implements ServiceBindingAccessor
 {
