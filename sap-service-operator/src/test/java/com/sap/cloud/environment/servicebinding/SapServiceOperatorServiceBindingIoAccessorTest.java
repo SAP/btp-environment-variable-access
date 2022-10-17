@@ -503,7 +503,7 @@ class SapServiceOperatorServiceBindingIoAccessorTest
         write(bindingRoot.resolve("token"), "auth-token");
 
         final Path nonExistingPath = rootDirectory.resolve("this-directory-does-not-exist");
-        assertThat(Files.exists(nonExistingPath)).isFalse();
+        assertThat(nonExistingPath).doesNotExist();
 
         // setup environment variable reader
         final Function<String, String> reader = mock(Function.class);

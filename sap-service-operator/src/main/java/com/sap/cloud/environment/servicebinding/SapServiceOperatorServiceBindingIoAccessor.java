@@ -176,7 +176,7 @@ public class SapServiceOperatorServiceBindingIoAccessor implements ServiceBindin
         }
 
         final Path rootDirectory = Paths.get(maybeRootDirectory);
-        if( !Files.exists(rootDirectory) || !Files.isDirectory(rootDirectory) ) {
+        if( !Files.isDirectory(rootDirectory) ) {
             logger
                 .debug(
                     "Environment variable '{}' ('{}') does not point to a valid directory.",
@@ -196,8 +196,8 @@ public class SapServiceOperatorServiceBindingIoAccessor implements ServiceBindin
         }
 
         logger.debug("Trying to fall back to '{}'.", fallbackBindingRootPath);
-        if( !Files.exists(fallbackBindingRootPath) || !Files.isDirectory(fallbackBindingRootPath) ) {
-            logger.debug("Fallback '{}' ('{}') cannot be found.", ROOT_DIRECTORY_KEY, fallbackBindingRootPath);
+        if( !Files.isDirectory(fallbackBindingRootPath) ) {
+            logger.debug("Fallback '{}' ('{}') is not a valid directory.", ROOT_DIRECTORY_KEY, fallbackBindingRootPath);
             return null;
         }
 
@@ -209,7 +209,7 @@ public class SapServiceOperatorServiceBindingIoAccessor implements ServiceBindin
     {
         logger.debug("Trying to read service binding from '{}'.", rootDirectory);
         final Path metadataFile = rootDirectory.resolve(METADATA_FILE);
-        if( !Files.exists(metadataFile) || !Files.isRegularFile(metadataFile) ) {
+        if( !Files.isRegularFile(metadataFile) ) {
             // every service binding must contain a metadata file
             logger.debug("Skipping '{}': The directory does not contain a '{}' file.", rootDirectory, METADATA_FILE);
             return null;
@@ -360,7 +360,7 @@ public class SapServiceOperatorServiceBindingIoAccessor implements ServiceBindin
         getPropertyFilePath( @Nonnull final Path rootDirectory, @Nonnull final BindingProperty property )
     {
         final Path propertyFile = rootDirectory.resolve(property.getSourceName());
-        if( !Files.exists(propertyFile) || !Files.isRegularFile(propertyFile) ) {
+        if( !Files.isRegularFile(propertyFile) ) {
             return Optional.empty();
         }
 
