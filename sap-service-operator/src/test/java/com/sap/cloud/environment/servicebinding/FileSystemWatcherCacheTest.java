@@ -5,10 +5,13 @@
 package com.sap.cloud.environment.servicebinding;
 
 import java.io.IOException;
+import java.nio.file.FileSystem;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.nio.file.WatchEvent;
 import java.nio.file.WatchKey;
+import java.nio.file.WatchService;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -18,6 +21,7 @@ import java.util.stream.Stream;
 
 import javax.annotation.Nonnull;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
@@ -237,6 +241,69 @@ class FileSystemWatcherCacheTest
 
         assertThat(bindings.size()).isEqualTo(0);
         verify(loader, times(1)).apply(eq(dir));
+    }
+
+    @Test
+    @SuppressWarnings( "unchecked" )
+    void watchServiceIsCached()
+        throws Exception
+    {
+        final Function<Path, ServiceBinding> loader = (Function<Path, ServiceBinding>) mock(Function.class);
+        final FileSystem fileSystemA = mock(FileSystem.class);
+        final FileSystem fileSystemB = mock(FileSystem.class);
+        final WatchService watchService = mock(WatchService.class);
+
+        when(fileSystemA.newWatchService()).thenReturn(watchService);
+        when(fileSystemB.newWatchService()).thenReturn(watchService);
+
+        new FileSystemWatcherCache(loader, fileSystemA);
+        verify(fileSystemA, times(1)).newWatchService();
+
+        new FileSystemWatcherCache(loader, fileSystemA);
+        verify(fileSystemA, times(1)).newWatchService();
+
+        // using a different FileSystem will create a new WatchService
+        new FileSystemWatcherCache(loader, fileSystemB);
+        verify(fileSystemB, times(1)).newWatchService();
+    }
+
+    @Test
+    @SuppressWarnings( "unchecked" )
+    void finalizeCancelsWatchKeys()
+    {
+        final Function<Path, ServiceBinding> loader = (Function<Path, ServiceBinding>) mock(Function.class);
+        when(loader.apply(any())).thenReturn(null);
+
+        final WatchKey watchKey = mock(WatchKey.class);
+
+        final FileSystemWatcherCache sut = new FileSystemWatcherCache(loader);
+
+        sut.directoryWatchKeys.put(Paths.get("some", "imaginary", "path"), watchKey);
+
+        sut.finalize();
+
+        verify(watchKey, times(1)).cancel();
+        assertThat(sut.directoryWatchKeys).isEmpty();
+    }
+
+    @Disabled( "This test doesn't work reliably in the CI/CD pipeline. It can still be used for manual testing." )
+    @Test
+    @SuppressWarnings( "unchecked" )
+    void watchKeysAreCancelledOnGcRun()
+    {
+        final Function<Path, ServiceBinding> loader = (Function<Path, ServiceBinding>) mock(Function.class);
+        when(loader.apply(any())).thenReturn(null);
+
+        final WatchKey watchKey = mock(WatchKey.class);
+
+        FileSystemWatcherCache sut = new FileSystemWatcherCache(loader);
+
+        sut.directoryWatchKeys.put(Paths.get("some", "imaginary", "path"), watchKey);
+
+        sut = null;
+
+        System.gc();
+        verify(watchKey, times(1)).cancel();
     }
 
     @Nonnull
