@@ -44,8 +44,8 @@ class DefaultServiceBindingTest
         final DefaultServiceBinding sut = DefaultServiceBinding.builder().copy(input).build();
 
         assertThat(sut).isNotNull();
-        assertThat(sut.get("Boolean1").orElse(null)).isEqualTo(true);
-        assertThat(sut.get("Boolean2").orElse(null)).isEqualTo(false);
+        assertThat(sut.get("Boolean1")).hasValue(true);
+        assertThat(sut.get("Boolean2")).hasValue(false);
         assertThat((Iterable<Boolean>) sut.get("Booleans").orElse(null)).containsExactly(true, false);
     }
 
@@ -64,12 +64,12 @@ class DefaultServiceBindingTest
         final DefaultServiceBinding sut = DefaultServiceBinding.builder().copy(input).build();
 
         assertThat(sut).isNotNull();
-        assertThat(sut.get("Byte").orElse(null)).isEqualTo(BYTE);
-        assertThat(sut.get("Integer").orElse(null)).isEqualTo(INTEGER);
-        assertThat(sut.get("Long").orElse(null)).isEqualTo(LONG);
-        assertThat(sut.get("Float").orElse(null)).isEqualTo(FLOAT);
-        assertThat(sut.get("Double").orElse(null)).isEqualTo(DOUBLE);
-        assertThat(sut.get("BigDecimal").orElse(null)).isEqualTo(BIG_DECIMAL);
+        assertThat(sut.get("Byte")).hasValue(BYTE);
+        assertThat(sut.get("Integer")).hasValue(INTEGER);
+        assertThat(sut.get("Long")).hasValue(LONG);
+        assertThat(sut.get("Float")).hasValue(FLOAT);
+        assertThat(sut.get("Double")).hasValue(DOUBLE);
+        assertThat(sut.get("BigDecimal")).hasValue(BIG_DECIMAL);
         assertThat((Iterable<Number>) sut.get("Numbers").orElse(null))
             .containsExactly(BYTE, INTEGER, LONG, FLOAT, DOUBLE, BIG_DECIMAL);
     }
@@ -85,8 +85,8 @@ class DefaultServiceBindingTest
         final DefaultServiceBinding sut = DefaultServiceBinding.builder().copy(input).build();
 
         assertThat(sut).isNotNull();
-        assertThat(sut.get("String1").orElse(null)).isEqualTo("foo");
-        assertThat(sut.get("String2").orElse(null)).isEqualTo("");
+        assertThat(sut.get("String1")).hasValue("foo");
+        assertThat(sut.get("String2")).hasValue("");
         assertThat((Iterable<String>) sut.get("Strings").orElse(null)).containsExactly("foo", "");
     }
 

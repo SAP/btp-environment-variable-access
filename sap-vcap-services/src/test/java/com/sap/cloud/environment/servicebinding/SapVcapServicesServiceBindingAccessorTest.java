@@ -51,8 +51,8 @@ class SapVcapServicesServiceBindingAccessorTest
 
         assertThat(binding.getKeys()).containsExactlyInAnyOrder("name", "plan", "tags", "credentials");
 
-        assertThat(binding.getName().orElse("")).isEqualTo("xsuaa-binding-1");
-        assertThat(binding.getServicePlan().orElse("")).isEqualTo("lite");
+        assertThat(binding.getName()).hasValue("xsuaa-binding-1");
+        assertThat(binding.getServicePlan()).hasValue("lite");
         assertThat(binding.getTags()).containsExactly("xsuaa-binding-1-tag-1", "xsuaa-binding-1-tag-2");
         assertThat(binding.getCredentials()).containsOnlyKeys("uri", "clientid", "clientsecret");
         assertThat(binding.getCredentials().get("uri")).isEqualTo("https://xsuaa-1.domain.com");
@@ -74,8 +74,8 @@ class SapVcapServicesServiceBindingAccessorTest
 
         assertThat(binding.getKeys()).containsExactlyInAnyOrder("name", "plan", "tags", "credentials");
 
-        assertThat(binding.getName().orElse("")).isEqualTo("xsuaa-binding-2");
-        assertThat(binding.getServicePlan().orElse("")).isEqualTo("application");
+        assertThat(binding.getName()).hasValue("xsuaa-binding-2");
+        assertThat(binding.getServicePlan()).hasValue("application");
         assertThat(binding.getTags()).containsExactly("xsuaa-binding-2-tag-1", "xsuaa-binding-2-tag-2");
         assertThat(binding.getCredentials()).containsOnlyKeys("uri", "clientid", "clientsecret");
         assertThat(binding.getCredentials().get("uri")).isEqualTo("https://xsuaa-2.domain.com");
@@ -97,8 +97,8 @@ class SapVcapServicesServiceBindingAccessorTest
 
         assertThat(binding.getKeys()).containsExactlyInAnyOrder("name", "plan", "tags", "credentials");
 
-        assertThat(binding.getName().orElse("")).isEqualTo("destination-binding-1");
-        assertThat(binding.getServicePlan().orElse("")).isEqualTo("broker");
+        assertThat(binding.getName()).hasValue("destination-binding-1");
+        assertThat(binding.getServicePlan()).hasValue("broker");
         assertThat(binding.getTags()).containsExactly("destination-binding-1-tag-1", "destination-binding-1-tag-2");
         assertThat(binding.getCredentials()).containsOnlyKeys("uri", "clientid", "clientsecret");
         assertThat(binding.getCredentials().get("uri")).isEqualTo("https://destination-1.domain.com");

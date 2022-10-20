@@ -33,9 +33,9 @@ class LayeredDataParsingStrategyTest
         assertThat(serviceBinding.getKeys())
             .containsExactlyInAnyOrder("instance_guid", "instance_name", "label", "plan", "tags", "credentials");
 
-        assertThat(serviceBinding.getName().orElse("")).isEqualTo("my-xsuaa-binding");
-        assertThat(serviceBinding.getServiceName().orElse("")).isEqualTo("XSUAA");
-        assertThat(serviceBinding.getServicePlan().orElse("")).isEqualTo("my-plan");
+        assertThat(serviceBinding.getName()).hasValue("my-xsuaa-binding");
+        assertThat(serviceBinding.getServiceName()).hasValue("XSUAA");
+        assertThat(serviceBinding.getServicePlan()).hasValue("my-plan");
         assertThat(serviceBinding.getTags()).containsExactly("my-tag-1", "my-tag-2");
 
         assertThat(serviceBinding.getCredentials()).containsOnlyKeys("domains", "clientid", "clientsecret");

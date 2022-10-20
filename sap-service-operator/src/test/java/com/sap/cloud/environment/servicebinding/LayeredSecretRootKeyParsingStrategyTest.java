@@ -53,9 +53,9 @@ class LayeredSecretRootKeyParsingStrategyTest
         final ServiceBinding serviceBinding = sut.parse("XSUAA", "my-xsuaa-binding", path).orElse(null);
 
         assertThat(serviceBinding).isNotNull();
-        assertThat(serviceBinding.getName().orElse("")).isEqualTo("my-xsuaa-binding");
-        assertThat(serviceBinding.getServiceName().orElse("")).isEqualTo("XSUAA");
-        assertThat(serviceBinding.getServicePlan().orElse("")).isEqualTo("lite");
+        assertThat(serviceBinding.getName()).hasValue("my-xsuaa-binding");
+        assertThat(serviceBinding.getServiceName()).hasValue("XSUAA");
+        assertThat(serviceBinding.getServicePlan()).hasValue("lite");
         assertThat(serviceBinding.getTags()).containsExactly("tag1", "tag2");
         assertThat(serviceBinding.getCredentials()).containsKeys("clientid", "clientsecret");
     }
