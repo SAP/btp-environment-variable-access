@@ -64,9 +64,9 @@ class SapServiceOperatorLayeredServiceBindingAccessorTest
 
         assertThat(secretRootKeyBinding.getKeys()).containsExactlyInAnyOrder("tags", "plan", "credentials");
 
-        assertThat(secretRootKeyBinding.getName().orElse("")).isEqualTo("secret-root-key-binding");
-        assertThat(secretRootKeyBinding.getServiceName().orElse("")).isEqualTo("xsuaa");
-        assertThat(secretRootKeyBinding.getServicePlan().orElse("")).isEqualTo("secret-root-key-xsuaa-plan");
+        assertThat(secretRootKeyBinding.getName()).hasValue("secret-root-key-binding");
+        assertThat(secretRootKeyBinding.getServiceName()).hasValue("xsuaa");
+        assertThat(secretRootKeyBinding.getServicePlan()).hasValue("secret-root-key-xsuaa-plan");
         assertThat(secretRootKeyBinding.getTags())
             .containsExactly("secret-root-key-xsuaa-tag-1", "secret-root-key-xsuaa-tag-2");
         assertThat(secretRootKeyBinding.getCredentials()).containsKeys("clientid", "clientsecret");
@@ -137,9 +137,9 @@ class SapServiceOperatorLayeredServiceBindingAccessorTest
         assertThat(secretKeyBinding.getKeys())
             .containsExactlyInAnyOrder("instance_guid", "instance_name", "label", "plan", "credentials");
 
-        assertThat(secretKeyBinding.getName().orElse("")).isEqualTo("secret-key-binding");
-        assertThat(secretKeyBinding.getServiceName().orElse("")).isEqualTo("xsuaa");
-        assertThat(secretKeyBinding.getServicePlan().orElse("")).isEqualTo("secret-key-xsuaa-plan");
+        assertThat(secretKeyBinding.getName()).hasValue("secret-key-binding");
+        assertThat(secretKeyBinding.getServiceName()).hasValue("xsuaa");
+        assertThat(secretKeyBinding.getServicePlan()).hasValue("secret-key-xsuaa-plan");
         assertThat(secretKeyBinding.getTags()).isEmpty();
         assertThat(secretKeyBinding.getCredentials())
             .containsOnlyKeys("domain", "domains", "clientid", "clientsecret", "url", "zone_uuid");
@@ -158,9 +158,9 @@ class SapServiceOperatorLayeredServiceBindingAccessorTest
         assertThat(dataBinding.getKeys())
             .containsExactlyInAnyOrder("instance_guid", "instance_name", "label", "plan", "tags", "credentials");
 
-        assertThat(dataBinding.getName().orElse("")).isEqualTo("data-binding");
-        assertThat(dataBinding.getServiceName().orElse("")).isEqualTo("xsuaa");
-        assertThat(dataBinding.getServicePlan().orElse("")).isEqualTo("data-xsuaa-plan");
+        assertThat(dataBinding.getName()).hasValue("data-binding");
+        assertThat(dataBinding.getServiceName()).hasValue("xsuaa");
+        assertThat(dataBinding.getServicePlan()).hasValue("data-xsuaa-plan");
         assertThat(dataBinding.getTags()).containsExactly("data-xsuaa-tag-1", "data-xsuaa-tag-2");
         assertThat(dataBinding.getCredentials()).containsOnlyKeys("domains", "clientid", "clientsecret");
     }

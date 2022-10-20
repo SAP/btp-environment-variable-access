@@ -159,12 +159,11 @@ class SapServiceOperatorServiceBindingIoAccessorTest
         assertThat(serviceBindings.size()).isEqualTo(1);
 
         final ServiceBinding serviceBinding = serviceBindings.get(0);
-        assertThat(serviceBinding.getKeys().size()).isEqualTo(3);
-        assertThat(serviceBinding.getKeys()).contains("type", "empty_text");
+        assertThat(serviceBinding.getKeys()).containsExactlyInAnyOrder("type", "empty_text", "credentials");
 
-        assertThat(serviceBinding.getServiceName().orElse(null)).isEqualTo("xsuaa");
+        assertThat(serviceBinding.getServiceName()).hasValue("xsuaa");
         assertThat(serviceBinding.getCredentials().get("token")).isEqualTo("auth-token");
-        assertThat(serviceBinding.get("empty_text").orElse(null)).isEqualTo("");
+        assertThat(serviceBinding.get("empty_text")).hasValue("");
         assertThat(serviceBinding.get("empty_json")).isEmpty();
         assertThat(serviceBinding.get("empty_container")).isEmpty();
     }
@@ -227,10 +226,9 @@ class SapServiceOperatorServiceBindingIoAccessorTest
         assertThat(serviceBindings.size()).isEqualTo(1);
 
         final ServiceBinding serviceBinding = serviceBindings.get(0);
-        assertThat(serviceBinding.getKeys().size()).isEqualTo(2);
-        assertThat(serviceBinding.getKeys()).contains("type");
+        assertThat(serviceBinding.getKeys()).containsExactlyInAnyOrder("type", "credentials");
 
-        assertThat(serviceBinding.getServiceName().orElse(null)).isEqualTo("xsuaa");
+        assertThat(serviceBinding.getServiceName()).hasValue("xsuaa");
         assertThat(serviceBinding.getCredentials().get("token")).isEqualTo("auth-token");
         assertThat(serviceBinding.get("empty_text")).isEmpty();
         assertThat(serviceBinding.get("empty_json")).isEmpty();
@@ -290,10 +288,9 @@ class SapServiceOperatorServiceBindingIoAccessorTest
         assertThat(serviceBindings.size()).isEqualTo(1);
 
         final ServiceBinding serviceBinding = serviceBindings.get(0);
-        assertThat(serviceBinding.getKeys().size()).isEqualTo(2);
-        assertThat(serviceBinding.getKeys()).contains("type");
+        assertThat(serviceBinding.getKeys()).containsExactlyInAnyOrder("type", "credentials");
 
-        assertThat(serviceBinding.getServiceName().orElse(null)).isEqualTo("xsuaa");
+        assertThat(serviceBinding.getServiceName()).hasValue("xsuaa");
         assertThat(serviceBinding.getCredentials().get("token")).isEqualTo("auth-token");
         assertThat(serviceBinding.get("list_container")).isEmpty();
         assertThat(serviceBinding.get("int_container")).isEmpty();
@@ -345,12 +342,65 @@ class SapServiceOperatorServiceBindingIoAccessorTest
         assertThat(serviceBindings.size()).isEqualTo(1);
 
         final ServiceBinding serviceBinding = serviceBindings.get(0);
-        assertThat(serviceBinding.getKeys().size()).isEqualTo(2);
-        assertThat(serviceBinding.getKeys()).contains("type");
+        assertThat(serviceBinding.getKeys()).containsExactlyInAnyOrder("type", "credentials");
 
-        assertThat(serviceBinding.getServiceName().orElse(null)).isEqualTo("xsuaa");
+        assertThat(serviceBinding.getServiceName()).hasValue("xsuaa");
         assertThat(serviceBinding.getCredentials().get("token")).isEqualTo("auth-token");
         assertThat(serviceBinding.get("unknown_property")).isEmpty();
+    }
+
+    @SuppressWarnings( "unchecked" )
+    @Test
+    void existingCredentialsPropertyIsNotOverwritten( @Nonnull @TempDir final Path rootDirectory )
+    {
+        // setup file system
+        final Path bindingRoot = rootDirectory.resolve("binding");
+        write(
+            bindingRoot.resolve(".metadata"),
+            "{\n"
+                + "    \"metaDataProperties\": [\n"
+                + "        {\n"
+                + "            \"name\": \"type\",\n"
+                + "            \"format\": \"text\"\n"
+                + "        },\n"
+                + "        {\n"
+                + "            \"name\": \"credentials\",\n"
+                + "            \"format\": \"json\"\n"
+                + "        }\n"
+                + "    ],\n"
+                + "    \"credentialProperties\": [\n"
+                + "        {\n"
+                + "            \"name\": \"token\",\n"
+                + "            \"format\": \"text\"\n"
+                + "        }\n"
+                + "    ]\n"
+                + "}");
+        write(bindingRoot.resolve("type"), "xsuaa");
+        write(bindingRoot.resolve("credentials"), "[\"foo\", \"bar\"]");
+        write(bindingRoot.resolve("token"), "auth-token");
+
+        // setup environment variable reader
+        final Function<String, String> reader = mock(Function.class);
+        when(reader.apply(eq("SERVICE_BINDING_ROOT"))).thenReturn(rootDirectory.toString());
+
+        // setup subject under test
+        final SapServiceOperatorServiceBindingIoAccessor sut =
+            new SapServiceOperatorServiceBindingIoAccessor(
+                reader,
+                SapServiceOperatorServiceBindingIoAccessor.DEFAULT_CHARSET);
+
+        final List<ServiceBinding> serviceBindings = sut.getServiceBindings();
+
+        // assert
+        assertThat(serviceBindings.size()).isEqualTo(1);
+
+        final ServiceBinding serviceBinding = serviceBindings.get(0);
+        assertThat(serviceBinding.getKeys()).hasSize(3);
+        assertThat(serviceBinding.getKeys()).contains("type", "credentials"); // the last property key is a UUID that was randomly chosen to avoid a name clash with the existing 'credentials' property
+
+        assertThat(serviceBinding.getServiceName()).hasValue("xsuaa");
+        assertThat(serviceBinding.get("credentials")).isPresent().get().asList().containsExactly("foo", "bar");
+        assertThat(serviceBinding.getCredentials().get("token")).isEqualTo("auth-token");
     }
 
     @SuppressWarnings( "unchecked" )
@@ -471,7 +521,7 @@ class SapServiceOperatorServiceBindingIoAccessorTest
         assertThat(serviceBinding.getKeys().size()).isEqualTo(2);
         assertThat(serviceBinding.getKeys()).contains("type");
 
-        assertThat(serviceBinding.getServiceName().orElse(null)).isEqualTo("xsuaa");
+        assertThat(serviceBinding.getServiceName()).hasValue("xsuaa");
         assertThat(serviceBinding.getCredentials().get("token")).isEqualTo("auth-token");
 
         verify(reader, times(1)).apply("SERVICE_BINDING_ROOT");
@@ -533,12 +583,12 @@ class SapServiceOperatorServiceBindingIoAccessorTest
         assertThat(dataBinding.size()).isEqualTo(1);
 
         final ServiceBinding dataXsuaaBinding = dataBinding.get(0);
-        assertThat(dataXsuaaBinding.getName().orElse(null)).isEqualTo("data-xsuaa-binding");
-        assertThat(dataXsuaaBinding.getServiceName().orElse(null)).isEqualTo("xsuaa");
-        assertThat(dataXsuaaBinding.getServicePlan().orElse(null)).isEqualTo("application");
+        assertThat(dataXsuaaBinding.getName()).hasValue("data-xsuaa-binding");
+        assertThat(dataXsuaaBinding.getServiceName()).hasValue("xsuaa");
+        assertThat(dataXsuaaBinding.getServicePlan()).hasValue("application");
         assertThat(dataXsuaaBinding.getTags()).containsExactlyInAnyOrder("data-xsuaa-tag-1", "data-xsuaa-tag-2");
-        assertThat(dataXsuaaBinding.get("instance_guid").orElse(null)).isEqualTo("data-xsuaa-instance-guid");
-        assertThat(dataXsuaaBinding.get("instance_name").orElse(null)).isEqualTo("data-xsuaa-instance-name");
+        assertThat(dataXsuaaBinding.get("instance_guid")).hasValue("data-xsuaa-instance-guid");
+        assertThat(dataXsuaaBinding.get("instance_name")).hasValue("data-xsuaa-instance-name");
         assertThat(dataXsuaaBinding.getCredentials()).isNotEmpty();
         assertThat(dataXsuaaBinding.getCredentials().get("clientid")).isEqualTo("data-xsuaa-clientid");
         assertThat(dataXsuaaBinding.getCredentials().get("clientsecret")).isEqualTo("data-xsuaa-clientsecret");
@@ -559,13 +609,13 @@ class SapServiceOperatorServiceBindingIoAccessorTest
         assertThat(secretKeyXsuaaBindings.size()).isEqualTo(1);
 
         final ServiceBinding secretKeyBinding = secretKeyXsuaaBindings.get(0);
-        assertThat(secretKeyBinding.getName().orElse(null)).isEqualTo("secret-key-xsuaa-binding");
-        assertThat(secretKeyBinding.getServiceName().orElse(null)).isEqualTo("xsuaa");
-        assertThat(secretKeyBinding.getServicePlan().orElse(null)).isEqualTo("lite");
+        assertThat(secretKeyBinding.getName()).hasValue("secret-key-xsuaa-binding");
+        assertThat(secretKeyBinding.getServiceName()).hasValue("xsuaa");
+        assertThat(secretKeyBinding.getServicePlan()).hasValue("lite");
         assertThat(secretKeyBinding.getTags())
             .containsExactlyInAnyOrder("secret-key-xsuaa-tag-1", "secret-key-xsuaa-tag-2");
-        assertThat(secretKeyBinding.get("instance_guid").orElse(null)).isEqualTo("secret-key-xsuaa-instance-guid");
-        assertThat(secretKeyBinding.get("instance_name").orElse(null)).isEqualTo("secret-key-xsuaa-instance-name");
+        assertThat(secretKeyBinding.get("instance_guid")).hasValue("secret-key-xsuaa-instance-guid");
+        assertThat(secretKeyBinding.get("instance_name")).hasValue("secret-key-xsuaa-instance-name");
         assertThat(secretKeyBinding.getCredentials()).isNotEmpty();
         assertThat(secretKeyBinding.getCredentials().get("clientid")).isEqualTo("secret-key-xsuaa-clientid");
         assertThat(secretKeyBinding.getCredentials().get("clientsecret")).isEqualTo("secret-key-xsuaa-clientsecret");

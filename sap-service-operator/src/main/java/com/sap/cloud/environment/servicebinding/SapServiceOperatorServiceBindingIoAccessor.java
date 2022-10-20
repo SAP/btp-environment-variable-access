@@ -95,6 +95,9 @@ public class SapServiceOperatorServiceBindingIoAccessor implements ServiceBindin
     private static final String PLAN_KEY = "plan";
 
     @Nonnull
+    private static final String DEFAULT_CREDENTIALS_KEY = "credentials";
+
+    @Nonnull
     private final Function<String, String> environmentVariableReader;
 
     @Nonnull
@@ -248,7 +251,7 @@ public class SapServiceOperatorServiceBindingIoAccessor implements ServiceBindin
             return null;
         }
 
-        final String credentialsKey = generateNewKey(rawServiceBinding);
+        final String credentialsKey = generateCredentialsKey(rawServiceBinding);
         rawServiceBinding.put(credentialsKey, rawCredentials);
 
         final DefaultServiceBinding serviceBinding =
@@ -390,8 +393,12 @@ public class SapServiceOperatorServiceBindingIoAccessor implements ServiceBindin
     }
 
     @Nonnull
-    private String generateNewKey( @Nonnull final Map<String, Object> map )
+    private String generateCredentialsKey( @Nonnull final Map<String, Object> map )
     {
+        if( !map.containsKey(DEFAULT_CREDENTIALS_KEY) ) {
+            return DEFAULT_CREDENTIALS_KEY;
+        }
+
         for( int i = 0; i < 100; ++i ) {
             final String key = UUID.randomUUID().toString();
             if( map.containsKey(key) ) {
