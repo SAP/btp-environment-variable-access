@@ -12,8 +12,8 @@ import java.util.Set;
 import javax.annotation.Nonnull;
 
 /**
- * Represents an <bold>immutable</bold> collection of (secret) key-value properties. These properties can be used to
- * establish a connection to the bound service.
+ * Represents an <b>immutable</b> collection of (secret) key-value properties. These properties can be used to establish
+ * a connection to the bound service.
  */
 public interface ServiceBinding
 {

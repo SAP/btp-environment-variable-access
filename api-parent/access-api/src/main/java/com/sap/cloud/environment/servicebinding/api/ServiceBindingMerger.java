@@ -12,20 +12,15 @@ import javax.annotation.Nonnull;
 
 /**
  * A {@link ServiceBindingAccessor} that merges the result of multiple other {@link ServiceBindingAccessor}s. This is
- * done in the following manner:
- * <ol>
- * <li>Create an empty {@link java.util.Set} of {@link ServiceBinding}s - this is the final result that should be
- * returned by {@link #getServiceBindings()}.</li>
- * <li>For each delegate {@link ServiceBindingAccessor}:</li>
- * <ol>
- * <li>Call {@link ServiceBindingAccessor#getServiceBindings()}.</li>
- * <li>For each {@link ServiceBinding}:</li>
- * <ol>
- * <li>Check whether the given {@link ServiceBinding} already exists<b>*</b> in the result {@link java.util.Set}.</li>
- * <li>If the {@link ServiceBinding} does not yet exist, add it to the result.</li>
- * </ol>
- * </ol>
- * </ol>
+ * done in the following manner:<br>
+ * 1. Create an empty {@link java.util.Set} of {@link ServiceBinding}s - this is the final result that should be
+ * returned by {@link #getServiceBindings()}.<br>
+ * 2. For each delegate {@link ServiceBindingAccessor}:<br>
+ * &emsp;1. Call {@link ServiceBindingAccessor#getServiceBindings()}.<br>
+ * &emsp;2. For each {@link ServiceBinding}:<br>
+ * &emsp;&emsp;1. Check whether the given {@link ServiceBinding} already exists<b>*</b> in the result
+ * {@link java.util.Set}.<br>
+ * &emsp;&emsp;2. If the {@link ServiceBinding} does not yet exist, add it to the result.<br>
  * <b>*:</b> This class uses the {@link EqualityComparer} to determine whether a given {@link ServiceBinding} already
  * exists in the result {@link java.util.Set}.
  */
@@ -37,6 +32,14 @@ public class ServiceBindingMerger implements ServiceBindingAccessor
      */
     @Nonnull
     public static final EqualityComparer KEEP_EVERYTHING = ( a, b ) -> false;
+
+    /**
+     * A {@link EqualityComparer} that compares {@link ServiceBinding} instance by using the
+     * {@link Object#equals(Object)} implementation. Therefore, duplicated (i.e. non-unique) {@link ServiceBinding}s
+     * will <b>not</b> be included in the combined result set.
+     */
+    @Nonnull
+    public static final EqualityComparer KEEP_UNIQUE = Object::equals;
 
     @Nonnull
     private final Collection<ServiceBindingAccessor> accessors;

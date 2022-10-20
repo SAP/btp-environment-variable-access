@@ -117,9 +117,9 @@ public final class TypedMapView
     }
 
     /**
-     * Returns an <bold>immutable</bold> {@link Set} of keys, which are contained in this {@link TypedMapView}.
+     * Returns an <b>immutable</b> {@link Set} of keys, which are contained in this {@link TypedMapView}.
      *
-     * @return An <bold>immutable</bold> {@link Set} of keys.
+     * @return An <b>immutable</b> {@link Set} of keys.
      */
     @Nonnull
     public Set<String> getKeys()
