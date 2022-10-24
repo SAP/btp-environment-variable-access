@@ -49,7 +49,7 @@
         <org.json.version>20220924</org.json.version>
         <junit-jupiter.version>5.9.1</junit-jupiter.version>
         <assertj-core.version>3.23.1</assertj-core.version>
-        <mockito-core.version>4.8.0</mockito-core.version>
+        <mockito-core.version>4.8.1</mockito-core.version>
         <slf4j-api.version>2.0.3</slf4j-api.version>
     </properties>
 
