@@ -49,8 +49,8 @@
         <org.json.version>20220924</org.json.version>
         <junit-jupiter.version>5.9.1</junit-jupiter.version>
         <assertj-core.version>3.23.1</assertj-core.version>
-        <mockito-core.version>4.8.0</mockito-core.version>
-        <slf4j-api.version>2.0.3</slf4j-api.version>
+        <mockito-core.version>4.9.0</mockito-core.version>
+        <slf4j-api.version>2.0.5</slf4j-api.version>
     </properties>
 
     <dependencyManagement>
@@ -283,7 +283,7 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-dependency-plugin</artifactId>
-                    <version>3.3.0</version>
+                    <version>3.4.0</version>
                     <executions>
                         <execution>
                             <id>analyze</id>
