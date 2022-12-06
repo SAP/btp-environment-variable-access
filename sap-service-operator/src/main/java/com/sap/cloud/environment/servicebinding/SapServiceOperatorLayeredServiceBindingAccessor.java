@@ -154,7 +154,7 @@ public class SapServiceOperatorLayeredServiceBindingAccessor implements ServiceB
     {
         final List<Path> serviceBindingRoots = servicePaths.flatMap(servicePath -> {
             try {
-                return Files.list(servicePath);
+                return Files.list(servicePath).filter(Files::isDirectory);
             }
             catch( final IOException e ) {
                 throw new ServiceBindingAccessException(

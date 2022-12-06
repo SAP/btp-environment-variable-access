@@ -124,6 +124,20 @@ class SapServiceOperatorLayeredServiceBindingAccessorTest
         verify(mockedCache, times(2)).getServiceBindings(any());
     }
 
+    @Test
+    void serviceBindingsWithMetadataFileStructureAreIgnored()
+    {
+        final Path path =
+            TestResource.get(SapServiceOperatorLayeredServiceBindingAccessorTest.class, "WithMetadataFileStructure");
+
+        final ServiceBindingAccessor sut =
+            new SapServiceOperatorLayeredServiceBindingAccessor(path, DEFAULT_PARSING_STRATEGIES);
+
+        final List<ServiceBinding> serviceBindings = sut.getServiceBindings();
+
+        assertThat(serviceBindings).isEmpty();
+    }
+
     private static void assertContainsSecretKeyBinding( @Nonnull final List<ServiceBinding> serviceBindings )
     {
         final ServiceBinding secretKeyBinding =
