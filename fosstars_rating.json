@@ -195,9 +195,9 @@
         }
       }
     },
-    "value" : 5.258595085470085,
+    "value" : 5.13519764957265,
     "weight" : 1.0,
-    "confidence" : 9.468409586056644,
+    "confidence" : 9.87962962962963,
     "usedValues" : [ {
       "type" : "ScoreValue",
       "score" : {
@@ -206,7 +206,7 @@
       },
       "value" : 4.5,
       "weight" : 0.9,
-      "confidence" : 9.411764705882353,
+      "confidence" : 10.0,
       "usedValues" : [ {
         "type" : "BooleanValue",
         "feature" : {
@@ -243,11 +243,12 @@
         },
         "flag" : true
       }, {
-        "type" : "UnknownValue",
+        "type" : "BooleanValue",
         "feature" : {
           "type" : "BooleanFeature",
           "name" : "If an open-source project is included to OSS-Fuzz project"
-        }
+        },
+        "flag" : false
       }, {
         "type" : "BooleanValue",
         "feature" : {
@@ -425,7 +426,7 @@
       },
       "value" : 4.0,
       "weight" : 1.0,
-      "confidence" : 8.444444444444445,
+      "confidence" : 9.555555555555555,
       "usedValues" : [ {
         "type" : "ScoreValue",
         "score" : {
@@ -697,7 +698,7 @@
         },
         "value" : 0.0,
         "weight" : 1.0,
-        "confidence" : 5.0,
+        "confidence" : 10.0,
         "usedValues" : [ {
           "type" : "LanguagesValue",
           "feature" : {
@@ -708,11 +709,12 @@
             "elements" : [ "JAVA" ]
           }
         }, {
-          "type" : "UnknownValue",
+          "type" : "BooleanValue",
           "feature" : {
             "type" : "BooleanFeature",
             "name" : "If an open-source project is included to OSS-Fuzz project"
-          }
+          },
+          "flag" : false
         } ],
         "explanation" : [ ],
         "isUnknown" : false,
@@ -804,7 +806,7 @@
         "type" : "ProjectActivityScore",
         "name" : "Open-source project activity score"
       },
-      "value" : 7.953846153846154,
+      "value" : 6.76923076923077,
       "weight" : 0.5,
       "confidence" : 10.0,
       "usedValues" : [ {
@@ -813,7 +815,7 @@
           "type" : "PositiveIntegerFeature",
           "name" : "Number of commits in the last three months"
         },
-        "number" : 47
+        "number" : 40
       }, {
         "type" : "IntegerValue",
         "feature" : {
@@ -822,7 +824,7 @@
         },
         "number" : 3
       } ],
-      "explanation" : [ "47 commits in the last 3 months results to 7.23 points", "3 contributors increase the score value from 7.23 to 7.95" ],
+      "explanation" : [ "40 commits in the last 3 months results to 6.15 points", "3 contributors increase the score value from 6.15 to 6.77" ],
       "isUnknown" : false,
       "isNotApplicable" : false
     }, {
@@ -903,7 +905,7 @@
       },
       "value" : 2.0,
       "weight" : 0.6,
-      "confidence" : 9.222222222222221,
+      "confidence" : 9.777777777777779,
       "usedValues" : [ {
         "type" : "VulnerabilitiesValue",
         "vulnerabilities" : {
@@ -987,7 +989,7 @@
         },
         "value" : 4.0,
         "weight" : 1.0,
-        "confidence" : 8.444444444444445,
+        "confidence" : 9.555555555555555,
         "usedValues" : [ {
           "type" : "ScoreValue",
           "score" : {
@@ -1259,7 +1261,7 @@
           },
           "value" : 0.0,
           "weight" : 1.0,
-          "confidence" : 5.0,
+          "confidence" : 10.0,
           "usedValues" : [ {
             "type" : "LanguagesValue",
             "feature" : {
@@ -1270,11 +1272,12 @@
               "elements" : [ "JAVA" ]
             }
           }, {
-            "type" : "UnknownValue",
+            "type" : "BooleanValue",
             "feature" : {
               "type" : "BooleanFeature",
               "name" : "If an open-source project is included to OSS-Fuzz project"
-            }
+            },
+            "flag" : false
           } ],
           "explanation" : [ ],
           "isUnknown" : false,
