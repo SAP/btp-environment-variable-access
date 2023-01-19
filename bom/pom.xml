@@ -1,28 +1,63 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xmlns="http://maven.apache.org/POM/4.0.0"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.sap.cloud.environment</groupId>
+    <groupId>com.sap.cloud.environment.servicebinding</groupId>
     <artifactId>java-bom</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>0.5.2</version>
     <packaging>pom</packaging>
+    <name>java-bom</name>
+    <description>Bill of Material (BOM) for the Java client library to access BTP environment service bindings</description>
+    <url>https://github.com/SAP/btp-environment-variable-access</url>
+
+    <licenses>
+        <license>
+            <name>The Apache Software License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+        </license>
+    </licenses>
+
+    <developers>
+        <developer>
+            <name>BTP Development</name>
+            <email />
+            <organization>SAP SE</organization>
+            <organizationUrl>https://www.sap.com</organizationUrl>
+        </developer>
+    </developers>
+
+    <scm>
+        <connection>scm:git:https://github.com/SAP/btp-environment-variable-access.git</connection>
+        <developerConnection>scm:git:https://github.com/SAP/btp-environment-variable-access.git</developerConnection>
+        <url>https://github.com/SAP/btp-environment-variable-access</url>
+    </scm>
+
+    <distributionManagement>
+        <repository>
+            <id>ossrh</id>
+            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+        </repository>
+        <snapshotRepository>
+            <id>ossrh</id>
+            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+        </snapshotRepository>
+    </distributionManagement>
 
     <properties>
-        <cloud-environment.version>0.0.1-SNAPSHOT</cloud-environment.version>
+        <cloud-environment.version>0.5.2</cloud-environment.version>
         <jsr305.version>3.0.2</jsr305.version>
-        <org.json.version>20211205</org.json.version>
-        <junit-jupiter.version>5.7.1</junit-jupiter.version>
-        <assertj-core.version>3.18.1</assertj-core.version>
-        <mockito-core.version>3.12.3</mockito-core.version>
+        <org.json.version>20220924</org.json.version>
+        <junit-jupiter.version>5.9.2</junit-jupiter.version>
+        <assertj-core.version>3.24.2</assertj-core.version>
+        <mockito-core.version>4.11.0</mockito-core.version>
+        <slf4j-api.version>2.0.6</slf4j-api.version>
     </properties>
 
     <dependencyManagement>
         <dependencies>
             <!-- Scope: Import -->
             <dependency>
-                <groupId>com.sap.cloud.environment</groupId>
+                <groupId>com.sap.cloud.environment.servicebinding</groupId>
                 <artifactId>java-modules-bom</artifactId>
                 <version>${cloud-environment.version}</version>
                 <type>pom</type>
@@ -40,11 +75,22 @@
                 <artifactId>json</artifactId>
                 <version>${org.json.version}</version>
             </dependency>
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-api</artifactId>
+                <version>${slf4j-api.version}</version>
+            </dependency>
 
             <!-- Scope: Test -->
             <dependency>
                 <groupId>org.junit.jupiter</groupId>
                 <artifactId>junit-jupiter</artifactId>
+                <version>${junit-jupiter.version}</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.junit.jupiter</groupId>
+                <artifactId>junit-jupiter-api</artifactId>
                 <version>${junit-jupiter.version}</version>
                 <scope>test</scope>
             </dependency>
@@ -61,5 +107,250 @@
             </dependency>
         </dependencies>
     </dependencyManagement>
+
+    <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-source-plugin</artifactId>
+                    <version>3.2.1</version>
+                    <!-- don't use a property here to not manage consumer versions -->
+                    <executions>
+                        <execution>
+                            <id>attach-sources</id>
+                            <goals>
+                                <goal>jar-no-fork</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                </plugin>
+                <plugin>
+                    <groupId>com.github.ekryd.sortpom</groupId>
+                    <artifactId>sortpom-maven-plugin</artifactId>
+                    <version>2.15.0</version>
+                    <!-- don't use a property here to not manage consumer versions -->
+                    <executions>
+                        <execution>
+                            <id>sort-all-poms</id>
+                            <phase>process-sources</phase>
+                            <goals>
+                                <goal>sort</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                    <configuration>
+                        <encoding>UTF-8</encoding>
+                        <createBackupFile>false</createBackupFile>
+                        <expandEmptyElements>false</expandEmptyElements>
+                        <nrOfIndentSpace>4</nrOfIndentSpace>
+                        <sortDependencies>none</sortDependencies>
+                        <sortPlugins>none</sortPlugins>
+                        <sortProperties>false</sortProperties>
+                        <sortModules>false</sortModules>
+                        <keepBlankLines>true</keepBlankLines>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-gpg-plugin</artifactId>
+                    <version>3.0.1</version>
+                    <!-- don't use a property here to not manage consumer versions -->
+                    <extensions>true</extensions>
+                    <executions>
+                        <execution>
+                            <id>sign-artifacts</id>
+                            <phase>verify</phase>
+                            <goals>
+                                <goal>sign</goal>
+                            </goals>
+                            <configuration>
+                                <gpgArguments>
+                                    <arg>--pinentry-mode</arg>
+                                    <arg>loopback</arg>
+                                </gpgArguments>
+                            </configuration>
+                        </execution>
+                    </executions>
+                </plugin>
+                <plugin>
+                    <groupId>org.sonatype.plugins</groupId>
+                    <artifactId>nexus-staging-maven-plugin</artifactId>
+                    <version>1.6.13</version>
+                    <!-- don't use a property here to not manage consumer versions -->
+                    <extensions>true</extensions>
+                    <configuration>
+                        <serverId>ossrh</serverId>
+                        <nexusUrl>https://oss.sonatype.org/</nexusUrl>
+                        <autoReleaseAfterClose>true</autoReleaseAfterClose>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-enforcer-plugin</artifactId>
+                    <version>3.1.0</version>
+                    <!-- don't use a property here to not manage consumer versions -->
+                    <executions>
+                        <execution>
+                            <id>enforce-project-rules</id>
+                            <goals>
+                                <goal>enforce</goal>
+                            </goals>
+                            <configuration>
+                                <rules>
+                                    <requireMavenVersion>
+                                        <version>3.8</version>
+                                        <!-- don't use a property here to not manage consumer versions -->
+                                    </requireMavenVersion>
+                                    <requireJavaVersion>
+                                        <version>1.8</version>
+                                        <!-- don't use a property here to not manage consumer versions -->
+                                    </requireJavaVersion>
+                                    <banDuplicatePomDependencyVersions />
+                                    <dependencyConvergence />
+                                </rules>
+                            </configuration>
+                        </execution>
+                        <execution>
+                            <id>ban-deprecated-dependencies</id>
+                            <goals>
+                                <goal>enforce</goal>
+                            </goals>
+                            <configuration>
+                                <rules>
+                                    <bannedDependencies>
+                                        <message>Do not use deprecated dependencies.</message>
+                                    </bannedDependencies>
+                                </rules>
+                            </configuration>
+                        </execution>
+                        <execution>
+                            <id>ban-logging-frameworks</id>
+                            <goals>
+                                <goal>enforce</goal>
+                            </goals>
+                            <configuration>
+                                <rules>
+                                    <bannedDependencies>
+                                        <message>Do not use and do exclude all transitive uses of logging frameworks.</message>
+                                        <excludes>
+                                            <exclude>org.slf4j:slf4j-simple</exclude>
+                                            <exclude>commons-logging</exclude>
+                                            <exclude>ch.qos.logback</exclude>
+                                            <exclude>org.apache.logging.log4j</exclude>
+                                            <exclude>org.apache.log4j</exclude>
+                                            <exclude>log4j</exclude>
+                                            <exclude>org.tinylog</exclude>
+                                        </excludes>
+                                        <includes>
+                                            <include>org.slf4j:slf4j-simple:*:*:test</include>
+                                        </includes>
+                                    </bannedDependencies>
+                                </rules>
+                            </configuration>
+                        </execution>
+                        <execution>
+                            <id>enforce-scope-logger-bridges</id>
+                            <goals>
+                                <goal>enforce</goal>
+                            </goals>
+                            <configuration>
+                                <rules>
+                                    <bannedDependencies>
+                                        <message>Logger bridges must use scope runtime or test.</message>
+                                        <excludes>
+                                            <exclude>org.slf4j:jul-to-slf4j</exclude>
+                                            <exclude>org.slf4j:jcl-over-slf4j</exclude>
+                                            <exclude>org.slf4j:log4j-over-slf4j</exclude>
+                                        </excludes>
+                                        <includes>
+                                            <include>org.slf4j:jul-to-slf4j:*:*:runtime</include>
+                                            <include>org.slf4j:jul-to-slf4j:*:*:test</include>
+                                            <include>org.slf4j:jcl-over-slf4j:*:*:runtime</include>
+                                            <include>org.slf4j:jcl-over-slf4j:*:*:test</include>
+                                            <include>org.slf4j:log4j-over-slf4j:*:*:runtime</include>
+                                            <include>org.slf4j:log4j-over-slf4j:*:*:test</include>
+                                        </includes>
+                                    </bannedDependencies>
+                                </rules>
+                            </configuration>
+                        </execution>
+                    </executions>
+                    <configuration>
+                        <fail>true</fail>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-dependency-plugin</artifactId>
+                    <version>3.5.0</version>
+                    <executions>
+                        <execution>
+                            <id>analyze</id>
+                            <phase>process-test-classes</phase>
+                            <goals>
+                                <goal>analyze-only</goal>
+                            </goals>
+                        </execution>
+                        <execution>
+                            <id>analyze-dep-mgt</id>
+                            <phase>process-test-classes</phase>
+                            <goals>
+                                <goal>analyze-dep-mgt</goal>
+                            </goals>
+                        </execution>
+                        <execution>
+                            <id>analyze-duplicate</id>
+                            <phase>process-test-classes</phase>
+                            <goals>
+                                <goal>analyze-duplicate</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                    <configuration>
+                        <failOnWarning>true</failOnWarning>
+                        <failBuild>true</failBuild>
+                        <ignoreNonCompile>true</ignoreNonCompile>
+                    </configuration>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+        <plugins>
+            <plugin>
+                <groupId>com.github.ekryd.sortpom</groupId>
+                <artifactId>sortpom-maven-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-enforcer-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
+
+    <profiles>
+        <profile>
+            <id>release</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-source-plugin</artifactId>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-gpg-plugin</artifactId>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.sonatype.plugins</groupId>
+                        <artifactId>nexus-staging-maven-plugin</artifactId>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 
 </project>

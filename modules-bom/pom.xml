@@ -1,32 +1,66 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xmlns="http://maven.apache.org/POM/4.0.0"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.sap.cloud.environment</groupId>
+    <groupId>com.sap.cloud.environment.servicebinding</groupId>
     <artifactId>java-modules-bom</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>0.5.2</version>
     <packaging>pom</packaging>
+    <name>java-modules-bom</name>
+    <description>Bill of Material (BOM) for modules of the Java client library to access BTP environment service bindings</description>
+    <url>https://github.com/SAP/btp-environment-variable-access</url>
+
+    <licenses>
+        <license>
+            <name>The Apache Software License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+        </license>
+    </licenses>
+
+    <developers>
+        <developer>
+            <name>BTP Development</name>
+            <email />
+            <organization>SAP SE</organization>
+            <organizationUrl>https://www.sap.com</organizationUrl>
+        </developer>
+    </developers>
+
+    <scm>
+        <connection>scm:git:https://github.com/SAP/btp-environment-variable-access.git</connection>
+        <developerConnection>scm:git:https://github.com/SAP/btp-environment-variable-access.git</developerConnection>
+        <url>https://github.com/SAP/btp-environment-variable-access</url>
+    </scm>
+
+    <distributionManagement>
+        <repository>
+            <id>ossrh</id>
+            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+        </repository>
+        <snapshotRepository>
+            <id>ossrh</id>
+            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+        </snapshotRepository>
+    </distributionManagement>
 
     <properties>
-        <cloud-environment.version>0.0.1-SNAPSHOT</cloud-environment.version>
+        <cloud-environment.version>0.5.2</cloud-environment.version>
     </properties>
 
     <dependencyManagement>
         <dependencies>
             <dependency>
-                <groupId>com.sap.cloud.environment.api</groupId>
+                <groupId>com.sap.cloud.environment.servicebinding.api</groupId>
                 <artifactId>java-core-api</artifactId>
                 <version>${cloud-environment.version}</version>
             </dependency>
             <dependency>
-                <groupId>com.sap.cloud.environment.api</groupId>
+                <groupId>com.sap.cloud.environment.servicebinding.api</groupId>
                 <artifactId>java-consumption-api</artifactId>
                 <version>${cloud-environment.version}</version>
             </dependency>
             <dependency>
-                <groupId>com.sap.cloud.environment.api</groupId>
+                <groupId>com.sap.cloud.environment.servicebinding.api</groupId>
                 <artifactId>java-access-api</artifactId>
                 <version>${cloud-environment.version}</version>
             </dependency>
@@ -42,5 +76,113 @@
             </dependency>
         </dependencies>
     </dependencyManagement>
+
+    <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-source-plugin</artifactId>
+                    <version>3.2.1</version>
+                    <!-- don't use a property here to not manage consumer versions -->
+                    <executions>
+                        <execution>
+                            <id>attach-sources</id>
+                            <goals>
+                                <goal>jar-no-fork</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                </plugin>
+                <plugin>
+                    <groupId>com.github.ekryd.sortpom</groupId>
+                    <artifactId>sortpom-maven-plugin</artifactId>
+                    <version>2.15.0</version>
+                    <executions>
+                        <execution>
+                            <id>sort-all-poms</id>
+                            <phase>process-sources</phase>
+                            <goals>
+                                <goal>sort</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                    <configuration>
+                        <encoding>UTF-8</encoding>
+                        <createBackupFile>false</createBackupFile>
+                        <expandEmptyElements>false</expandEmptyElements>
+                        <nrOfIndentSpace>4</nrOfIndentSpace>
+                        <sortDependencies>none</sortDependencies>
+                        <sortPlugins>none</sortPlugins>
+                        <sortProperties>false</sortProperties>
+                        <sortModules>false</sortModules>
+                        <keepBlankLines>true</keepBlankLines>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-gpg-plugin</artifactId>
+                    <version>3.0.1</version>
+                    <!-- don't use a property here to not manage consumer versions -->
+                    <extensions>true</extensions>
+                    <executions>
+                        <execution>
+                            <id>sign-artifacts</id>
+                            <phase>verify</phase>
+                            <goals>
+                                <goal>sign</goal>
+                            </goals>
+                            <configuration>
+                                <gpgArguments>
+                                    <arg>--pinentry-mode</arg>
+                                    <arg>loopback</arg>
+                                </gpgArguments>
+                            </configuration>
+                        </execution>
+                    </executions>
+                </plugin>
+                <plugin>
+                    <groupId>org.sonatype.plugins</groupId>
+                    <artifactId>nexus-staging-maven-plugin</artifactId>
+                    <version>1.6.13</version>
+                    <!-- don't use a property here to not manage consumer versions -->
+                    <extensions>true</extensions>
+                    <configuration>
+                        <serverId>ossrh</serverId>
+                        <nexusUrl>https://oss.sonatype.org/</nexusUrl>
+                        <autoReleaseAfterClose>true</autoReleaseAfterClose>
+                    </configuration>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+        <plugins>
+            <plugin>
+                <groupId>com.github.ekryd.sortpom</groupId>
+                <artifactId>sortpom-maven-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
+
+    <profiles>
+        <profile>
+            <id>release</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-source-plugin</artifactId>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-gpg-plugin</artifactId>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.sonatype.plugins</groupId>
+                        <artifactId>nexus-staging-maven-plugin</artifactId>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 
 </project>

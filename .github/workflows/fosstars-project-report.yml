@@ -1,4 +1,5 @@
 name: "Fosstars (Security)"
+
 on:
   workflow_dispatch:
   schedule:
@@ -9,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     name: "Security rating"
     steps:
-      - uses: actions/checkout@v2.3.4
+      - uses: actions/checkout@v3
       - uses: SAP/fosstars-rating-core-action@v1.1.1
         with:
           report-branch: fosstars-report

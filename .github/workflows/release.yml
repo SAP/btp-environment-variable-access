@@ -1,0 +1,65 @@
+name: Release to Maven Central
+
+on:
+  workflow_dispatch:
+    inputs:
+      releaseType:
+        description: "The release type that should be performed."
+        required: true
+        type: choice
+        options:
+          - major
+          - minor
+          - patch
+        default: minor
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    name: Perform Release
+    steps:
+      - uses: actions/checkout@v3
+        name: Checkout Repository
+        with:
+          token: ${{ secrets.CLOUD_SDK_AT_SAP_ALL_ACCESS_PAT }}
+
+      - uses: crazy-max/ghaction-import-gpg@v5
+        with:
+          gpg_private_key: ${{ secrets.CLOUD_SDK_AT_SAP_PRIVATE_GPG_KEY }}
+          passphrase: ${{ secrets.CLOUD_SDK_AT_SAP_PRIVATE_GPG_PASSPHRASE }}
+          git_user_signingkey: true
+          git_commit_gpgsign: true
+
+      - uses: actions/setup-java@v2
+        name: Setup JDK
+        with:
+          distribution: 'adopt'
+          java-version: 8
+
+      - name: Bump Version
+        uses: DigitalToolsManufactory/gh-action-maven-bump-version@v1
+        id: bump-version
+        with:
+          bumpType: "${{ inputs.releaseType }}"
+          pomFiles: "pom.xml bom/pom.xml modules-bom/pom.xml"
+
+      - name: Build Project
+        run: mvn clean install -P release -Dgpg.skip
+
+      - name: Commit Changes
+        run: |
+          git config --global user.email "cloudsdk@sap.com"
+          git config --global user.name "SAP Cloud SDK"
+          
+          git commit -S -am "bump version ${{ steps.bump-version.outputs.old_version}} -> ${{ steps.bump-version.outputs.new_version}}"
+          git tag -s -m "Release version ${{ steps.bump-version.outputs.new_version}}" -a "${{ steps.bump-version.outputs.new_version}}"
+          git push --follow-tags
+
+      - name: Deploy Release
+        uses: samuelmeuli/action-maven-publish@v1
+        with:
+          gpg_private_key: ${{ secrets.CLOUD_SDK_AT_SAP_PRIVATE_GPG_KEY }}
+          gpg_passphrase: ${{ secrets.CLOUD_SDK_AT_SAP_PRIVATE_GPG_PASSPHRASE }}
+          nexus_username: ${{ secrets.CLOUD_SDK_AT_SAP_NEXUS_USER }}
+          nexus_password: ${{ secrets.CLOUD_SDK_AT_SAP_NEXUS_PASSPHRASE }}
+          maven_profiles: "release"

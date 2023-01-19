@@ -7,6 +7,9 @@ updates:
       time: "10:00"
       timezone: Etc/UCT
     reviewers:
-      - "nenaraab"
       - "Johannes-Schneider"
     open-pull-requests-limit: 10
+    ignore:
+      - dependency-name: "com.github.ekryd.sortpom:sortpom-maven-plugin" # newer versions require Java > 8
+      - dependency-name: "net.revelc.code.formatter:formatter-maven-plugin" # newer versions require Java > 8
+      - dependency-name: "net.revelc.code:impsort-maven-plugin" # newer versions require Java > 8

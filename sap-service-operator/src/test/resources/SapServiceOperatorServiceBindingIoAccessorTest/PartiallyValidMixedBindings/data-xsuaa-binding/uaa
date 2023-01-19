@@ -1,0 +1,35 @@
+{
+  "text": "text",
+  "number": 13.37,
+  "bool": true,
+  "list": [
+    "some item",
+    4.2,
+    false,
+    {
+      "text-in-object-in-list": "text-in-object-in-list",
+      "number-in-object-in-list": 99.9,
+      "bool-in-object-in-list": false
+    },
+    [
+      "text in list in list",
+      0.01,
+      true
+    ]
+  ],
+  "object": {
+    "text-in-object": "some entry",
+    "number-in-object": -73.31,
+    "bool-in-object": true,
+    "object-in-object": {
+      "text-in-object-in-object": "text-in-object-in-object",
+      "number-in-object-in-object": -12.34,
+      "bool-in-object-in-object": false
+    },
+    "list-in-object": [
+      "text in list in object",
+      -33.33,
+      true
+    ]
+  }
+}

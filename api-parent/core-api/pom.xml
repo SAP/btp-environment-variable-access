@@ -1,15 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xmlns="http://maven.apache.org/POM/4.0.0"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>com.sap.cloud.environment.api</groupId>
+        <groupId>com.sap.cloud.environment.servicebinding.api</groupId>
         <artifactId>java-api-parent</artifactId>
-        <version>0.0.1-SNAPSHOT</version>
+        <version>0.5.2</version>
     </parent>
     <artifactId>java-core-api</artifactId>
+
+    <properties>
+        <project.rootdir>${project.basedir}/../../</project.rootdir>
+    </properties>
 
     <dependencies>
         <!-- Scope: Compile -->
@@ -19,6 +21,11 @@
         </dependency>
 
         <!-- Scope: Test -->
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-api</artifactId>
+            <scope>test</scope>
+        </dependency>
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter</artifactId>
