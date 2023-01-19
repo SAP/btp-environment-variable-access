@@ -13,3 +13,4 @@ updates:
       - dependency-name: "com.github.ekryd.sortpom:sortpom-maven-plugin" # newer versions require Java > 8
       - dependency-name: "net.revelc.code.formatter:formatter-maven-plugin" # newer versions require Java > 8
       - dependency-name: "net.revelc.code:impsort-maven-plugin" # newer versions require Java > 8
+      - dependency-name: "org.mockito:mockito-core" # newer versions require Java > 8
