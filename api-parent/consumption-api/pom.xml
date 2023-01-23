@@ -20,6 +20,10 @@
             <artifactId>java-core-api</artifactId>
         </dependency>
         <dependency>
+            <groupId>com.sap.cloud.environment.servicebinding.api</groupId>
+            <artifactId>java-access-api</artifactId>
+        </dependency>
+        <dependency>
             <groupId>com.google.code.findbugs</groupId>
             <artifactId>jsr305</artifactId>
         </dependency>
