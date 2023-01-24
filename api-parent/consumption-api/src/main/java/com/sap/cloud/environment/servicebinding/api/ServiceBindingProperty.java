@@ -7,25 +7,16 @@ import javax.annotation.Nullable;
 
 public final class ServiceBindingProperty
 {
-    public static EqualityFilterBuilder<String> name()
-    {
-        return new EqualityFilterBuilder.StringImpl(binding -> binding.getName().orElse(null));
-    }
+    public static final EqualityFilterBuilder<String> NAME =
+        new EqualityFilterBuilder.StringImpl(binding -> binding.getName().orElse(null));
 
-    public static EqualityFilterBuilder<String> serviceName()
-    {
-        return new EqualityFilterBuilder.StringImpl(binding -> binding.getServiceName().orElse(null));
-    }
+    public static final EqualityFilterBuilder<String> SERVICE_NAME =
+        new EqualityFilterBuilder.StringImpl(binding -> binding.getServiceName().orElse(null));
 
-    public static EqualityFilterBuilder<String> servicePlan()
-    {
-        return new EqualityFilterBuilder.StringImpl(binding -> binding.getServicePlan().orElse(null));
-    }
+    public static final EqualityFilterBuilder<String> SERVICE_PLAN =
+        new EqualityFilterBuilder.StringImpl(binding -> binding.getServicePlan().orElse(null));
 
-    public static StringCollectionFilterBuilder tags()
-    {
-        return new StringCollectionFilterBuilder(ServiceBinding::getTags);
-    }
+    public static final StringCollectionFilterBuilder TAGS = new StringCollectionFilterBuilder(ServiceBinding::getTags);
 
     public static final class StringCollectionFilterBuilder
         implements
