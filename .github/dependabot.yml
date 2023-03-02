@@ -14,3 +14,5 @@ updates:
       - dependency-name: "net.revelc.code.formatter:formatter-maven-plugin" # newer versions require Java > 8
       - dependency-name: "net.revelc.code:impsort-maven-plugin" # newer versions require Java > 8
       - dependency-name: "org.mockito:mockito-core" # newer versions require Java > 8
+      - dependency-name: "org.slf4j:*"
+        update-types: ["version-update:semver-major"] # stay on slf4j 1.x for better compatibility
