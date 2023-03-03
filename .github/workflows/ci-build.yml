@@ -22,7 +22,7 @@ jobs:
           distribution: 'adopt'
           java-version: ${{ matrix.java-version }}
       - name: Build with Maven
-        run: mvn clean install -Dgpg.skip
+        run: mvn clean install -Dgpg.skip --no-transfer-progress
       - name: Check for source code changes
         run: |
           if [[ `git status --porcelain` ]]; then
