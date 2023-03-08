@@ -1,8 +1,8 @@
 **Rating**: **MODERATE**
 
-**Score**: **4.68**, max score value is 10.0
+**Score**: **4.76**, max score value is 10.0
 
-**Confidence**: High (9.57, max confidence value is 10.0)
+**Confidence**: High (9.92, max confidence value is 10.0)
 
 ## Details
 
@@ -43,7 +43,7 @@ It used the following sub-scores:
         
     1.  **[nohttp tool](#nohttp-tool)**: **0.0** (weight is 0.2)
         
-1.  **[Security awareness](#security-awareness)**: **4.5** (weight is 0.9)
+1.  **[Security awareness](#security-awareness)**: **5.0** (weight is 0.9)
     
 1.  **[Vulnerability discovery and security testing](#vulnerability-discovery-and-security-testing)**: **2.0** (weight is 0.6)
     1.  **[Security testing](#security-testing)**: **6.36** (weight is 1.0)
@@ -79,7 +79,7 @@ It used the following sub-scores:
     
 1.  **[Community commitment](#community-commitment)**: **8.0** (weight is 0.5)
     
-1.  **[Project activity](#project-activity)**: **2.75** (weight is 0.5)
+1.  **[Project activity](#project-activity)**: **2.58** (weight is 0.5)
     
 1.  **[Project popularity](#project-popularity)**: **0.04** (weight is 0.5)
     
@@ -181,7 +181,7 @@ This sub-score is based on the following sub-scores:
 
 ### Security awareness
 
-Score: **4.5**, confidence is 10.0 (max), weight is 0.9 (high)
+Score: **5.0**, confidence is 10.0 (max), weight is 0.9 (high)
 
 The score shows how a project is aware of security. If the project has a security policy, then the score adds 2.00. If the project has a security team, then the score adds 3.00. If the project uses verified signed commits, then the score adds 0.50. If the project has a bug bounty program, then the score adds 4.00. If the project signs its artifacts, then the score adds 0.50. If the project uses a security tool or library, then the score adds 1.00. If the project has executable binaries, then the score subtracts 2.00.
 
@@ -207,7 +207,7 @@ This sub-score is based on 19 features:
 1.  **Does it use Snyk?** No
 1.  **Does it use UndefinedBehaviorSanitizer?** No
 1.  **Does it use nohttp?** No
-1.  **Does it use verified signed commits?** No
+1.  **Does it use verified signed commits?** Yes
 1.  **How is OWASP Dependency Check used?** Mandatory
 1.  **Is it included to OSS-Fuzz?** No
 
@@ -296,24 +296,24 @@ This sub-score is based on 3 features:
 
 ### Project activity
 
-Score: **2.75**, confidence is 10.0 (max), weight is 0.5 (medium)
+Score: **2.58**, confidence is 10.0 (max), weight is 0.5 (medium)
 
 The score evaluates how active a project is. It's based on number of commits and contributors in the last 3 months.
 
-17 commits in the last 3 months results to 2.62 points
-2 contributors increase the score value from 2.62 to 2.75
+16 commits in the last 3 months results to 2.46 points
+2 contributors increase the score value from 2.46 to 2.58
 
 This sub-score is based on 2 features:
 
 
 
-1.  **Number of commits in the last three months:** 17
+1.  **Number of commits in the last three months:** 16
 1.  **Number of contributors in the last three months:** 2
 
 
 ### Project popularity
 
-Score: **0.04**, confidence is 6.67 (low), weight is 0.5 (medium)
+Score: **0.04**, confidence is 10.0 (max), weight is 0.5 (medium)
 
 This scoring function is based on number of stars, watchers and dependent projects.
 
@@ -323,7 +323,7 @@ This sub-score is based on 3 features:
 
 
 
-1.  **Number of projects on GitHub that use an open source project:** unknown
+1.  **Number of projects on GitHub that use an open source project:** 4
 1.  **Number of stars for a GitHub repository:** 13
 1.  **Number of watchers for a GitHub repository:** 7
 

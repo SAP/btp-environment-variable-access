@@ -258,9 +258,9 @@
         }
       }
     },
-    "value" : 4.681889351782969,
+    "value" : 4.760732777860438,
     "weight" : 1.0,
-    "confidence" : 9.566989916533991,
+    "confidence" : 9.921599845612004,
     "usedValues" : [ {
       "type" : "ScoreValue",
       "score" : {
@@ -1253,7 +1253,7 @@
         "type" : "ProjectActivityScore",
         "name" : "Open-source project activity score"
       },
-      "value" : 2.746153846153846,
+      "value" : 2.5846153846153848,
       "weight" : 0.5,
       "confidence" : 10.0,
       "usedValues" : [ {
@@ -1262,7 +1262,7 @@
           "type" : "PositiveIntegerFeature",
           "name" : "Number of commits in the last three months"
         },
-        "number" : 17,
+        "number" : 16,
         "explanation" : [ ]
       }, {
         "type" : "IntegerValue",
@@ -1273,7 +1273,7 @@
         "number" : 2,
         "explanation" : [ ]
       } ],
-      "explanation" : [ "17 commits in the last 3 months results to 2.62 points", "2 contributors increase the score value from 2.62 to 2.75" ],
+      "explanation" : [ "16 commits in the last 3 months results to 2.46 points", "2 contributors increase the score value from 2.46 to 2.58" ],
       "isUnknown" : false,
       "isNotApplicable" : false,
       "feature" : {
@@ -1286,7 +1286,7 @@
         "type" : "ProjectSecurityAwarenessScore",
         "name" : "How well open-source community is aware about security"
       },
-      "value" : 4.5,
+      "value" : 5.0,
       "weight" : 0.9,
       "confidence" : 10.0,
       "usedValues" : [ {
@@ -1311,7 +1311,7 @@
           "type" : "BooleanFeature",
           "name" : "If a project uses signed commits"
         },
-        "flag" : false,
+        "flag" : true,
         "explanation" : [ ]
       }, {
         "type" : "BooleanValue",
@@ -1480,9 +1480,9 @@
         "type" : "ProjectPopularityScore",
         "name" : "Open-source project popularity score"
       },
-      "value" : 0.036333333333333336,
+      "value" : 0.039,
       "weight" : 0.5,
-      "confidence" : 6.666666666666667,
+      "confidence" : 10.0,
       "usedValues" : [ {
         "type" : "IntegerValue",
         "feature" : {
@@ -1500,11 +1500,12 @@
         "number" : 7,
         "explanation" : [ ]
       }, {
-        "type" : "UnknownValue",
+        "type" : "IntegerValue",
         "feature" : {
           "type" : "PositiveIntegerFeature",
           "name" : "Number of projects on GitHub that use an open source project"
         },
+        "number" : 4,
         "explanation" : [ ]
       } ],
       "explanation" : [ ],
