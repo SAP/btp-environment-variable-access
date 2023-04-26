@@ -260,7 +260,7 @@
     },
     "value" : 4.5515947527649665,
     "weight" : 1.0,
-    "confidence" : 9.921599845612004,
+    "confidence" : 9.78161589383794,
     "usedValues" : [ {
       "type" : "ScoreValue",
       "score" : {
@@ -363,7 +363,7 @@
       },
       "value" : 6.363636363636363,
       "weight" : 1.0,
-      "confidence" : 9.71655328798186,
+      "confidence" : 9.574829931972788,
       "usedValues" : [ {
         "type" : "ScoreValue",
         "score" : {
@@ -628,7 +628,7 @@
         },
         "value" : 4.0,
         "weight" : 1.0,
-        "confidence" : 8.80952380952381,
+        "confidence" : 8.214285714285715,
         "usedValues" : [ {
           "type" : "ScoreValue",
           "score" : {
@@ -886,14 +886,13 @@
           },
           "value" : 10.0,
           "weight" : 1.0,
-          "confidence" : 10.0,
+          "confidence" : 7.5,
           "usedValues" : [ {
-            "type" : "BooleanValue",
+            "type" : "UnknownValue",
             "feature" : {
               "type" : "BooleanFeature",
               "name" : "If a project uses LGTM checks for commits"
             },
-            "flag" : false,
             "explanation" : [ ]
           }, {
             "type" : "BooleanValue",
@@ -1288,7 +1287,7 @@
       },
       "value" : 5.0,
       "weight" : 0.9,
-      "confidence" : 10.0,
+      "confidence" : 9.473684210526315,
       "usedValues" : [ {
         "type" : "BooleanValue",
         "feature" : {
@@ -1370,12 +1369,11 @@
         "flag" : false,
         "explanation" : [ ]
       }, {
-        "type" : "BooleanValue",
+        "type" : "UnknownValue",
         "feature" : {
           "type" : "BooleanFeature",
           "name" : "If a project uses LGTM checks for commits"
         },
-        "flag" : false,
         "explanation" : [ ]
       }, {
         "type" : "BooleanValue",
@@ -1621,7 +1619,7 @@
       },
       "value" : 2.0,
       "weight" : 0.6,
-      "confidence" : 9.85827664399093,
+      "confidence" : 9.787414965986393,
       "usedValues" : [ {
         "type" : "VulnerabilitiesValue",
         "feature" : {
@@ -1734,7 +1732,7 @@
         },
         "value" : 6.363636363636363,
         "weight" : 1.0,
-        "confidence" : 9.71655328798186,
+        "confidence" : 9.574829931972788,
         "usedValues" : [ {
           "type" : "ScoreValue",
           "score" : {
@@ -1999,7 +1997,7 @@
           },
           "value" : 4.0,
           "weight" : 1.0,
-          "confidence" : 8.80952380952381,
+          "confidence" : 8.214285714285715,
           "usedValues" : [ {
             "type" : "ScoreValue",
             "score" : {
@@ -2257,14 +2255,13 @@
             },
             "value" : 10.0,
             "weight" : 1.0,
-            "confidence" : 10.0,
+            "confidence" : 7.5,
             "usedValues" : [ {
-              "type" : "BooleanValue",
+              "type" : "UnknownValue",
               "feature" : {
                 "type" : "BooleanFeature",
                 "name" : "If a project uses LGTM checks for commits"
               },
-              "flag" : false,
               "explanation" : [ ]
             }, {
               "type" : "BooleanValue",

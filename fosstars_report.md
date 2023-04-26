@@ -2,7 +2,7 @@
 
 **Score**: **4.55**, max score value is 10.0
 
-**Confidence**: High (9.92, max confidence value is 10.0)
+**Confidence**: High (9.78, max confidence value is 10.0)
 
 ## Details
 
@@ -89,11 +89,6 @@ It used the following sub-scores:
 
 # ## How to improve the rating
 
-You can ask the project maintainers to enable LGTM checks for pull requests in the project.
-More info:
-1.  [How to enable LGTM checks for pull requests](https://lgtm.com/help/lgtm/about-automated-code-review)
-
-
 You can open a pull request to enable FindSecBugs for the project.
 More info:
 1.  [FindSecBugs home page](https://find-sec-bugs.github.io/)
@@ -139,7 +134,7 @@ Below are the details about all the used sub-scores.
 
 ### Security testing
 
-Score: **6.36**, confidence is 9.72 (high), weight is 1.0 (high)
+Score: **6.36**, confidence is 9.57 (high), weight is 1.0 (high)
 
 
 
@@ -181,7 +176,7 @@ This sub-score is based on the following sub-scores:
 
 ### Security awareness
 
-Score: **5.0**, confidence is 10.0 (max), weight is 0.9 (high)
+Score: **5.0**, confidence is 9.47 (high), weight is 0.9 (high)
 
 The score shows how a project is aware of security. If the project has a security policy, then the score adds 2.00. If the project has a security team, then the score adds 3.00. If the project uses verified signed commits, then the score adds 0.50. If the project has a bug bounty program, then the score adds 4.00. If the project signs its artifacts, then the score adds 0.50. If the project uses a security tool or library, then the score adds 1.00. If the project has executable binaries, then the score subtracts 2.00.
 
@@ -199,7 +194,7 @@ This sub-score is based on 19 features:
 1.  **Does it use AddressSanitizer?** No
 1.  **Does it use Dependabot?** Yes
 1.  **Does it use FindSecBugs?** No
-1.  **Does it use LGTM checks?** No
+1.  **Does it use LGTM checks?** unknown
 1.  **Does it use MemorySanitizer?** No
 1.  **Does it use OWASP ESAPI?** No
 1.  **Does it use OWASP Java Encoder?** No
@@ -214,7 +209,7 @@ This sub-score is based on 19 features:
 
 ### Vulnerability discovery and security testing
 
-Score: **2.0**, confidence is 9.86 (high), weight is 0.6 (medium)
+Score: **2.0**, confidence is 9.79 (high), weight is 0.6 (medium)
 
 The scores checks how security testing is done and how many vulnerabilities were recently discovered. If testing is good, and there are no recent vulnerabilities, then the score value is max. If there are vulnerabilities, then the score value is high. If testing is bad, and there are no recent vulnerabilities, then the score value is low. If there are vulnerabilities, then the score is min.
 
@@ -364,7 +359,7 @@ This sub-score is based on the following sub-scores:
 
 ### Static analysis
 
-Score: **4.0**, confidence is 8.81 (low), weight is 1.0 (high)
+Score: **4.0**, confidence is 8.21 (low), weight is 1.0 (high)
 
 
 
@@ -511,7 +506,7 @@ This sub-score is based on 2 features:
 
 ### How a project uses CodeQL
 
-Score: **10.0**, confidence is 10.0 (max), weight is 1.0 (high)
+Score: **10.0**, confidence is 7.5 (low), weight is 1.0 (high)
 
 
 
@@ -523,7 +518,7 @@ This sub-score is based on 4 features:
 
 1.  **Does it run CodeQL scans?** Yes
 1.  **Does it use CodeQL checks for pull requests?** Yes
-1.  **Does it use LGTM checks?** No
+1.  **Does it use LGTM checks?** unknown
 1.  **Programming languages:** JAVA
 
 
