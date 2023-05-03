@@ -258,9 +258,9 @@
         }
       }
     },
-    "value" : 4.5513110648217046,
+    "value" : 4.743902445072659,
     "weight" : 1.0,
-    "confidence" : 9.427005964759926,
+    "confidence" : 9.78161589383794,
     "usedValues" : [ {
       "type" : "ScoreValue",
       "score" : {
@@ -1252,7 +1252,7 @@
         "type" : "ProjectActivityScore",
         "name" : "Open-source project activity score"
       },
-      "value" : 0.6153846153846154,
+      "value" : 2.4230769230769234,
       "weight" : 0.5,
       "confidence" : 10.0,
       "usedValues" : [ {
@@ -1261,7 +1261,7 @@
           "type" : "PositiveIntegerFeature",
           "name" : "Number of commits in the last three months"
         },
-        "number" : 4,
+        "number" : 15,
         "explanation" : [ ]
       }, {
         "type" : "IntegerValue",
@@ -1269,10 +1269,10 @@
           "type" : "PositiveIntegerFeature",
           "name" : "Number of contributors in the last three months"
         },
-        "number" : 1,
+        "number" : 2,
         "explanation" : [ ]
       } ],
-      "explanation" : [ "4 commits in the last 3 months results to 0.62 points" ],
+      "explanation" : [ "15 commits in the last 3 months results to 2.31 points", "2 contributors increase the score value from 2.31 to 2.42" ],
       "isUnknown" : false,
       "isNotApplicable" : false,
       "feature" : {
@@ -1478,9 +1478,9 @@
         "type" : "ProjectPopularityScore",
         "name" : "Open-source project popularity score"
       },
-      "value" : 0.03966666666666667,
+      "value" : 0.042333333333333334,
       "weight" : 0.5,
-      "confidence" : 6.666666666666667,
+      "confidence" : 10.0,
       "usedValues" : [ {
         "type" : "IntegerValue",
         "feature" : {
@@ -1498,11 +1498,12 @@
         "number" : 8,
         "explanation" : [ ]
       }, {
-        "type" : "UnknownValue",
+        "type" : "IntegerValue",
         "feature" : {
           "type" : "PositiveIntegerFeature",
           "name" : "Number of projects on GitHub that use an open source project"
         },
+        "number" : 4,
         "explanation" : [ ]
       } ],
       "explanation" : [ ],
