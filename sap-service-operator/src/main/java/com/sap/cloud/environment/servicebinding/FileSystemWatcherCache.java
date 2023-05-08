@@ -37,7 +37,8 @@ class FileSystemWatcherCache implements DirectoryBasedCache
     private static final Logger logger = LoggerFactory.getLogger(FileSystemWatcherCache.class);
 
     @Nonnull
-    private static final Collection<WatchEvent.Kind<?>> MODIFICATION_EVENTS = Arrays.asList(ENTRY_CREATE, ENTRY_MODIFY, ENTRY_DELETE);
+    private static final Collection<WatchEvent.Kind<?>> MODIFICATION_EVENTS =
+        Arrays.asList(ENTRY_CREATE, ENTRY_MODIFY, ENTRY_DELETE);
 
     @Nonnull
     private static final ConcurrentHashMap<FileSystem, WatchService> watchServices = new ConcurrentHashMap<>();
@@ -50,8 +51,9 @@ class FileSystemWatcherCache implements DirectoryBasedCache
                 return fs.newWatchService();
             }
             catch( final IOException e ) {
-                throw new IllegalStateException(String.format("Unable to create new instance of '%s'.", WatchService.class.getSimpleName()),
-                                                e);
+                throw new IllegalStateException(
+                    String.format("Unable to create new instance of '%s'.", WatchService.class.getSimpleName()),
+                    e);
             }
         });
     }
@@ -72,7 +74,9 @@ class FileSystemWatcherCache implements DirectoryBasedCache
         this(serviceBindingLoader, FileSystems.getDefault());
     }
 
-    FileSystemWatcherCache( @Nonnull final Function<Path, ServiceBinding> serviceBindingLoader, @Nonnull final FileSystem fileSystem )
+    FileSystemWatcherCache(
+        @Nonnull final Function<Path, ServiceBinding> serviceBindingLoader,
+        @Nonnull final FileSystem fileSystem )
     {
         this.serviceBindingLoader = serviceBindingLoader;
         watchService = getOrCreateWatchService(fileSystem);
@@ -86,19 +90,23 @@ class FileSystemWatcherCache implements DirectoryBasedCache
         removeOutdatedServiceBindings(directories);
 
         try {
-            return directories.stream()
-                              .peek(this::renewCachedServiceBindingIfNeeded)
-                              .map(cachedServiceBindings::get)
-                              .filter(Objects::nonNull)
-                              .collect(Collectors.toList());
+            return directories
+                .stream()
+                .peek(this::renewCachedServiceBindingIfNeeded)
+                .map(cachedServiceBindings::get)
+                .filter(Objects::nonNull)
+                .collect(Collectors.toList());
         }
         catch( final Exception e ) {
-            logger.warn(
-                "Exception while trying to serve service bindings from the {}. Service bindings will be re-loaded. Exception is printed to DEBUG log.",
-                getClass().getName());
-            logger.debug("Exception while trying to serve service bindings from the {}. Service bindings will be re-loaded.",
-                         getClass().getName(),
-                         e);
+            logger
+                .warn(
+                    "Exception while trying to serve service bindings from the {}. Service bindings will be re-loaded. Exception is printed to DEBUG log.",
+                    getClass().getName());
+            logger
+                .debug(
+                    "Exception while trying to serve service bindings from the {}. Service bindings will be re-loaded.",
+                    getClass().getName(),
+                    e);
 
             return directories.stream().map(serviceBindingLoader).filter(Objects::nonNull).collect(Collectors.toList());
         }
@@ -123,14 +131,16 @@ class FileSystemWatcherCache implements DirectoryBasedCache
 
     private void renewCachedServiceBindingIfNeeded( @Nonnull final Path directory )
     {
-        @Nullable final WatchKey watchKey = directoryWatchKeys.get(directory);
+        @Nullable
+        final WatchKey watchKey = directoryWatchKeys.get(directory);
         if( watchKey == null ) {
             watchAndCacheServiceBinding(directory);
             return;
         }
 
         if( !watchKey.isValid() ) {
-            throw new IllegalStateException(String.format("%s for directory '%s' is invalid.", WatchKey.class.getSimpleName(), directory));
+            throw new IllegalStateException(
+                String.format("%s for directory '%s' is invalid.", WatchKey.class.getSimpleName(), directory));
         }
 
         if( hasBeenModified(watchKey) ) {
@@ -148,7 +158,8 @@ class FileSystemWatcherCache implements DirectoryBasedCache
     {
         cachedServiceBindings.remove(directory);
 
-        @Nullable final ServiceBinding serviceBinding = serviceBindingLoader.apply(directory);
+        @Nullable
+        final ServiceBinding serviceBinding = serviceBindingLoader.apply(directory);
         if( serviceBinding == null ) {
             return;
         }

@@ -269,7 +269,8 @@ class FileSystemWatcherCacheTest
 
     @Test
     @SuppressWarnings( "unchecked" )
-    void serviceBindingsAreLoadedIfWatchKeyIsInvalid() throws Exception
+    void serviceBindingsAreLoadedIfWatchKeyIsInvalid()
+        throws Exception
     {
         final Function<Path, ServiceBinding> loader = (Function<Path, ServiceBinding>) mock(Function.class);
         final FileSystem fileSystem = mock(FileSystem.class);
