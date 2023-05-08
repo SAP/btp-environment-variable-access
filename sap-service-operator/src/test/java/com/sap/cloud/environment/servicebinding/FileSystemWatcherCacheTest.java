@@ -269,6 +269,31 @@ class FileSystemWatcherCacheTest
 
     @Test
     @SuppressWarnings( "unchecked" )
+    void serviceBindingsAreLoadedIfWatchKeyIsInvalid() throws Exception
+    {
+        final Function<Path, ServiceBinding> loader = (Function<Path, ServiceBinding>) mock(Function.class);
+        final FileSystem fileSystem = mock(FileSystem.class);
+        final WatchService watchService = mock(WatchService.class);
+        final Path directory = mock(Path.class);
+        final WatchKey watchKey = mock(WatchKey.class);
+
+        when(loader.apply(any())).thenReturn(null);
+
+        when(fileSystem.newWatchService()).thenReturn(watchService);
+        when(directory.register(eq(watchService), any())).thenReturn(watchKey);
+        when(watchKey.isValid()).thenReturn(false); // the watch key is always invalid
+
+        final DirectoryBasedCache sut = new FileSystemWatcherCache(loader, fileSystem);
+
+        assertThat(sut.getServiceBindings(Collections.singletonList(directory))).isEmpty();
+        verify(loader, times(1)).apply(any());
+
+        assertThat(sut.getServiceBindings(Collections.singletonList(directory))).isEmpty(); // requesting the service bindings a second time will re-load them again
+        verify(loader, times(2)).apply(any());
+    }
+
+    @Test
+    @SuppressWarnings( "unchecked" )
     void finalizeCancelsWatchKeys()
     {
         final Function<Path, ServiceBinding> loader = (Function<Path, ServiceBinding>) mock(Function.class);
