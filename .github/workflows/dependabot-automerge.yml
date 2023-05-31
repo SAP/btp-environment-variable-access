@@ -7,7 +7,6 @@ on:
 jobs:
   checks:
     runs-on: ubuntu-latest
-    if: ${{ github.event.pull_request.user.login == 'dependabot[bot]' }}
     steps:
       - name: check ci build
         id: check-ci
@@ -40,7 +39,8 @@ jobs:
   review-pr:
     runs-on: ubuntu-latest
     needs: checks
-    if: ${{ github.event.pull_request.user.login == 'dependabot[bot]' &&
+    if: ${{ github.actor == 'dependabot[bot]' && 
+      github.event_name == 'pull_request' &&
       needs.checks.outputs.check_ci == 'success' &&
       needs.checks.outputs.check_codeql == 'success'}}
     permissions:
@@ -58,7 +58,7 @@ jobs:
           PR_URL: ${{github.event.pull_request.html_url}}
           GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
       - name: enable auto-merge for dependabot PRs
-        # Condition? All PRs or only patches?
+        # Condition: Only patches, TODO
         run: gh pr merge --auto --squash "$PR_URL"
         env:
           PR_URL: ${{github.event.pull_request.html_url}}
