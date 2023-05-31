@@ -4,7 +4,7 @@ updates:
     directory: "/"
     schedule:
       interval: daily
-      time: "10:22"
+      time: "10:35"
       timezone: Etc/UCT
 #    reviewers:
 #      - "Johannes-Schneider"
