@@ -2,7 +2,7 @@ name: dependabot merger
 
 on:
   pull_request:
-    branches: [ 145-automate-dependabot ] #for testing, change to 'main' before final commit
+    branches: [ main ]
 
 jobs:
   checks:
