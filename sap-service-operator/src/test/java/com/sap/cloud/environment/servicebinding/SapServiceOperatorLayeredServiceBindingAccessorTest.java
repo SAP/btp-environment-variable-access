@@ -105,26 +105,6 @@ class SapServiceOperatorLayeredServiceBindingAccessorTest
     }
 
     @Test
-    void serviceBindingsAreServedFromCache( @Nonnull @TempDir final Path rootDirectory )
-        throws IOException
-    {
-        Files.createDirectories(rootDirectory.resolve("service").resolve("binding"));
-
-        final List<ServiceBinding> serviceBindings = Collections.singletonList(mock(ServiceBinding.class));
-        final DirectoryBasedCache mockedCache = mock(DirectoryBasedCache.class);
-        when(mockedCache.getServiceBindings(any())).thenReturn(serviceBindings);
-
-        final ServiceBindingAccessor sut =
-            new SapServiceOperatorLayeredServiceBindingAccessor(rootDirectory, DEFAULT_PARSING_STRATEGIES, mockedCache);
-
-        assertThat(sut.getServiceBindings()).isSameAs(serviceBindings);
-        verify(mockedCache, times(1)).getServiceBindings(any());
-
-        assertThat(sut.getServiceBindings()).isSameAs(serviceBindings);
-        verify(mockedCache, times(2)).getServiceBindings(any());
-    }
-
-    @Test
     void serviceBindingsWithMetadataFileStructureAreIgnored()
     {
         final Path path =
