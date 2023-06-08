@@ -2,9 +2,9 @@ name: "CodeQL Scan"
 
 on:
   push:
-    branches: [ 145-automate-dependabot-prs ] #for testing, change to 'main' before final commit
+    branches: [ main ]
   pull_request:
-    branches: [ 145-automate-dependabot-prs ] #for testing, change to 'main' before final commit
+    branches: [ main ]
 
 jobs:
   CodeQL-Build:
