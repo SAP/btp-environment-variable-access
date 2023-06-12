@@ -1,8 +1,8 @@
-**Rating**: **MODERATE**
+**Rating**: **GOOD**
 
-**Score**: **4.83**, max score value is 10.0
+**Score**: **6.25**, max score value is 10.0
 
-**Confidence**: High (9.78, max confidence value is 10.0)
+**Confidence**: High (9.65, max confidence value is 10.0)
 
 ## Details
 
@@ -14,7 +14,7 @@ The rating is based on **security score for open-source projects**.
 
 It used the following sub-scores:
 
-1.  **[Security testing](#security-testing)**: **6.36** (weight is 1.0)
+1.  **[Security testing](#security-testing)**: **7.91** (weight is 1.0)
     1.  **[Dependency testing](#dependency-testing)**: **10.0** (weight is 1.0)
         1.  **[Dependabot score](#dependabot-score)**: **10.0** (weight is 1.0)
             
@@ -22,20 +22,18 @@ It used the following sub-scores:
             
         1.  **[OWASP Dependency Check score](#owasp-dependency-check-score)**: **7.0** (weight is 1.0)
             
-    1.  **[Static analysis](#static-analysis)**: **4.0** (weight is 1.0)
-        1.  **[LGTM score](#lgtm-score)**: **0.0** (weight is 1.0)
-            
+    1.  **[Static analysis](#static-analysis)**: **7.41** (weight is 1.0)
         1.  **[How a project uses CodeQL](#how-a-project-uses-codeql)**: **10.0** (weight is 1.0)
             
-        1.  **[GoSec score](#gosec-score)**: **N/A** (weight is 0.5)
+        1.  **[Bandit score](#bandit-score)**: **N/A** (weight is 0.35)
             
-        1.  **[Bandit score](#bandit-score)**: **N/A** (weight is 0.5)
+        1.  **[FindSecBugs score](#findsecbugs-score)**: **0.0** (weight is 0.35)
             
-        1.  **[FindSecBugs score](#findsecbugs-score)**: **0.0** (weight is 0.5)
+        1.  **[How a project uses Pylint](#how-a-project-uses-pylint)**: **N/A** (weight is 0.35)
             
-        1.  **[How a project uses Pylint](#how-a-project-uses-pylint)**: **N/A** (weight is 0.4)
+        1.  **[GoSec score](#gosec-score)**: **N/A** (weight is 0.3)
             
-        1.  **[How a project uses MyPy](#how-a-project-uses-mypy)**: **N/A** (weight is 0.3)
+        1.  **[How a project uses MyPy](#how-a-project-uses-mypy)**: **N/A** (weight is 0.2)
             
     1.  **[Fuzzing](#fuzzing)**: **N/A** (weight is 1.0)
         
@@ -45,8 +43,8 @@ It used the following sub-scores:
         
 1.  **[Security awareness](#security-awareness)**: **5.0** (weight is 0.9)
     
-1.  **[Vulnerability discovery and security testing](#vulnerability-discovery-and-security-testing)**: **2.0** (weight is 0.6)
-    1.  **[Security testing](#security-testing)**: **6.36** (weight is 1.0)
+1.  **[Vulnerability discovery and security testing](#vulnerability-discovery-and-security-testing)**: **10.0** (weight is 0.6)
+    1.  **[Security testing](#security-testing)**: **7.91** (weight is 1.0)
         1.  **[Dependency testing](#dependency-testing)**: **10.0** (weight is 1.0)
             1.  **[Dependabot score](#dependabot-score)**: **10.0** (weight is 1.0)
                 
@@ -54,20 +52,18 @@ It used the following sub-scores:
                 
             1.  **[OWASP Dependency Check score](#owasp-dependency-check-score)**: **7.0** (weight is 1.0)
                 
-        1.  **[Static analysis](#static-analysis)**: **4.0** (weight is 1.0)
-            1.  **[LGTM score](#lgtm-score)**: **0.0** (weight is 1.0)
-                
+        1.  **[Static analysis](#static-analysis)**: **7.41** (weight is 1.0)
             1.  **[How a project uses CodeQL](#how-a-project-uses-codeql)**: **10.0** (weight is 1.0)
                 
-            1.  **[GoSec score](#gosec-score)**: **N/A** (weight is 0.5)
+            1.  **[Bandit score](#bandit-score)**: **N/A** (weight is 0.35)
                 
-            1.  **[Bandit score](#bandit-score)**: **N/A** (weight is 0.5)
+            1.  **[FindSecBugs score](#findsecbugs-score)**: **0.0** (weight is 0.35)
                 
-            1.  **[FindSecBugs score](#findsecbugs-score)**: **0.0** (weight is 0.5)
+            1.  **[How a project uses Pylint](#how-a-project-uses-pylint)**: **N/A** (weight is 0.35)
                 
-            1.  **[How a project uses Pylint](#how-a-project-uses-pylint)**: **N/A** (weight is 0.4)
+            1.  **[GoSec score](#gosec-score)**: **N/A** (weight is 0.3)
                 
-            1.  **[How a project uses MyPy](#how-a-project-uses-mypy)**: **N/A** (weight is 0.3)
+            1.  **[How a project uses MyPy](#how-a-project-uses-mypy)**: **N/A** (weight is 0.2)
                 
         1.  **[Fuzzing](#fuzzing)**: **N/A** (weight is 1.0)
             
@@ -79,7 +75,7 @@ It used the following sub-scores:
     
 1.  **[Community commitment](#community-commitment)**: **8.0** (weight is 0.5)
     
-1.  **[Project activity](#project-activity)**: **3.22** (weight is 0.5)
+1.  **[Project activity](#project-activity)**: **3.89** (weight is 0.5)
     
 1.  **[Project popularity](#project-popularity)**: **0.04** (weight is 0.5)
     
@@ -134,7 +130,7 @@ Below are the details about all the used sub-scores.
 
 ### Security testing
 
-Score: **6.36**, confidence is 9.57 (high), weight is 1.0 (high)
+Score: **7.91**, confidence is 10.0 (max), weight is 1.0 (high)
 
 
 
@@ -151,20 +147,18 @@ This sub-score is based on the following sub-scores:
         
     1.  **[OWASP Dependency Check score](#owasp-dependency-check-score)**: **7.0** (weight is 1.0)
         
-1.  **[Static analysis](#static-analysis)**: **4.0** (weight is 1.0)
-    1.  **[LGTM score](#lgtm-score)**: **0.0** (weight is 1.0)
-        
+1.  **[Static analysis](#static-analysis)**: **7.41** (weight is 1.0)
     1.  **[How a project uses CodeQL](#how-a-project-uses-codeql)**: **10.0** (weight is 1.0)
         
-    1.  **[GoSec score](#gosec-score)**: **N/A** (weight is 0.5)
+    1.  **[Bandit score](#bandit-score)**: **N/A** (weight is 0.35)
         
-    1.  **[Bandit score](#bandit-score)**: **N/A** (weight is 0.5)
+    1.  **[FindSecBugs score](#findsecbugs-score)**: **0.0** (weight is 0.35)
         
-    1.  **[FindSecBugs score](#findsecbugs-score)**: **0.0** (weight is 0.5)
+    1.  **[How a project uses Pylint](#how-a-project-uses-pylint)**: **N/A** (weight is 0.35)
         
-    1.  **[How a project uses Pylint](#how-a-project-uses-pylint)**: **N/A** (weight is 0.4)
+    1.  **[GoSec score](#gosec-score)**: **N/A** (weight is 0.3)
         
-    1.  **[How a project uses MyPy](#how-a-project-uses-mypy)**: **N/A** (weight is 0.3)
+    1.  **[How a project uses MyPy](#how-a-project-uses-mypy)**: **N/A** (weight is 0.2)
         
 1.  **[Fuzzing](#fuzzing)**: **N/A** (weight is 1.0)
     
@@ -176,13 +170,13 @@ This sub-score is based on the following sub-scores:
 
 ### Security awareness
 
-Score: **5.0**, confidence is 9.47 (high), weight is 0.9 (high)
+Score: **5.0**, confidence is 10.0 (max), weight is 0.9 (high)
 
 The score shows how a project is aware of security. If the project has a security policy, then the score adds 2.00. If the project has a security team, then the score adds 3.00. If the project uses verified signed commits, then the score adds 0.50. If the project has a bug bounty program, then the score adds 4.00. If the project signs its artifacts, then the score adds 0.50. If the project uses a security tool or library, then the score adds 1.00. If the project has executable binaries, then the score subtracts 2.00.
 
 
 
-This sub-score is based on 19 features:
+This sub-score is based on 18 features:
 
 
 
@@ -194,7 +188,6 @@ This sub-score is based on 19 features:
 1.  **Does it use AddressSanitizer?** No
 1.  **Does it use Dependabot?** Yes
 1.  **Does it use FindSecBugs?** No
-1.  **Does it use LGTM checks?** unknown
 1.  **Does it use MemorySanitizer?** No
 1.  **Does it use OWASP ESAPI?** No
 1.  **Does it use OWASP Java Encoder?** No
@@ -209,7 +202,7 @@ This sub-score is based on 19 features:
 
 ### Vulnerability discovery and security testing
 
-Score: **2.0**, confidence is 9.79 (high), weight is 0.6 (medium)
+Score: **10.0**, confidence is 10.0 (max), weight is 0.6 (medium)
 
 The scores checks how security testing is done and how many vulnerabilities were recently discovered. If testing is good, and there are no recent vulnerabilities, then the score value is max. If there are vulnerabilities, then the score value is high. If testing is bad, and there are no recent vulnerabilities, then the score value is low. If there are vulnerabilities, then the score is min.
 
@@ -219,7 +212,7 @@ This sub-score is based on the following sub-score:
 
 
 
-1.  **[Security testing](#security-testing)**: **6.36** (weight is 1.0)
+1.  **[Security testing](#security-testing)**: **7.91** (weight is 1.0)
     1.  **[Dependency testing](#dependency-testing)**: **10.0** (weight is 1.0)
         1.  **[Dependabot score](#dependabot-score)**: **10.0** (weight is 1.0)
             
@@ -227,20 +220,18 @@ This sub-score is based on the following sub-score:
             
         1.  **[OWASP Dependency Check score](#owasp-dependency-check-score)**: **7.0** (weight is 1.0)
             
-    1.  **[Static analysis](#static-analysis)**: **4.0** (weight is 1.0)
-        1.  **[LGTM score](#lgtm-score)**: **0.0** (weight is 1.0)
-            
+    1.  **[Static analysis](#static-analysis)**: **7.41** (weight is 1.0)
         1.  **[How a project uses CodeQL](#how-a-project-uses-codeql)**: **10.0** (weight is 1.0)
             
-        1.  **[GoSec score](#gosec-score)**: **N/A** (weight is 0.5)
+        1.  **[Bandit score](#bandit-score)**: **N/A** (weight is 0.35)
             
-        1.  **[Bandit score](#bandit-score)**: **N/A** (weight is 0.5)
+        1.  **[FindSecBugs score](#findsecbugs-score)**: **0.0** (weight is 0.35)
             
-        1.  **[FindSecBugs score](#findsecbugs-score)**: **0.0** (weight is 0.5)
+        1.  **[How a project uses Pylint](#how-a-project-uses-pylint)**: **N/A** (weight is 0.35)
             
-        1.  **[How a project uses Pylint](#how-a-project-uses-pylint)**: **N/A** (weight is 0.4)
+        1.  **[GoSec score](#gosec-score)**: **N/A** (weight is 0.3)
             
-        1.  **[How a project uses MyPy](#how-a-project-uses-mypy)**: **N/A** (weight is 0.3)
+        1.  **[How a project uses MyPy](#how-a-project-uses-mypy)**: **N/A** (weight is 0.2)
             
     1.  **[Fuzzing](#fuzzing)**: **N/A** (weight is 1.0)
         
@@ -291,24 +282,24 @@ This sub-score is based on 3 features:
 
 ### Project activity
 
-Score: **3.22**, confidence is 10.0 (max), weight is 0.5 (medium)
+Score: **3.89**, confidence is 10.0 (max), weight is 0.5 (medium)
 
 The score evaluates how active a project is. It's based on number of commits and contributors in the last 3 months.
 
-19 commits in the last 3 months results to 2.92 points
-3 contributors increase the score value from 2.92 to 3.22
+23 commits in the last 3 months results to 3.54 points
+3 contributors increase the score value from 3.54 to 3.89
 
 This sub-score is based on 2 features:
 
 
 
-1.  **Number of commits in the last three months:** 19
+1.  **Number of commits in the last three months:** 23
 1.  **Number of contributors in the last three months:** 3
 
 
 ### Project popularity
 
-Score: **0.04**, confidence is 10.0 (max), weight is 0.5 (medium)
+Score: **0.04**, confidence is 6.67 (low), weight is 0.5 (medium)
 
 This scoring function is based on number of stars, watchers and dependent projects.
 
@@ -318,7 +309,7 @@ This sub-score is based on 3 features:
 
 
 
-1.  **Number of projects on GitHub that use an open source project:** 5
+1.  **Number of projects on GitHub that use an open source project:** unknown
 1.  **Number of stars for a GitHub repository:** 14
 1.  **Number of watchers for a GitHub repository:** 7
 
@@ -360,7 +351,7 @@ This sub-score is based on the following sub-scores:
 
 ### Static analysis
 
-Score: **4.0**, confidence is 8.21 (low), weight is 1.0 (high)
+Score: **7.41**, confidence is 10.0 (max), weight is 1.0 (high)
 
 
 
@@ -370,19 +361,17 @@ This sub-score is based on the following sub-scores:
 
 
 
-1.  **[LGTM score](#lgtm-score)**: **0.0** (weight is 1.0)
-    
 1.  **[How a project uses CodeQL](#how-a-project-uses-codeql)**: **10.0** (weight is 1.0)
     
-1.  **[GoSec score](#gosec-score)**: **N/A** (weight is 0.5)
+1.  **[Bandit score](#bandit-score)**: **N/A** (weight is 0.35)
     
-1.  **[Bandit score](#bandit-score)**: **N/A** (weight is 0.5)
+1.  **[FindSecBugs score](#findsecbugs-score)**: **0.0** (weight is 0.35)
     
-1.  **[FindSecBugs score](#findsecbugs-score)**: **0.0** (weight is 0.5)
+1.  **[How a project uses Pylint](#how-a-project-uses-pylint)**: **N/A** (weight is 0.35)
     
-1.  **[How a project uses Pylint](#how-a-project-uses-pylint)**: **N/A** (weight is 0.4)
+1.  **[GoSec score](#gosec-score)**: **N/A** (weight is 0.3)
     
-1.  **[How a project uses MyPy](#how-a-project-uses-mypy)**: **N/A** (weight is 0.3)
+1.  **[How a project uses MyPy](#how-a-project-uses-mypy)**: **N/A** (weight is 0.2)
     
 
 
@@ -489,61 +478,26 @@ This sub-score is based on 3 features:
 1.  **What is the threshold for OWASP Dependency Check?** Not specified
 
 
-### LGTM score
-
-Score: **0.0**, confidence is 5.0 (low), weight is 1.0 (high)
-
-
-
-
-
-This sub-score is based on 2 features:
-
-
-
-1.  **Programming languages:** JAVA
-1.  **The worst LGTM grade of the project:** unknown
-
-
 ### How a project uses CodeQL
 
-Score: **10.0**, confidence is 7.5 (low), weight is 1.0 (high)
+Score: **10.0**, confidence is 10.0 (max), weight is 1.0 (high)
 
 
 
 
 
-This sub-score is based on 4 features:
+This sub-score is based on 3 features:
 
 
 
 1.  **Does it run CodeQL scans?** Yes
 1.  **Does it use CodeQL checks for pull requests?** Yes
-1.  **Does it use LGTM checks?** unknown
-1.  **Programming languages:** JAVA
-
-
-### GoSec score
-
-Score: **N/A**, confidence is 10.0 (max), weight is 0.5 (medium)
-
-
-
-The score is N/A because the project uses languages that are not supported by GoSec.
-
-This sub-score is based on 4 features:
-
-
-
-1.  **Does it run GoSec scans on all pull requests?** No
-1.  **Does it run GoSec scans with rules?** No
-1.  **Does it run GoSec scans?** No
 1.  **Programming languages:** JAVA
 
 
 ### Bandit score
 
-Score: **N/A**, confidence is 10.0 (max), weight is 0.5 (medium)
+Score: **N/A**, confidence is 10.0 (max), weight is 0.35 (medium)
 
 
 
@@ -560,7 +514,7 @@ This sub-score is based on 3 features:
 
 ### FindSecBugs score
 
-Score: **0.0**, confidence is 10.0 (max), weight is 0.5 (medium)
+Score: **0.0**, confidence is 10.0 (max), weight is 0.35 (medium)
 
 
 
@@ -576,7 +530,7 @@ This sub-score is based on 2 features:
 
 ### How a project uses Pylint
 
-Score: **N/A**, confidence is 10.0 (max), weight is 0.4 (medium)
+Score: **N/A**, confidence is 10.0 (max), weight is 0.35 (medium)
 
 
 
@@ -591,9 +545,27 @@ This sub-score is based on 3 features:
 1.  **Programming languages:** JAVA
 
 
-### How a project uses MyPy
+### GoSec score
 
 Score: **N/A**, confidence is 10.0 (max), weight is 0.3 (medium)
+
+
+
+The score is N/A because the project uses languages that are not supported by GoSec.
+
+This sub-score is based on 4 features:
+
+
+
+1.  **Does it run GoSec scans on all pull requests?** No
+1.  **Does it run GoSec scans with rules?** No
+1.  **Does it run GoSec scans?** No
+1.  **Programming languages:** JAVA
+
+
+### How a project uses MyPy
+
+Score: **N/A**, confidence is 10.0 (max), weight is 0.2 (low)
 
 
 
