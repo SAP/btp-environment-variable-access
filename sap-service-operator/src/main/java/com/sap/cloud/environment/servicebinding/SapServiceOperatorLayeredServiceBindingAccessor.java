@@ -1,9 +1,17 @@
 /*
- * Copyright (c) 2022 SAP SE or an SAP affiliate company. All rights reserved.
+ * Copyright (c) 2023 SAP SE or an SAP affiliate company. All rights reserved.
  */
 
 package com.sap.cloud.environment.servicebinding;
 
+import com.sap.cloud.environment.servicebinding.api.ServiceBinding;
+import com.sap.cloud.environment.servicebinding.api.ServiceBindingAccessor;
+import com.sap.cloud.environment.servicebinding.api.exception.ServiceBindingAccessException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
@@ -14,19 +22,10 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.sap.cloud.environment.servicebinding.api.ServiceBinding;
-import com.sap.cloud.environment.servicebinding.api.ServiceBindingAccessor;
-import com.sap.cloud.environment.servicebinding.api.exception.ServiceBindingAccessException;
 
 /**
  * A {@link ServiceBindingAccessor} that is able to load <b>layered</b> {@link ServiceBinding}s from the file system.
@@ -92,9 +91,6 @@ public class SapServiceOperatorLayeredServiceBindingAccessor implements ServiceB
     @Nonnull
     private final Collection<LayeredParsingStrategy> parsingStrategies;
 
-    @Nonnull
-    private final DirectoryBasedCache cache;
-
     /**
      * Initializes a new {@link SapServiceOperatorLayeredServiceBindingAccessor} instance that uses the
      * {@link #DEFAULT_ROOT_PATH} and the {@link #DEFAULT_PARSING_STRATEGIES}.
@@ -117,17 +113,8 @@ public class SapServiceOperatorLayeredServiceBindingAccessor implements ServiceB
         @Nonnull final Path rootPath,
         @Nonnull final Collection<LayeredParsingStrategy> parsingStrategies )
     {
-        this(rootPath, parsingStrategies, null);
-    }
-
-    SapServiceOperatorLayeredServiceBindingAccessor(
-        @Nonnull final Path rootPath,
-        @Nonnull final Collection<LayeredParsingStrategy> parsingStrategies,
-        @Nullable final DirectoryBasedCache cache )
-    {
         this.rootPath = rootPath;
         this.parsingStrategies = parsingStrategies;
-        this.cache = cache != null ? cache : new FileSystemWatcherCache(this::parseServiceBinding);
     }
 
     @Nonnull
@@ -152,7 +139,7 @@ public class SapServiceOperatorLayeredServiceBindingAccessor implements ServiceB
     @Nonnull
     private List<ServiceBinding> parseServiceBindings( @Nonnull final Stream<Path> servicePaths )
     {
-        final List<Path> serviceBindingRoots = servicePaths.flatMap(servicePath -> {
+        return servicePaths.flatMap(servicePath -> {
             try {
                 return Files.list(servicePath).filter(Files::isDirectory);
             }
@@ -161,8 +148,7 @@ public class SapServiceOperatorLayeredServiceBindingAccessor implements ServiceB
                     String.format("Unable to access files in '%s'.", servicePath),
                     e);
             }
-        }).collect(Collectors.toList());
-        return cache.getServiceBindings(serviceBindingRoots);
+        }).map(this::parseServiceBinding).filter(Objects::nonNull).collect(Collectors.toList());
     }
 
     @Nullable

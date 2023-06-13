@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 SAP SE or an SAP affiliate company. All rights reserved.
+ * Copyright (c) 2023 SAP SE or an SAP affiliate company. All rights reserved.
  */
 
 package com.sap.cloud.environment.servicebinding;
@@ -102,26 +102,6 @@ class SapServiceOperatorLayeredServiceBindingAccessorTest
 
         assertThat(serviceBindings).isNotNull();
         assertThat(serviceBindings).isEmpty();
-    }
-
-    @Test
-    void serviceBindingsAreServedFromCache( @Nonnull @TempDir final Path rootDirectory )
-        throws IOException
-    {
-        Files.createDirectories(rootDirectory.resolve("service").resolve("binding"));
-
-        final List<ServiceBinding> serviceBindings = Collections.singletonList(mock(ServiceBinding.class));
-        final DirectoryBasedCache mockedCache = mock(DirectoryBasedCache.class);
-        when(mockedCache.getServiceBindings(any())).thenReturn(serviceBindings);
-
-        final ServiceBindingAccessor sut =
-            new SapServiceOperatorLayeredServiceBindingAccessor(rootDirectory, DEFAULT_PARSING_STRATEGIES, mockedCache);
-
-        assertThat(sut.getServiceBindings()).isSameAs(serviceBindings);
-        verify(mockedCache, times(1)).getServiceBindings(any());
-
-        assertThat(sut.getServiceBindings()).isSameAs(serviceBindings);
-        verify(mockedCache, times(2)).getServiceBindings(any());
     }
 
     @Test
