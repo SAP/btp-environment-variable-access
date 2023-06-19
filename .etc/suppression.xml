@@ -4,7 +4,7 @@
 <suppressions xmlns="https://jeremylong.github.io/DependencyCheck/dependency-suppression.1.3.xsd">
     <suppress>
         <notes>Suppress false-positive for "org.json:json" and "CVE-2022-45688".</notes>
-        <packageUrl regex="true">^pkg:maven/org.json/json@20230227$</packageUrl>
+        <packageUrl regex="true">^pkg:maven/org.json/json@\d+$</packageUrl>
         <vulnerabilityName>CVE-2022-45688</vulnerabilityName>
     </suppress>
 </suppressions>
