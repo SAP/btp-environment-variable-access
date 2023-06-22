@@ -2,7 +2,7 @@
 
 **Score**: **6.3**, max score value is 10.0
 
-**Confidence**: Max (10.0, max confidence value is 10.0)
+**Confidence**: High (9.65, max confidence value is 10.0)
 
 ## Details
 
@@ -299,7 +299,7 @@ This sub-score is based on 2 features:
 
 ### Project popularity
 
-Score: **0.04**, confidence is 10.0 (max), weight is 0.5 (medium)
+Score: **0.04**, confidence is 6.67 (low), weight is 0.5 (medium)
 
 This scoring function is based on number of stars, watchers and dependent projects.
 
@@ -309,7 +309,7 @@ This sub-score is based on 3 features:
 
 
 
-1.  **Number of projects on GitHub that use an open source project:** 5
+1.  **Number of projects on GitHub that use an open source project:** unknown
 1.  **Number of stars for a GitHub repository:** 13
 1.  **Number of watchers for a GitHub repository:** 7
 
