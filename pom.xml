@@ -65,6 +65,7 @@
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
 
+        <jsr305.version>3.0.2</jsr305.version>
         <slf4j-simple.version>2.0.7</slf4j-simple.version>
 
         <maven-compiler-plugin.version>3.11.0</maven-compiler-plugin.version>
@@ -80,7 +81,6 @@
         <maven-enforcer-plugin.version>3.3.0</maven-enforcer-plugin.version>
         <maven-dependency-plugin.version>3.6.0</maven-dependency-plugin.version>
         <maven-surefire-plugin.version>3.1.2</maven-surefire-plugin.version>
-        <jsr305.version>3.0.2</jsr305.version>
     </properties>
 
     <dependencyManagement>
@@ -105,6 +105,7 @@
     </dependencyManagement>
 
     <dependencies>
+        <!-- Scope: Compile -->
         <!-- for @Nonnull and @Nullable annotations, not required transitively -->
         <dependency>
             <groupId>com.google.code.findbugs</groupId>
