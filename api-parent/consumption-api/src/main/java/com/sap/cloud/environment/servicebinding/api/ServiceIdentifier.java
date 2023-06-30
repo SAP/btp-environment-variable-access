@@ -18,6 +18,29 @@ public final class ServiceIdentifier
     private static final Map<String, ServiceIdentifier> INSTANCES = new ConcurrentHashMap<>();
 
     /**
+     * Represents the <a href="https://api.sap.com/api/SAP_CP_CF_Connectivity_Destination/overview">SAP Destination
+     * Service (Cloud Foundry)</a>.
+     */
+    @Nonnull
+    public static final ServiceIdentifier DESTINATION = of("destination");
+
+    /**
+     * Represents the <a href=
+     * "https://help.sap.com/docs/connectivity/sap-btp-connectivity-cf/what-is-sap-btp-connectivity?locale=en-US">SAP
+     * Connectivity Service (Cloud Foundry)</a>. This is the proxy service that enables applications to access
+     * On-Premise systems from the SAP Business Technology Platform (Cloud Foundry).
+     */
+    @Nonnull
+    public static final ServiceIdentifier CONNECTIVITY = of("connectivity");
+
+    /**
+     * Represents the <a href="https://api.sap.com/api/CFAuditLogRetrievalAPI/overview">SAP Audit Log Retrieval (Cloud
+     * Foundry environment)</a> service.
+     */
+    @Nonnull
+    public static final ServiceIdentifier AUDIT_LOG = of("auditlog-management");
+
+    /**
      * Returns a {@link ServiceIdentifier} instance based on the {@link ServiceBinding#getServiceName()} method.
      *
      * @param serviceBinding
