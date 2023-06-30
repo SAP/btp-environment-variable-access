@@ -45,7 +45,6 @@
 
     <properties>
         <cloud-environment.version>0.6.0</cloud-environment.version>
-        <jsr305.version>3.0.2</jsr305.version>
         <org.json.version>20230618</org.json.version>
         <junit-jupiter.version>5.9.3</junit-jupiter.version>
         <assertj-core.version>3.24.2</assertj-core.version>
@@ -65,11 +64,6 @@
             </dependency>
 
             <!-- Scope: Compile -->
-            <dependency>
-                <groupId>com.google.code.findbugs</groupId>
-                <artifactId>jsr305</artifactId>
-                <version>${jsr305.version}</version>
-            </dependency>
             <dependency>
                 <groupId>org.json</groupId>
                 <artifactId>json</artifactId>

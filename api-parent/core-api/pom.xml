@@ -14,11 +14,6 @@
     </properties>
 
     <dependencies>
-        <!-- Scope: Compile -->
-        <dependency>
-            <groupId>com.google.code.findbugs</groupId>
-            <artifactId>jsr305</artifactId>
-        </dependency>
 
         <!-- Scope: Test -->
         <dependency>
