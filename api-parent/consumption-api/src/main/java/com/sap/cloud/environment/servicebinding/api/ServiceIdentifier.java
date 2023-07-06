@@ -7,6 +7,7 @@ package com.sap.cloud.environment.servicebinding.api;
 import javax.annotation.Nonnull;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -22,7 +23,7 @@ public final class ServiceIdentifier
      * Service (Cloud Foundry)</a>.
      */
     @Nonnull
-    public static final ServiceIdentifier DESTINATION = of("destination");
+    public static final ServiceIdentifier DESTINATION = getOrCreate("destination");
 
     /**
      * Represents the <a href=
@@ -31,27 +32,27 @@ public final class ServiceIdentifier
      * On-Premise systems from the SAP Business Technology Platform (Cloud Foundry).
      */
     @Nonnull
-    public static final ServiceIdentifier CONNECTIVITY = of("connectivity");
+    public static final ServiceIdentifier CONNECTIVITY = getOrCreate("connectivity");
 
     /**
      * Represents the <a href="https://api.sap.com/api/CFAuditLogRetrievalAPI/overview">SAP Audit Log Retrieval (Cloud
      * Foundry environment)</a> service.
      */
     @Nonnull
-    public static final ServiceIdentifier AUDIT_LOG = of("auditlog-management");
+    public static final ServiceIdentifier AUDIT_LOG = getOrCreate("auditlog-management");
 
     /**
-     * Returns a {@link ServiceIdentifier} instance based on the {@link ServiceBinding#getServiceName()} method.
+     * Returns an {@link Optional} {@link ServiceIdentifier} based on the {@link ServiceBinding#getServiceName()}
+     * method.
      *
      * @param serviceBinding
      *            The {@link ServiceBinding} to get the service name from.
-     * @return A {@link ServiceIdentifier}.
-     * @throws IllegalArgumentException
-     *             If the result of {@link ServiceBinding#getServiceName()} is empty.
+     * @return An {@link Optional} {@link ServiceIdentifier}, which might be empty in case the
+     *         {@link ServiceBinding#getServiceName()} returns something that is not valid.
      * @see #of(String)
      */
     @Nonnull
-    public static ServiceIdentifier fromServiceName( @Nonnull final ServiceBinding serviceBinding )
+    public static Optional<ServiceIdentifier> fromServiceName( @Nonnull final ServiceBinding serviceBinding )
     {
         final String serviceName = serviceBinding.getServiceName().orElse(null);
         if( serviceName == null ) {
@@ -62,26 +63,31 @@ public final class ServiceIdentifier
     }
 
     /**
-     * Returns a {@link ServiceIdentifier} instance based on the provided {@code id}.
+     * Returns an {@link Optional} {@link ServiceIdentifier} based on the provided {@code id}.
      * <p>
      * The {@code id} will be modified using {@link String#trim()} and {@link String#toLowerCase()}.
      * </p>
      *
      * @param id
      *            The identifier to use.
-     * @return A {@link ServiceIdentifier}.
-     * @throws IllegalArgumentException
-     *             If the provided {@code id} is empty.
+     * @return An {@link Optional} {@link ServiceIdentifier}, which might be empty in case the <b>modified</b>
+     *         {@code id} is not valid (i.e. empty).
      */
     @Nonnull
-    public static ServiceIdentifier of( @Nonnull final String id )
+    public static Optional<ServiceIdentifier> of( @Nonnull final String id )
     {
         final String trimmedId = id.trim().toLowerCase(Locale.ROOT);
         if( trimmedId.isEmpty() ) {
-            throw new IllegalArgumentException("The provided service identifier is empty.");
+            return Optional.empty();
         }
 
-        return INSTANCES.computeIfAbsent(trimmedId, ServiceIdentifier::new);
+        return Optional.of(getOrCreate(trimmedId));
+    }
+
+    @Nonnull
+    private static ServiceIdentifier getOrCreate( @Nonnull final String id )
+    {
+        return INSTANCES.computeIfAbsent(id, ServiceIdentifier::new);
     }
 
     @Nonnull

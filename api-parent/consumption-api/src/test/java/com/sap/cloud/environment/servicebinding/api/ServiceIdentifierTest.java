@@ -20,23 +20,31 @@ class ServiceIdentifierTest
     @Test
     void testInstancesAreCachedCaseInsensitively()
     {
-        assertThat(ServiceIdentifier.of("foo")).isSameAs(ServiceIdentifier.of("FOO"));
-        assertThat(ServiceIdentifier.of("foo")).isNotSameAs(ServiceIdentifier.of("bar"));
+        final Optional<ServiceIdentifier> a = ServiceIdentifier.of("foo");
+        final Optional<ServiceIdentifier> b = ServiceIdentifier.of("FOO");
+        final Optional<ServiceIdentifier> c = ServiceIdentifier.of("bar");
+
+        assertThat(a).isNotEmpty();
+        assertThat(b).isNotEmpty();
+        assertThat(c).isNotEmpty();
+
+        assertThat(a).isEqualTo(b).isNotEqualTo(c);
+        assertThat(a.get()).isSameAs(b.get()).isNotSameAs(c.get());
     }
 
     @Test
     void testOfTrimsIdentifier()
     {
-        assertThat(ServiceIdentifier.of(" foo ")).isSameAs(ServiceIdentifier.of("foo"));
-        assertThat(ServiceIdentifier.of(" \nbar \t")).isSameAs(ServiceIdentifier.of("bar"));
-        assertThat(ServiceIdentifier.of(" \nb  a\tz \t")).isSameAs(ServiceIdentifier.of("b  a\tz"));
+        assertThat(ServiceIdentifier.of(" foo ")).isEqualTo(ServiceIdentifier.of("foo"));
+        assertThat(ServiceIdentifier.of(" \nbar \t")).isEqualTo(ServiceIdentifier.of("bar"));
+        assertThat(ServiceIdentifier.of(" \nb  a\tz \t")).isEqualTo(ServiceIdentifier.of("b  a\tz"));
     }
 
     @Test
-    void testOfThrowsExceptionForEmptyIdentifier()
+    void testOfReturnsEmptyResultForInvalidId()
     {
-        assertThatThrownBy(() -> ServiceIdentifier.of("")).isInstanceOf(IllegalArgumentException.class);
-        assertThatThrownBy(() -> ServiceIdentifier.of("  ")).isInstanceOf(IllegalArgumentException.class);
+        assertThat(ServiceIdentifier.of("")).isEmpty();
+        assertThat(ServiceIdentifier.of("  ")).isEmpty();
     }
 
     @Test
@@ -45,7 +53,7 @@ class ServiceIdentifierTest
         final ServiceBinding binding = mock(ServiceBinding.class);
         doReturn(Optional.of("foo")).when(binding).getServiceName();
 
-        assertThat(ServiceIdentifier.fromServiceName(binding)).isSameAs(ServiceIdentifier.of("foo"));
+        assertThat(ServiceIdentifier.fromServiceName(binding)).isEqualTo(ServiceIdentifier.of("foo"));
 
         verify(binding, times(1)).getServiceName();
     }
@@ -79,8 +87,8 @@ class ServiceIdentifierTest
     @Test
     void testToString()
     {
-        assertThat(ServiceIdentifier.of("foo")).hasToString("foo");
-        assertThat(ServiceIdentifier.of("BAR")).hasToString("bar");
-        assertThat(ServiceIdentifier.of("  BaZ \t")).hasToString("baz");
+        assertThat(ServiceIdentifier.of("foo")).isNotEmpty().get().hasToString("foo");
+        assertThat(ServiceIdentifier.of("BAR")).isNotEmpty().get().hasToString("bar");
+        assertThat(ServiceIdentifier.of("  BaZ \t")).isNotEmpty().get().hasToString("baz");
     }
 }
