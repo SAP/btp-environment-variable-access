@@ -244,9 +244,9 @@
         }
       }
     },
-    "value" : 6.3587526382207225,
+    "value" : 4.516845901012567,
     "weight" : 1.0,
-    "confidence" : 10.0,
+    "confidence" : 7.5,
     "usedValues" : [ {
       "type" : "ScoreValue",
       "score" : {
@@ -414,22 +414,19 @@
         "type" : "UnpatchedVulnerabilitiesScore",
         "name" : "How well vulnerabilities are patched"
       },
-      "value" : 10.0,
+      "value" : 0.0,
       "weight" : 0.5,
-      "confidence" : 10.0,
+      "confidence" : 0.0,
       "usedValues" : [ {
-        "type" : "VulnerabilitiesValue",
+        "type" : "UnknownValue",
         "feature" : {
           "type" : "VulnerabilitiesFeature",
           "name" : "Info about vulnerabilities in open-source project"
         },
-        "vulnerabilities" : {
-          "entries" : [ ]
-        },
         "explanation" : [ ]
       } ],
-      "explanation" : [ "No unpatched vulnerabilities found which is good" ],
-      "isUnknown" : false,
+      "explanation" : [ ],
+      "isUnknown" : true,
       "isNotApplicable" : false,
       "feature" : {
         "type" : "UnpatchedVulnerabilitiesScore",
@@ -573,17 +570,14 @@
         },
         "name" : "Assesses security testing and vulnerability discovery"
       },
-      "value" : 10.0,
+      "value" : 0.0,
       "weight" : 0.6,
-      "confidence" : 10.0,
+      "confidence" : 5.0,
       "usedValues" : [ {
-        "type" : "VulnerabilitiesValue",
+        "type" : "UnknownValue",
         "feature" : {
           "type" : "VulnerabilitiesFeature",
           "name" : "Info about vulnerabilities in open-source project"
-        },
-        "vulnerabilities" : {
-          "entries" : [ ]
         },
         "explanation" : [ ]
       }, {
@@ -1539,7 +1533,7 @@
         "type" : "ProjectActivityScore",
         "name" : "Open-source project activity score"
       },
-      "value" : 4.907692307692308,
+      "value" : 5.0769230769230775,
       "weight" : 0.5,
       "confidence" : 10.0,
       "usedValues" : [ {
@@ -1548,7 +1542,7 @@
           "type" : "PositiveIntegerFeature",
           "name" : "Number of commits in the last three months"
         },
-        "number" : 29,
+        "number" : 30,
         "explanation" : [ ]
       }, {
         "type" : "IntegerValue",
@@ -1559,7 +1553,7 @@
         "number" : 3,
         "explanation" : [ ]
       } ],
-      "explanation" : [ "29 commits in the last 3 months results to 4.46 points", "3 contributors increase the score value from 4.46 to 4.91" ],
+      "explanation" : [ "30 commits in the last 3 months results to 4.62 points", "3 contributors increase the score value from 4.62 to 5.08" ],
       "isUnknown" : false,
       "isNotApplicable" : false,
       "feature" : {
@@ -2728,5 +2722,5 @@
       }
     }
   },
-  "label" : [ "OssSecurityRating$SecurityLabel", "GOOD" ]
+  "label" : [ "OssSecurityRating$SecurityLabel", "UNCLEAR" ]
 }
