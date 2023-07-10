@@ -4,6 +4,10 @@
 
 package com.sap.cloud.environment.servicebinding.api;
 
+import com.sap.cloud.environment.servicebinding.api.exception.UnsupportedPropertyTypeException;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -14,11 +18,6 @@ import java.util.TreeMap;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
-import com.sap.cloud.environment.servicebinding.api.exception.UnsupportedPropertyTypeException;
 
 /**
  * A {@link com.sap.cloud.environment.servicebinding.api.DefaultServiceBinding.MapSelectionBuilder} and
@@ -41,6 +40,9 @@ public class DefaultServiceBindingBuilder
 
     @Nullable
     private String serviceName;
+
+    @Nullable
+    private ServiceIdentifier serviceIdentifier;
 
     @Nullable
     private String servicePlan;
@@ -196,6 +198,26 @@ public class DefaultServiceBindingBuilder
 
     @Nonnull
     @Override
+    public DefaultServiceBinding.TerminalBuilder withServiceIdentifier( @Nonnull ServiceIdentifier serviceIdentifier )
+    {
+        this.serviceIdentifier = serviceIdentifier;
+        return this;
+    }
+
+    @Nonnull
+    @Override
+    public DefaultServiceBinding.TerminalBuilder withServiceIdentifierKey( @Nonnull String key )
+    {
+        final String maybeServiceIdentifier = extractString(key);
+        if( maybeServiceIdentifier != null ) {
+            serviceIdentifier = ServiceIdentifier.of(maybeServiceIdentifier);
+        }
+
+        return this;
+    }
+
+    @Nonnull
+    @Override
     public DefaultServiceBinding.TerminalBuilder withServicePlan( @Nonnull final String servicePlan )
     {
         this.servicePlan = servicePlan;
@@ -251,6 +273,7 @@ public class DefaultServiceBindingBuilder
             map,
             name,
             serviceName,
+            serviceIdentifier,
             servicePlan,
             tags == null ? Collections.emptyList() : tags,
             credentials == null ? Collections.emptyMap() : credentials);
