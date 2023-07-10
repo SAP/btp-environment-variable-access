@@ -4,17 +4,16 @@
 
 package com.sap.cloud.environment.servicebinding.api;
 
+import com.sap.cloud.environment.servicebinding.api.exception.UnsupportedPropertyTypeException;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
-import com.sap.cloud.environment.servicebinding.api.exception.UnsupportedPropertyTypeException;
 
 /**
  * A {@link ServiceBinding} that treats keys case insensitively.
@@ -31,6 +30,9 @@ public class DefaultServiceBinding implements ServiceBinding
     private final String serviceName;
 
     @Nullable
+    private final ServiceIdentifier serviceIdentifier;
+
+    @Nullable
     private final String servicePlan;
 
     @Nonnull
@@ -43,6 +45,7 @@ public class DefaultServiceBinding implements ServiceBinding
         @Nonnull final Map<String, Object> properties,
         @Nullable final String name,
         @Nullable final String serviceName,
+        @Nullable final ServiceIdentifier serviceIdentifier,
         @Nullable final String servicePlan,
         @Nonnull final List<String> tags,
         @Nonnull final Map<String, Object> credentials )
@@ -50,6 +53,7 @@ public class DefaultServiceBinding implements ServiceBinding
         this.properties = properties;
         this.name = name;
         this.serviceName = serviceName;
+        this.serviceIdentifier = serviceIdentifier;
         this.servicePlan = servicePlan;
         this.tags = tags;
         this.credentials = credentials;
@@ -98,6 +102,17 @@ public class DefaultServiceBinding implements ServiceBinding
     public Optional<String> getServiceName()
     {
         return Optional.ofNullable(serviceName);
+    }
+
+    @Nonnull
+    @Override
+    public Optional<ServiceIdentifier> getServiceIdentifier()
+    {
+        if( serviceIdentifier != null ) {
+            return Optional.of(serviceIdentifier);
+        }
+
+        return getServiceName().map(ServiceIdentifier::of);
     }
 
     @Nonnull
@@ -225,6 +240,30 @@ public class DefaultServiceBinding implements ServiceBinding
          */
         @Nonnull
         TerminalBuilder withServiceNameKey( @Nonnull final String key );
+
+        /**
+         * Defines the {@link ServiceIdentifier} of the bound service of the to-be-built {@link DefaultServiceBinding}.
+         * 
+         * @param serviceIdentifier
+         *            The {@link ServiceIdentifier} of the bound service that should be returned by
+         *            {@link DefaultServiceBinding#getServiceIdentifier()}.
+         * @return This {@link TerminalBuilder} instance.
+         */
+        @Nonnull
+        TerminalBuilder withServiceIdentifier( @Nonnull final ServiceIdentifier serviceIdentifier );
+
+        /**
+         * Extracts the {@link ServiceIdentifier} of the bound service of the to-be-built {@link DefaultServiceBinding}
+         * from the initially passed properties (see {@link MapSelectionBuilder#copy(Map)}) using the given {@code key}.
+         * 
+         * @param key
+         *            The key that should be used to extract the value that should be returned by
+         *            {@link DefaultServiceBinding#getServiceIdentifier()} from the initially passed properties (see
+         *            {@link MapSelectionBuilder#copy(Map)}).
+         * @return This {@link TerminalBuilder} instance.
+         */
+        @Nonnull
+        TerminalBuilder withServiceIdentifierKey( @Nonnull final String key );
 
         /**
          * Defines the plan of the bound service of the to-be-built {@link DefaultServiceBinding}.

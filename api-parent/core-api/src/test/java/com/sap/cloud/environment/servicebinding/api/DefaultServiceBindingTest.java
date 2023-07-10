@@ -4,16 +4,15 @@
 
 package com.sap.cloud.environment.servicebinding.api;
 
+import com.sap.cloud.environment.servicebinding.api.exception.UnsupportedPropertyTypeException;
+import org.junit.jupiter.api.Test;
+
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-
-import org.junit.jupiter.api.Test;
-
-import com.sap.cloud.environment.servicebinding.api.exception.UnsupportedPropertyTypeException;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -132,10 +131,36 @@ class DefaultServiceBindingTest
         final DefaultServiceBinding sut = DefaultServiceBinding.builder().copy(Collections.emptyMap()).build();
 
         assertThat(sut).isNotNull();
-        assertThat(sut.getName().isPresent()).isFalse();
-        assertThat(sut.getServiceName().isPresent()).isFalse();
-        assertThat(sut.getServicePlan().isPresent()).isFalse();
+        assertThat(sut.getName()).isEmpty();
+        assertThat(sut.getServiceName()).isEmpty();
+        assertThat(sut.getServiceIdentifier()).isEmpty();
+        assertThat(sut.getServicePlan()).isEmpty();
         assertThat(sut.getTags()).isEmpty();
         assertThat(sut.getCredentials()).isEmpty();
+    }
+
+    @Test
+    void testServiceIdentifierIsDerivedFromServiceNameByDefault()
+    {
+        final DefaultServiceBinding sut =
+            DefaultServiceBinding.builder().copy(Collections.emptyMap()).withServiceName("foo").build();
+
+        assertThat(sut.getServiceName()).contains("foo");
+        assertThat(sut.getServiceIdentifier()).contains(ServiceIdentifier.of("foo"));
+    }
+
+    @Test
+    void testServiceIdentifierCanBeOverwritten()
+    {
+        final DefaultServiceBinding sut =
+            DefaultServiceBinding
+                .builder()
+                .copy(Collections.emptyMap())
+                .withServiceName("foo")
+                .withServiceIdentifier(ServiceIdentifier.of("bar"))
+                .build();
+
+        assertThat(sut.getServiceName()).contains("foo");
+        assertThat(sut.getServiceIdentifier()).contains(ServiceIdentifier.of("bar"));
     }
 }

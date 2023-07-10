@@ -23,7 +23,7 @@ public final class ServiceIdentifier
      * Service (Cloud Foundry)</a>.
      */
     @Nonnull
-    public static final ServiceIdentifier DESTINATION = getOrCreate("destination");
+    public static final ServiceIdentifier DESTINATION = of("destination");
 
     /**
      * Represents the <a href=
@@ -32,62 +32,37 @@ public final class ServiceIdentifier
      * On-Premise systems from the SAP Business Technology Platform (Cloud Foundry).
      */
     @Nonnull
-    public static final ServiceIdentifier CONNECTIVITY = getOrCreate("connectivity");
+    public static final ServiceIdentifier CONNECTIVITY = of("connectivity");
 
     /**
      * Represents the <a href="https://api.sap.com/api/CFAuditLogRetrievalAPI/overview">SAP Audit Log Retrieval (Cloud
      * Foundry environment)</a> service.
      */
     @Nonnull
-    public static final ServiceIdentifier AUDIT_LOG = getOrCreate("auditlog-management");
+    public static final ServiceIdentifier AUDIT_LOG = of("auditlog-management");
 
     /**
-     * Returns an {@link Optional} {@link ServiceIdentifier} based on the {@link ServiceBinding#getServiceName()}
-     * method.
-     *
-     * @param serviceBinding
-     *            The {@link ServiceBinding} to get the service name from.
-     * @return An {@link Optional} {@link ServiceIdentifier}, which might be empty in case the
-     *         {@link ServiceBinding#getServiceName()} returns something that is not valid.
-     * @see #of(String)
-     */
-    @Nonnull
-    public static Optional<ServiceIdentifier> fromServiceName( @Nonnull final ServiceBinding serviceBinding )
-    {
-        final String serviceName = serviceBinding.getServiceName().orElse(null);
-        if( serviceName == null ) {
-            throw new IllegalArgumentException("The service name of the provided service binding is null.");
-        }
-
-        return of(serviceName);
-    }
-
-    /**
-     * Returns an {@link Optional} {@link ServiceIdentifier} based on the provided {@code id}.
+     * Returns an {@link ServiceIdentifier} based on the provided {@code id}.
      * <p>
      * The {@code id} will be modified using {@link String#trim()} and {@link String#toLowerCase()}.
      * </p>
      *
      * @param id
      *            The identifier to use.
-     * @return An {@link Optional} {@link ServiceIdentifier}, which might be empty in case the <b>modified</b>
-     *         {@code id} is not valid (i.e. empty).
+     * @return An instance of {@link ServiceIdentifier}.
+     * @throws IllegalArgumentException
+     *             If the provided {@code id} is empty or blank <b>after</b> it has been modified using
+     *             {@link String#trim()}.
      */
     @Nonnull
-    public static Optional<ServiceIdentifier> of( @Nonnull final String id )
+    public static ServiceIdentifier of( @Nonnull final String id )
     {
         final String trimmedId = id.trim().toLowerCase(Locale.ROOT);
         if( trimmedId.isEmpty() ) {
-            return Optional.empty();
+            throw new IllegalArgumentException(String.format("The provided id ('%s') must not be empty or blank.", id));
         }
 
-        return Optional.of(getOrCreate(trimmedId));
-    }
-
-    @Nonnull
-    private static ServiceIdentifier getOrCreate( @Nonnull final String id )
-    {
-        return INSTANCES.computeIfAbsent(id, ServiceIdentifier::new);
+        return INSTANCES.computeIfAbsent(trimmedId, ServiceIdentifier::new);
     }
 
     @Nonnull

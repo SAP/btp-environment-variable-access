@@ -4,12 +4,11 @@
 
 package com.sap.cloud.environment.servicebinding.api;
 
+import javax.annotation.Nonnull;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-
-import javax.annotation.Nonnull;
 
 /**
  * Represents an <b>immutable</b> collection of (secret) key-value properties. These properties can be used to establish
@@ -63,6 +62,19 @@ public interface ServiceBinding
     Optional<String> getServiceName();
 
     /**
+     * Returns an {@link Optional} that might contain the {@link ServiceIdentifier} of the bound service (if it exists)
+     * of this {@link ServiceBinding}.
+     *
+     * @return An {@link Optional} that might contain the {@link ServiceIdentifier} of the bound service (if it exists)
+     *         of this {@link ServiceBinding}.
+     */
+    @Nonnull
+    default Optional<ServiceIdentifier> getServiceIdentifier()
+    {
+        return getServiceName().map(ServiceIdentifier::of);
+    }
+
+    /**
      * Returns an {@link Optional} that might contain the plan of the bound service (if it exists) of this
      * {@link ServiceBinding}.
      *
@@ -82,7 +94,7 @@ public interface ServiceBinding
 
     /**
      * Returna a {@link Map} of credentials that are required to connect to the bound service.
-     * 
+     *
      * @return A {@link Map} of credentials that are required to connect to the bound service.
      */
     @Nonnull
