@@ -244,9 +244,9 @@
         }
       }
     },
-    "value" : 6.466524051204901,
+    "value" : 6.484881934456402,
     "weight" : 1.0,
-    "confidence" : 9.645390070921986,
+    "confidence" : 10.0,
     "usedValues" : [ {
       "type" : "ScoreValue",
       "score" : {
@@ -1539,7 +1539,7 @@
         "type" : "ProjectActivityScore",
         "name" : "Open-source project activity score"
       },
-      "value" : 5.923076923076923,
+      "value" : 6.092307692307692,
       "weight" : 0.5,
       "confidence" : 10.0,
       "usedValues" : [ {
@@ -1548,7 +1548,7 @@
           "type" : "PositiveIntegerFeature",
           "name" : "Number of commits in the last three months"
         },
-        "number" : 35,
+        "number" : 36,
         "explanation" : [ ]
       }, {
         "type" : "IntegerValue",
@@ -1559,7 +1559,7 @@
         "number" : 4,
         "explanation" : [ ]
       } ],
-      "explanation" : [ "35 commits in the last 3 months results to 5.38 points", "4 contributors increase the score value from 5.38 to 5.92" ],
+      "explanation" : [ "36 commits in the last 3 months results to 5.54 points", "4 contributors increase the score value from 5.54 to 6.09" ],
       "isUnknown" : false,
       "isNotApplicable" : false,
       "feature" : {
@@ -1597,9 +1597,9 @@
         "type" : "ProjectPopularityScore",
         "name" : "Open-source project popularity score"
       },
-      "value" : 0.037333333333333336,
+      "value" : 0.04066666666666667,
       "weight" : 0.5,
-      "confidence" : 6.666666666666667,
+      "confidence" : 10.0,
       "usedValues" : [ {
         "type" : "IntegerValue",
         "feature" : {
@@ -1617,11 +1617,12 @@
         "number" : 7,
         "explanation" : [ ]
       }, {
-        "type" : "UnknownValue",
+        "type" : "IntegerValue",
         "feature" : {
           "type" : "PositiveIntegerFeature",
           "name" : "Number of projects on GitHub that use an open source project"
         },
+        "number" : 5,
         "explanation" : [ ]
       } ],
       "explanation" : [ ],
