@@ -42,13 +42,15 @@ public final class ServiceIdentifier
     public static final ServiceIdentifier AUDIT_LOG = of("auditlog-management");
 
     /**
-     * Represents the <a href="https://api.sap.com/package/SAPCPWorkflowAPIs/all">SAP Workflow Service for Cloud Foundry</a>.
+     * Represents the <a href="https://api.sap.com/package/SAPCPWorkflowAPIs/all">SAP Workflow Service for Cloud
+     * Foundry</a>.
      */
     @Nonnull
     public static final ServiceIdentifier WORKFLOW = of("workflow");
 
     /**
-     * Represents the <a href="https://api.sap.com/package/SAPCPBusinessRulesAPIs/all">SAP Business Rules Service for Cloud Foundry</a>.
+     * Represents the <a href="https://api.sap.com/package/SAPCPBusinessRulesAPIs/all">SAP Business Rules Service for
+     * Cloud Foundry</a>.
      */
     @Nonnull
     public static final ServiceIdentifier BUSINESS_RULES = of("business-rules");
