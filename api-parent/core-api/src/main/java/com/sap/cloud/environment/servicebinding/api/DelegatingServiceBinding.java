@@ -19,6 +19,18 @@ class DelegatingServiceBinding implements ServiceBinding
 {
     @Nonnull
     private final ServiceBinding delegate;
+
+    // CAUTION:
+    // We are consciously violating multiple best-practices in the code below:
+    // 1. You shouldn't use `Optional` as a field type.
+    // 2. You shouldn't use `@Nullable Optional` anywhere.
+    //
+    // We are still doing it because we need a way to distinguish between these cases:
+    // 1. The user doesn't want to change a property. It should be delegated instead (symbolized by `null`).
+    // 2. The user wants to set a property explicitly to `null` (i.e. they want to "delete" a property from the Service Binding, symbolized by `Optional.empty()`).
+    // 3. The user wants to set a property to a specific value (i.e. they want to "overwrite" a property, symbolized by `Optional.of(value)`).
+    //
+    // We could have used `@Nonnull Optional<Optional<...>>` instead, but that would have been even worse in my opinion.
     @Nullable
     private final Optional<Map<String, Object>> properties;
     @Nullable
