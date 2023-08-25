@@ -65,7 +65,7 @@ public class DefaultServiceBindingBuilder
     }
 
     @Nonnull
-    private static Map<String, Object> copyMap(
+    static Map<String, Object> copyMap(
         @Nonnull final Map<String, Object> map,
         @Nonnull final Function<Map<String, Object>, Map<String, Object>> mapDecorator,
         @Nonnull final Function<List<Object>, List<Object>> listDecorator )

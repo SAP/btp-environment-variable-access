@@ -7,6 +7,7 @@ package com.sap.cloud.environment.servicebinding.api;
 import com.sap.cloud.environment.servicebinding.api.exception.UnsupportedPropertyTypeException;
 import org.junit.jupiter.api.Test;
 
+import javax.annotation.Nonnull;
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Collection;
@@ -162,5 +163,158 @@ class DefaultServiceBindingTest
 
         assertThat(sut.getServiceName()).contains("foo");
         assertThat(sut.getServiceIdentifier()).contains(ServiceIdentifier.of("bar"));
+    }
+
+    @Test
+    void testEquals()
+    {
+        final DefaultServiceBinding firstSut = builderWithInitialValues().build();
+        final DefaultServiceBinding secondSut = builderWithInitialValues().build();
+
+        assertThat(firstSut).isEqualTo(secondSut).isNotSameAs(secondSut);
+
+        {
+            // different properties
+            final DefaultServiceBinding sut =
+                builderWithInitialValues(Collections.singletonMap("other-properties-key", "value")).build();
+
+            assertThat(sut).isNotEqualTo(firstSut).isNotEqualTo(secondSut);
+        }
+
+        {
+            // different name
+            final DefaultServiceBinding sut = builderWithInitialValues().withName("other-name").build();
+
+            assertThat(sut).isNotEqualTo(firstSut).isNotEqualTo(secondSut);
+        }
+
+        {
+            // different service name
+            final DefaultServiceBinding sut = builderWithInitialValues().withServiceName("other-service-name").build();
+
+            assertThat(sut).isNotEqualTo(firstSut).isNotEqualTo(secondSut);
+        }
+
+        {
+            // different service identifier
+            final DefaultServiceBinding sut =
+                builderWithInitialValues()
+                    .withServiceIdentifier(ServiceIdentifier.of("other-service-identifier"))
+                    .build();
+
+            assertThat(sut).isNotEqualTo(firstSut).isNotEqualTo(secondSut);
+        }
+
+        {
+            // different service plan
+            final DefaultServiceBinding sut = builderWithInitialValues().withServicePlan("other-service-plan").build();
+
+            assertThat(sut).isNotEqualTo(firstSut).isNotEqualTo(secondSut);
+        }
+
+        {
+            // different tags
+            final DefaultServiceBinding sut =
+                builderWithInitialValues().withTags(Arrays.asList("other-tag1", "other-tag2")).build();
+
+            assertThat(sut).isNotEqualTo(firstSut).isNotEqualTo(secondSut);
+        }
+
+        {
+            // different credentials
+            final DefaultServiceBinding sut =
+                builderWithInitialValues()
+                    .withCredentials(Collections.singletonMap("other-credentials-key", "value"))
+                    .build();
+
+            assertThat(sut).isNotEqualTo(firstSut).isNotEqualTo(secondSut);
+        }
+    }
+
+    @Test
+    void testHashCode()
+    {
+        final DefaultServiceBinding firstSut = builderWithInitialValues().build();
+        final DefaultServiceBinding secondSut = builderWithInitialValues().build();
+
+        assertThat(firstSut.hashCode()).isEqualTo(secondSut.hashCode());
+
+        {
+            // different properties
+            final DefaultServiceBinding sut =
+                builderWithInitialValues(Collections.singletonMap("other-properties-key", "value")).build();
+
+            assertThat(sut.hashCode()).isNotEqualTo(firstSut.hashCode()).isNotEqualTo(secondSut.hashCode());
+        }
+
+        {
+            // different name
+            final DefaultServiceBinding sut = builderWithInitialValues().withName("other-name").build();
+
+            assertThat(sut.hashCode()).isNotEqualTo(firstSut.hashCode()).isNotEqualTo(secondSut.hashCode());
+        }
+
+        {
+            // different service name
+            final DefaultServiceBinding sut = builderWithInitialValues().withServiceName("other-service-name").build();
+
+            assertThat(sut.hashCode()).isNotEqualTo(firstSut.hashCode()).isNotEqualTo(secondSut.hashCode());
+        }
+
+        {
+            // different service identifier
+            final DefaultServiceBinding sut =
+                builderWithInitialValues()
+                    .withServiceIdentifier(ServiceIdentifier.of("other-service-identifier"))
+                    .build();
+
+            assertThat(sut.hashCode()).isNotEqualTo(firstSut.hashCode()).isNotEqualTo(secondSut.hashCode());
+        }
+
+        {
+            // different service plan
+            final DefaultServiceBinding sut = builderWithInitialValues().withServicePlan("other-service-plan").build();
+
+            assertThat(sut.hashCode()).isNotEqualTo(firstSut.hashCode()).isNotEqualTo(secondSut.hashCode());
+        }
+
+        {
+            // different tags
+            final DefaultServiceBinding sut =
+                builderWithInitialValues().withTags(Arrays.asList("other-tag1", "other-tag2")).build();
+
+            assertThat(sut.hashCode()).isNotEqualTo(firstSut.hashCode()).isNotEqualTo(secondSut.hashCode());
+        }
+
+        {
+            // different credentials
+            final DefaultServiceBinding sut =
+                builderWithInitialValues()
+                    .withCredentials(Collections.singletonMap("other-credentials-key", "value"))
+                    .build();
+
+            assertThat(sut.hashCode()).isNotEqualTo(firstSut.hashCode()).isNotEqualTo(secondSut.hashCode());
+        }
+    }
+
+    @Nonnull
+    private static DefaultServiceBinding.TerminalBuilder builderWithInitialValues()
+    {
+        return builderWithInitialValues(Collections.singletonMap("initial-properties-key", "value"));
+    }
+
+    @Nonnull
+    private static DefaultServiceBinding.TerminalBuilder builderWithInitialValues(
+        @Nonnull final Map<String, Object> properties )
+    {
+        return DefaultServiceBinding
+            .builder()
+            .copy(properties)
+            .withName("initial-name")
+            .withServiceName("initial-service-name")
+            .withServiceIdentifier(ServiceIdentifier.of("initial-service-identifier"))
+            .withServicePlan("initial-service-plan")
+            .withTags(Arrays.asList("initial-tag1", "initial-tag2"))
+            .withCredentials(Collections.singletonMap("initial-credentials-key", "value"));
     }
 }

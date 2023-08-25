@@ -139,7 +139,15 @@ public class DefaultServiceBinding implements ServiceBinding
     @Override
     public int hashCode()
     {
-        return Objects.hash(getName(), getServiceName(), getServicePlan(), getTags(), getCredentials(), properties);
+        return Objects
+            .hash(
+                getName(),
+                getServiceName(),
+                getServiceIdentifier(),
+                getServicePlan(),
+                getTags(),
+                getCredentials(),
+                properties);
     }
 
     @Override
@@ -157,6 +165,7 @@ public class DefaultServiceBinding implements ServiceBinding
         return getName().equals(that.getName())
             && getServiceName().equals(that.getServiceName())
             && getServicePlan().equals(that.getServicePlan())
+            && getServiceIdentifier().equals(that.getServiceIdentifier())
             && getTags().equals(that.getTags())
             && getCredentials().equals(that.getCredentials())
             && properties.equals(that.properties);
