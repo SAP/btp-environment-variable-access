@@ -4,14 +4,18 @@
 
 package com.sap.cloud.environment.servicebinding;
 
-import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 import javax.annotation.Nonnull;
 
+import com.sap.cloud.environment.servicebinding.api.ServiceIdentifier;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -101,45 +105,72 @@ public class SapVcapServicesServiceBindingAccessor implements ServiceBindingAcce
         List<ServiceBinding>
         extractServiceBindings( @Nonnull final JSONObject vcapServices, @Nonnull final String serviceName )
     {
-        final JSONArray jsonServiceBindings;
-        try {
-            jsonServiceBindings = vcapServices.getJSONArray(serviceName);
-        }
-        catch( final JSONException e ) {
-            logger.debug("Skipping '{}': Unexpected format.", VCAP_SERVICES);
+        final Object serviceBindings = vcapServices.get(serviceName);
+        if( !(serviceBindings instanceof JSONArray) ) {
+            logger.debug("Skipping '{}': Unexpected format.", serviceName);
             return Collections.emptyList();
         }
 
-        final List<ServiceBinding> serviceBindings = new ArrayList<>(jsonServiceBindings.length());
-        for( int i = 0; i < jsonServiceBindings.length(); ++i ) {
-            final JSONObject jsonServiceBinding;
-            try {
-                jsonServiceBinding = jsonServiceBindings.getJSONObject(i);
-            }
-            catch( final JSONException e ) {
-                continue;
-            }
+        final List<ServiceBinding> result =
+            StreamSupport
+                .stream(((Iterable<?>) serviceBindings).spliterator(), false)
+                .filter(JSONObject.class::isInstance)
+                .flatMap(binding -> toServiceBindings(((JSONObject) binding).toMap(), serviceName).stream())
+                .collect(Collectors.toList());
 
-            serviceBindings.add(toServiceBinding(jsonServiceBinding, serviceName));
-        }
-
-        logger.debug("Successfully read {} service binding(s) from '{}'.", serviceBindings.size(), VCAP_SERVICES);
-        return serviceBindings;
+        logger.debug("Successfully read {} service binding(s) from '{}'.", result.size(), serviceName);
+        return result;
     }
 
     @Nonnull
-    private
-        ServiceBinding
-        toServiceBinding( @Nonnull final JSONObject jsonServiceBinding, @Nonnull final String serviceName )
+    protected
+        Collection<ServiceBinding>
+        toServiceBindings( @Nonnull final Map<String, Object> props, @Nonnull final String serviceName )
+    {
+        if( isUserProvided(serviceName) ) {
+            final List<String> tags = getTagsFromProperties(props);
+            return tags.stream().map(tag -> createServiceBinding(props, serviceName, tag)).collect(Collectors.toList());
+        } else {
+            return Collections.singleton(createServiceBinding(props, serviceName, serviceName));
+        }
+    }
+
+    protected boolean isUserProvided( @Nonnull final String serviceName )
+    {
+        return "user-provided".equalsIgnoreCase(serviceName);
+    }
+
+    @SuppressWarnings( "unchecked" )
+    @Nonnull
+    protected List<String> getTagsFromProperties( @Nonnull final Map<String, Object> properties )
+    {
+        final Object tags = properties.get("tags");
+        if( !(tags instanceof List) ) {
+            logger.debug("No \"tags\" found in service binding {}.", tags);
+            return Collections.emptyList();
+        }
+        if( ((List<?>) tags).isEmpty() || !(((List<?>) tags).get(0) instanceof String) ) {
+            logger.debug("Empty or unexpected format for \"tags\" in service binding {}.", tags);
+            return Collections.emptyList();
+        }
+        return (List<String>) tags;
+    }
+
+    @Nonnull
+    protected ServiceBinding createServiceBinding(
+        @Nonnull final Map<String, Object> properties,
+        @Nonnull final String serviceName,
+        @Nonnull final String serviceIdentifier )
     {
         return DefaultServiceBinding
             .builder()
-            .copy(jsonServiceBinding.toMap())
+            .copy(properties)
             .withNameKey("name")
             .withServiceName(serviceName)
             .withServicePlanKey("plan")
             .withTagsKey("tags")
             .withCredentialsKey("credentials")
+            .withServiceIdentifier(ServiceIdentifier.of(serviceIdentifier))
             .build();
     }
 }
