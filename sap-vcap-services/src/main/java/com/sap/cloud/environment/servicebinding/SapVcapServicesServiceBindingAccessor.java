@@ -150,7 +150,7 @@ public class SapVcapServicesServiceBindingAccessor implements ServiceBindingAcce
             return Collections.emptyList();
         }
         if( ((List<?>) tags).isEmpty() || !(((List<?>) tags).get(0) instanceof String) ) {
-            logger.debug("Empty or unexpected format for \"tags\" in service binding {}.", tags);
+            logger.debug("Empty or unexpected format for \"tags\" in service binding: {}.", tags);
             return Collections.emptyList();
         }
         return (List<String>) tags;
