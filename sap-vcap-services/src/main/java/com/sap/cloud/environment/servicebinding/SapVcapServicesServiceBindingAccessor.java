@@ -4,28 +4,25 @@
 
 package com.sap.cloud.environment.servicebinding;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
-
-import javax.annotation.Nonnull;
-
+import com.sap.cloud.environment.servicebinding.api.DefaultServiceBinding;
+import com.sap.cloud.environment.servicebinding.api.ServiceBinding;
+import com.sap.cloud.environment.servicebinding.api.ServiceBindingAccessor;
 import com.sap.cloud.environment.servicebinding.api.ServiceIdentifier;
+import com.sap.cloud.environment.servicebinding.api.exception.ServiceBindingAccessException;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.sap.cloud.environment.servicebinding.api.DefaultServiceBinding;
-import com.sap.cloud.environment.servicebinding.api.ServiceBinding;
-import com.sap.cloud.environment.servicebinding.api.ServiceBindingAccessor;
-import com.sap.cloud.environment.servicebinding.api.exception.ServiceBindingAccessException;
+import javax.annotation.Nonnull;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 /**
  * A {@link ServiceBindingAccessor} that is able to load {@link ServiceBinding}s from SAP's {@code VCAP_SERVICES}
@@ -123,26 +120,28 @@ public class SapVcapServicesServiceBindingAccessor implements ServiceBindingAcce
     }
 
     @Nonnull
-    protected
-        Collection<ServiceBinding>
+    private
+        List<ServiceBinding>
         toServiceBindings( @Nonnull final Map<String, Object> props, @Nonnull final String serviceName )
     {
+        final List<ServiceBinding> result = new ArrayList<>();
+        result.add(createServiceBinding(props, serviceName, serviceName));
+
         if( isUserProvided(serviceName) ) {
             final List<String> tags = getTagsFromProperties(props);
-            return tags.stream().map(tag -> createServiceBinding(props, serviceName, tag)).collect(Collectors.toList());
-        } else {
-            return Collections.singleton(createServiceBinding(props, serviceName, serviceName));
+            tags.forEach(tag -> result.add(createServiceBinding(props, serviceName, tag)));
         }
+        return result;
     }
 
-    protected boolean isUserProvided( @Nonnull final String serviceName )
+    private boolean isUserProvided( @Nonnull final String serviceName )
     {
         return "user-provided".equalsIgnoreCase(serviceName);
     }
 
     @SuppressWarnings( "unchecked" )
     @Nonnull
-    protected List<String> getTagsFromProperties( @Nonnull final Map<String, Object> properties )
+    private List<String> getTagsFromProperties( @Nonnull final Map<String, Object> properties )
     {
         final Object tags = properties.get("tags");
         if( !(tags instanceof List) ) {
@@ -157,7 +156,7 @@ public class SapVcapServicesServiceBindingAccessor implements ServiceBindingAcce
     }
 
     @Nonnull
-    protected ServiceBinding createServiceBinding(
+    private ServiceBinding createServiceBinding(
         @Nonnull final Map<String, Object> properties,
         @Nonnull final String serviceName,
         @Nonnull final String serviceIdentifier )
