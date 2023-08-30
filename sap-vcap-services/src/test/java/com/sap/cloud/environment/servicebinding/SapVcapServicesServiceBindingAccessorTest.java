@@ -32,7 +32,7 @@ class SapVcapServicesServiceBindingAccessorTest
 
         final List<ServiceBinding> serviceBindings = sut.getServiceBindings();
 
-        assertThat(serviceBindings.size()).isEqualTo(6);
+        assertThat(serviceBindings.size()).isEqualTo(9);
 
         assertContainsXsuaaBinding1(serviceBindings);
         assertContainsXsuaaBinding2(serviceBindings);
@@ -166,11 +166,11 @@ class SapVcapServicesServiceBindingAccessorTest
             new SapVcapServicesServiceBindingAccessor(environmentVariableReader);
 
         // first invocation
-        assertThat(sut.getServiceBindings().size()).isEqualTo(6);
+        assertThat(sut.getServiceBindings().size()).isEqualTo(9);
         assertThat(environmentVariableReader.getInvocations()).isEqualTo(1);
 
         // second invocation
-        assertThat(sut.getServiceBindings().size()).isEqualTo(6);
+        assertThat(sut.getServiceBindings().size()).isEqualTo(9);
         assertThat(environmentVariableReader.getInvocations()).isEqualTo(2);
     }
 
