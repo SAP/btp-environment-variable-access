@@ -6,11 +6,13 @@ package com.sap.cloud.environment.servicebinding;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
 
+import com.sap.cloud.environment.servicebinding.api.ServiceIdentifier;
 import org.junit.jupiter.api.Test;
 
 import com.sap.cloud.environment.servicebinding.api.ServiceBinding;
@@ -30,11 +32,31 @@ class SapVcapServicesServiceBindingAccessorTest
 
         final List<ServiceBinding> serviceBindings = sut.getServiceBindings();
 
-        assertThat(serviceBindings.size()).isEqualTo(3);
+        assertThat(serviceBindings.size()).isEqualTo(6);
 
         assertContainsXsuaaBinding1(serviceBindings);
         assertContainsXsuaaBinding2(serviceBindings);
         assertContainsDestinationBinding1(serviceBindings);
+        assertUserProvidedServiceBinding(serviceBindings);
+    }
+
+    private void assertUserProvidedServiceBinding( @Nonnull final List<ServiceBinding> serviceBindings )
+    {
+        assertThat(serviceBindings)
+            .filteredOn(ServiceBinding::getServiceIdentifier, Optional.of(ServiceIdentifier.DESTINATION))
+            .satisfiesExactly(binding -> {
+                assertThat(binding.getServiceName()).hasValue("destination");
+                assertThat(binding.getName()).hasValue("destination-binding-1");
+                assertThat(binding.getTags()).hasSize(2);
+            }, binding -> {
+                assertThat(binding.getServiceName()).hasValue("user-provided");
+                assertThat(binding.getName()).hasValue("my-user-provided-service-with-one-tag");
+                assertThat(binding.getTags()).containsExactly("destination");
+            }, binding -> {
+                assertThat(binding.getServiceName()).hasValue("user-provided");
+                assertThat(binding.getName()).hasValue("my-user-provided-service-with-two-tags");
+                assertThat(binding.getTags()).containsExactly("outbound-requests", "destination");
+            });
     }
 
     private void assertContainsXsuaaBinding1( @Nonnull final Collection<ServiceBinding> serviceBindings )
@@ -144,11 +166,11 @@ class SapVcapServicesServiceBindingAccessorTest
             new SapVcapServicesServiceBindingAccessor(environmentVariableReader);
 
         // first invocation
-        assertThat(sut.getServiceBindings().size()).isEqualTo(3);
+        assertThat(sut.getServiceBindings().size()).isEqualTo(6);
         assertThat(environmentVariableReader.getInvocations()).isEqualTo(1);
 
         // second invocation
-        assertThat(sut.getServiceBindings().size()).isEqualTo(3);
+        assertThat(sut.getServiceBindings().size()).isEqualTo(6);
         assertThat(environmentVariableReader.getInvocations()).isEqualTo(2);
     }
 

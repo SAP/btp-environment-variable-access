@@ -41,5 +41,22 @@
                 "clientsecret": "destination-clientsecret-1"
             }
         }
+    ],
+    "user-provided":[
+        {
+            "label": "user-provided",
+            "name": "my-user-provided-service-without-tags",
+            "tags": []
+        },
+        {
+            "label": "user-provided",
+            "name": "my-user-provided-service-with-one-tag",
+            "tags": ["destination"]
+        },
+        {
+            "label": "user-provided",
+            "name": "my-user-provided-service-with-two-tags",
+            "tags": ["outbound-requests","destination"]
+        }
     ]
 }
