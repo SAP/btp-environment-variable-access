@@ -14,6 +14,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.TreeMap;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -41,8 +42,9 @@ public class DefaultServiceBindingBuilder
     @Nullable
     private String serviceName;
 
+    @SuppressWarnings( "OptionalUsedAsFieldOrParameterType" )
     @Nullable
-    private ServiceIdentifier serviceIdentifier;
+    private Optional<ServiceIdentifier> serviceIdentifier;
 
     @Nullable
     private String servicePlan;
@@ -200,7 +202,15 @@ public class DefaultServiceBindingBuilder
     @Override
     public DefaultServiceBinding.TerminalBuilder withServiceIdentifier( @Nonnull ServiceIdentifier serviceIdentifier )
     {
-        this.serviceIdentifier = serviceIdentifier;
+        this.serviceIdentifier = Optional.of(serviceIdentifier);
+        return this;
+    }
+
+    @Nonnull
+    @Override
+    public DefaultServiceBinding.TerminalBuilder withoutServiceIdentifier()
+    {
+        this.serviceIdentifier = Optional.empty();
         return this;
     }
 
@@ -210,7 +220,7 @@ public class DefaultServiceBindingBuilder
     {
         final String maybeServiceIdentifier = extractString(key);
         if( maybeServiceIdentifier != null ) {
-            serviceIdentifier = ServiceIdentifier.of(maybeServiceIdentifier);
+            serviceIdentifier = Optional.of(ServiceIdentifier.of(maybeServiceIdentifier));
         }
 
         return this;
@@ -269,11 +279,17 @@ public class DefaultServiceBindingBuilder
     @Override
     public DefaultServiceBinding build()
     {
+        @SuppressWarnings( "OptionalAssignedToNull" )
+        final ServiceIdentifier identifier =
+            serviceIdentifier != null
+                ? serviceIdentifier.orElse(null)
+                : serviceName != null ? ServiceIdentifier.of(serviceName) : null;
+
         return new DefaultServiceBinding(
             map,
             name,
             serviceName,
-            serviceIdentifier,
+            identifier,
             servicePlan,
             tags == null ? Collections.emptyList() : tags,
             credentials == null ? Collections.emptyMap() : credentials);

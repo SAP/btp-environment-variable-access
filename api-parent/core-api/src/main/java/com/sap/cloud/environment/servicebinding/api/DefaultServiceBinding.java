@@ -108,11 +108,7 @@ public class DefaultServiceBinding implements ServiceBinding
     @Override
     public Optional<ServiceIdentifier> getServiceIdentifier()
     {
-        if( serviceIdentifier != null ) {
-            return Optional.of(serviceIdentifier);
-        }
-
-        return getServiceName().map(ServiceIdentifier::of);
+        return Optional.ofNullable(serviceIdentifier);
     }
 
     @Nonnull
@@ -251,6 +247,14 @@ public class DefaultServiceBinding implements ServiceBinding
          */
         @Nonnull
         TerminalBuilder withServiceIdentifier( @Nonnull final ServiceIdentifier serviceIdentifier );
+
+        /**
+         * Removes the {@link ServiceIdentifier} from the to-be-built {@link DefaultServiceBinding}.
+         *
+         * @return This {@link TerminalBuilder} instance.
+         */
+        @Nonnull
+        TerminalBuilder withoutServiceIdentifier();
 
         /**
          * Extracts the {@link ServiceIdentifier} of the bound service of the to-be-built {@link DefaultServiceBinding}

@@ -132,14 +132,19 @@ public class SapVcapServicesServiceBindingAccessor implements ServiceBindingAcce
         ServiceBinding
         toServiceBinding( @Nonnull final JSONObject jsonServiceBinding, @Nonnull final String serviceName )
     {
-        return DefaultServiceBinding
+        final DefaultServiceBinding.TerminalBuilder builder = DefaultServiceBinding
             .builder()
             .copy(jsonServiceBinding.toMap())
             .withNameKey("name")
             .withServiceName(serviceName)
             .withServicePlanKey("plan")
             .withTagsKey("tags")
-            .withCredentialsKey("credentials")
-            .build();
+            .withCredentialsKey("credentials");
+
+        if("user-provided".equalsIgnoreCase(serviceName)) {
+            builder.withoutServiceIdentifier();
+        }
+
+        return builder.build();
     }
 }
