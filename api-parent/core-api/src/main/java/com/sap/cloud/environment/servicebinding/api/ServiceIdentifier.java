@@ -39,7 +39,7 @@ public final class ServiceIdentifier
      * Foundry environment)</a> service.
      */
     @Nonnull
-    public static final ServiceIdentifier AUDIT_LOG = of("auditlog-management");
+    public static final ServiceIdentifier AUDIT_LOG_RETRIEVAL = of("auditlog-management");
 
     /**
      * Represents the <a href="https://api.sap.com/package/SAPCPWorkflowAPIs/all">SAP Workflow Service for Cloud
