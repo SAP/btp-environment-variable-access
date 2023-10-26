@@ -7,4 +7,13 @@
         <packageUrl regex="true">^pkg:maven/org.json/json@\d+$</packageUrl>
         <vulnerabilityName>CVE-2022-45688</vulnerabilityName>
     </suppress>
+    <suppress>
+        <notes><![CDATA[
+        suppresses CVE-2023-5072 as it has been fixed by the latest release 20231013 https://nvd.nist.gov/vuln/detail/CVE-2023-5072
+        file name: json-20231013.jar
+        ]]>
+        </notes>
+        <packageUrl regex="true">^pkg:maven/org\.json/json@.*$</packageUrl>
+        <vulnerabilityName>CVE-2023-5072</vulnerabilityName>
+    </suppress>
 </suppressions>
