@@ -49,7 +49,7 @@
         <junit-jupiter.version>5.10.2</junit-jupiter.version>
         <assertj-core.version>3.25.3</assertj-core.version>
         <mockito-core.version>4.11.0</mockito-core.version>
-        <slf4j-api.version>2.0.11</slf4j-api.version>
+        <slf4j-api.version>2.0.12</slf4j-api.version>
     </properties>
 
     <dependencyManagement>
