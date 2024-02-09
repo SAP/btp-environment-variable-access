@@ -56,6 +56,13 @@ public final class ServiceIdentifier
     public static final ServiceIdentifier BUSINESS_RULES = of("business-rules");
 
     /**
+     * Represents the <a href="https://help.sap.com/docs/identity-authentication">SAP Identity Authentication
+     * Service</a> (also known as <i><b>IAS</b></i>).
+     */
+    @Nonnull
+    public static final ServiceIdentifier IDENTITY_AUTHENTICATION = of("identity");
+
+    /**
      * Returns an {@link ServiceIdentifier} based on the provided {@code id}.
      * <p>
      * The {@code id} will be modified using {@link String#trim()} and {@link String#toLowerCase()}.
