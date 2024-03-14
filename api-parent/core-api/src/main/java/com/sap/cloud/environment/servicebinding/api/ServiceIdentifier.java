@@ -63,6 +63,12 @@ public final class ServiceIdentifier
     public static final ServiceIdentifier IDENTITY_AUTHENTICATION = of("identity");
 
     /**
+     * Represents the <a href="https://api.sap.com/api/AI_CORE_API">SAP AI Core Service</a>.
+     */
+    @Nonnull
+    public static final ServiceIdentifier AI_CORE = of("aicore");
+
+    /**
      * Returns an {@link ServiceIdentifier} based on the provided {@code id}.
      * <p>
      * The {@code id} will be modified using {@link String#trim()} and {@link String#toLowerCase()}.
