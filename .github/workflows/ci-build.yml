@@ -7,7 +7,7 @@ on:
     branches: [ main ]
 
 env:
-  CVE_CACHE_DIR: ~/.m2/repository/org/owasp/dependency-check-data/9.0/**
+  CVE_CACHE_DIR: ~/.m2/repository/org/owasp/dependency-check-data/**
   CVE_CACHE_KEY: "cve-cache"
 
 jobs:
