@@ -6,6 +6,10 @@ on:
   pull_request:
     branches: [ main ]
 
+env:
+  CVE_CACHE_DIR: ~/.m2/repository/org/owasp/dependency-check-data/**
+  CVE_CACHE_KEY: "cve-cache"
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -15,12 +19,19 @@ jobs:
     name: Build with Java ${{ matrix.java-version }}
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Set up JDK ${{ matrix.java-version }}
-        uses: actions/setup-java@v3
+        uses: actions/setup-java@v4
         with:
           distribution: 'adopt'
           java-version: ${{ matrix.java-version }}
+      - name: Restore Vulnerabilities Database
+        id: restore-cve
+        uses: actions/cache/restore@v4
+        with:
+          key: ${{ env.CVE_CACHE_KEY }}
+          path: ${{ env.CVE_CACHE_DIR }}
+
       - name: Build with Maven
         run: mvn clean install -Dgpg.skip --no-transfer-progress
       - name: Check for source code changes
@@ -29,3 +40,10 @@ jobs:
             echo -e "Following files need to be formatted: \n$(git diff --name-only)"
             exit 1
           fi
+
+      - name: Store Vulnerabilities Database
+        if: ${{ steps.restore-cve.outputs.cache-hit != 'true' }}
+        uses: actions/cache/save@v4
+        with:
+          path: ${{ env.CVE_CACHE_DIR }}
+          key: ${{ env.CVE_CACHE_KEY }}
