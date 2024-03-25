@@ -25,7 +25,7 @@ jobs:
           gh pr edit $PR_URL --add-label "please review"
         env:
           PR_URL: ${{github.event.pull_request.html_url}}
-          GITHUB_TOKEN: ${{ secrets.CLOUD_SDK_AT_SAP_ALL_ACCESS_PAT }}
+          GH_TOKEN: ${{ secrets.CLOUD_SDK_AT_SAP_ALL_ACCESS_PAT }}
       - name: approve and merge
         if: ${{steps.metadata.outputs.update-type == 'version-update:semver-patch' ||
           steps.metadata.outputs.update-type == 'version-update:semver-minor'}}
@@ -34,4 +34,4 @@ jobs:
           gh pr merge --auto --squash "$PR_URL"
         env:
           PR_URL: ${{github.event.pull_request.html_url}}
-          GITHUB_TOKEN: ${{ secrets.CLOUD_SDK_AT_SAP_ALL_ACCESS_PAT }}
+          GH_TOKEN: ${{ secrets.CLOUD_SDK_AT_SAP_ALL_ACCESS_PAT }}
