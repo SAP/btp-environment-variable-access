@@ -13,6 +13,10 @@ on:
           - patch
         default: minor
 
+env:
+  CVE_CACHE_DIR: ~/.m2/repository/org/owasp/dependency-check-data/9.0
+  CVE_CACHE_KEY: "cve-cache"
+
 jobs:
   release:
     runs-on: ubuntu-latest
@@ -22,19 +26,23 @@ jobs:
         name: Checkout Repository
         with:
           token: ${{ secrets.CLOUD_SDK_AT_SAP_ALL_ACCESS_PAT }}
-
       - uses: crazy-max/ghaction-import-gpg@v6
         with:
           gpg_private_key: ${{ secrets.CLOUD_SDK_AT_SAP_PRIVATE_GPG_KEY }}
           passphrase: ${{ secrets.CLOUD_SDK_AT_SAP_PRIVATE_GPG_PASSPHRASE }}
           git_user_signingkey: true
           git_commit_gpgsign: true
-
       - uses: actions/setup-java@v4
         name: Setup JDK
         with:
           distribution: 'adopt'
           java-version: 8
+      - name: Restore Vulnerabilities Database
+        id: restore-cve
+        uses: actions/cache/restore@v4
+        with:
+          key: ${{ env.CVE_CACHE_KEY }}
+          path: ${{ env.CVE_CACHE_DIR }}
 
       - name: Bump Version
         uses: DigitalToolsManufactory/gh-action-maven-bump-version@v1
@@ -45,6 +53,13 @@ jobs:
 
       - name: Build Project
         run: mvn clean install -P release -Dgpg.skip
+
+      - name: Store Vulnerabilities Database
+        if: ${{ steps.restore-cve.outputs.cache-hit != 'true' }}
+        uses: actions/cache/save@v4
+        with:
+          path: ${{ env.CVE_CACHE_DIR }}
+          key: ${{ env.CVE_CACHE_KEY }}
 
       - name: Commit Changes
         run: |
