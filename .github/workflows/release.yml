@@ -37,11 +37,10 @@ jobs:
           java-version: 8
 
       - name: Bump Version
-        uses: DigitalToolsManufactory/gh-action-maven-bump-version@v1
         id: bump-version
-        with:
-          bumpType: "${{ inputs.releaseType }}"
-          pomFiles: "pom.xml bom/pom.xml modules-bom/pom.xml"
+        working-directory: .scripts/bump-version
+        run: |
+          python maven_version.py bump --bump-type "${{ inputs.releaseType }}" "../../pom.xml" "../../modules-bom/pom.xml" "../../bom/pom.xml"
 
       - name: Build Project
         run: mvn clean install -P release -Dgpg.skip
