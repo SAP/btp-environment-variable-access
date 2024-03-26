@@ -13,18 +13,14 @@ env:
 jobs:
   build:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        java-version: [ 8, 11, 17 ]
-    name: Build with Java ${{ matrix.java-version }}
-
+    name: Build with Java 17
     steps:
       - uses: actions/checkout@v4
-      - name: Set up JDK ${{ matrix.java-version }}
+      - name: Set up JDK
         uses: actions/setup-java@v4
         with:
           distribution: 'adopt'
-          java-version: ${{ matrix.java-version }}
+          java-version: 17
       - name: Restore Vulnerabilities Database
         id: restore-cve
         uses: actions/cache/restore@v4

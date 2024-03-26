@@ -36,7 +36,7 @@ jobs:
         name: Setup JDK
         with:
           distribution: 'adopt'
-          java-version: 8
+          java-version: 17
       - name: Restore Vulnerabilities Database
         id: restore-cve
         uses: actions/cache/restore@v4
