@@ -7,8 +7,9 @@ on:
     branches: [ main ]
 
 env:
-  CVE_CACHE_DIR: ~/.m2/repository/org/owasp/dependency-check-data/**
-  CVE_CACHE_KEY: "cve-cache"
+  # keep the below two variables in sync with the ones in .github/workflows/update-vulnerability-database.yaml
+  CVE_CACHE_KEY: cve-db
+  CVE_CACHE_DIR: ~/.m2/repository/org/owasp/dependency-check-data
 
 jobs:
   build:
@@ -25,12 +26,13 @@ jobs:
         with:
           distribution: 'adopt'
           java-version: ${{ matrix.java-version }}
-      - name: Restore Vulnerabilities Database
-        id: restore-cve
+
+      - name: Restore CVE Database
         uses: actions/cache/restore@v4
         with:
-          key: ${{ env.CVE_CACHE_KEY }}
           path: ${{ env.CVE_CACHE_DIR }}
+          key: ${{ env.CVE_CACHE_KEY }}
+          fail-on-cache-miss: true
 
       - name: Build with Maven
         run: mvn clean install -Dgpg.skip --no-transfer-progress
@@ -40,10 +42,3 @@ jobs:
             echo -e "Following files need to be formatted: \n$(git diff --name-only)"
             exit 1
           fi
-
-      - name: Store Vulnerabilities Database
-        if: ${{ steps.restore-cve.outputs.cache-hit != 'true' }}
-        uses: actions/cache/save@v4
-        with:
-          path: ${{ env.CVE_CACHE_DIR }}
-          key: ${{ env.CVE_CACHE_KEY }}

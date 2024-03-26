@@ -55,6 +55,7 @@
         <maven.version>3.8</maven.version>
         <java.failOnWarning>true</java.failOnWarning>
         <skipTests>false</skipTests>
+        <updateCveDatabase>false</updateCveDatabase>
         <project.rootdir>${project.basedir}</project.rootdir>
         <project.build.resourceEncoding>UTF-8</project.build.resourceEncoding>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -249,6 +250,7 @@
                         <skipProvidedScope>true</skipProvidedScope>
                         <failBuildOnCVSS>7</failBuildOnCVSS>
                         <suppressionFile>.etc/suppression.xml</suppressionFile>
+                        <autoUpdate>${updateCveDatabase}</autoUpdate>
                     </configuration>
                 </plugin>
                 <plugin>
