@@ -55,6 +55,7 @@
         <maven.version>3.8</maven.version>
         <java.failOnWarning>true</java.failOnWarning>
         <skipTests>false</skipTests>
+        <updateCveDatabase>false</updateCveDatabase>
         <project.rootdir>${project.basedir}</project.rootdir>
         <project.build.resourceEncoding>UTF-8</project.build.resourceEncoding>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -72,7 +73,7 @@
         <maven-resources-plugin.version>3.3.1</maven-resources-plugin.version>
         <maven-source-plugin.version>3.3.0</maven-source-plugin.version>
         <maven-javadoc-plugin.version>3.6.3</maven-javadoc-plugin.version>
-        <maven-gpg-plugin.version>3.2.1</maven-gpg-plugin.version>
+        <maven-gpg-plugin.version>3.2.2</maven-gpg-plugin.version>
         <nexus-staging-maven-plugin.version>1.6.13</nexus-staging-maven-plugin.version>
         <dependency-check-maven-plugin.version>9.0.10</dependency-check-maven-plugin.version>
         <sortpom-maven-plugin.version>2.15.0</sortpom-maven-plugin.version>
@@ -249,6 +250,7 @@
                         <skipProvidedScope>true</skipProvidedScope>
                         <failBuildOnCVSS>7</failBuildOnCVSS>
                         <suppressionFile>.etc/suppression.xml</suppressionFile>
+                        <autoUpdate>${updateCveDatabase}</autoUpdate>
                     </configuration>
                 </plugin>
                 <plugin>

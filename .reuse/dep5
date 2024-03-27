@@ -36,5 +36,6 @@ Files:
     pom.xml
     **/pom.xml
     */src/*
+    */.scripts/*
 Copyright:  2022 SAP SE or an SAP affiliate company and BTP Environment for Java contributors
 License: Apache-2.0
