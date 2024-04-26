@@ -15,6 +15,14 @@ public final class ServiceIdentifier
     private static final Map<String, ServiceIdentifier> INSTANCES = new ConcurrentHashMap<>();
 
     /**
+     * Represents the <a href=
+     * "https://help.sap.com/docs/btp/sap-business-technology-platform/what-is-sap-authorization-and-trust-management-service">SAP
+     * Extended Service for User and Account Authentication (XSUAA)</a>.
+     */
+    @Nonnull
+    public static final ServiceIdentifier XSUAA = of("xsuaa");
+
+    /**
      * Represents the <a href="https://api.sap.com/api/SAP_CP_CF_Connectivity_Destination/overview">SAP Destination
      * Service (Cloud Foundry)</a>.
      */
