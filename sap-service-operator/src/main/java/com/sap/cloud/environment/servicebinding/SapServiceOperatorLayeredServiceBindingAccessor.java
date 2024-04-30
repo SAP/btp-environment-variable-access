@@ -20,6 +20,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -29,7 +30,7 @@ import java.util.stream.Stream;
  * The <b>layered</b> structure is assumed to look as follows:
  *
  * <pre>
- *     {SERVICE-BINDING-ROOT}
+ *     ${SERVICE-BINDING-ROOT}
  *     ├-- {SERVICE-NAME#1}
  *     |   ├-- {SERVICE-BINDING-NAME#1}
  *     |   |   └-- {SERVICE-BINDING-CONTENT#1}
@@ -40,9 +41,11 @@ import java.util.stream.Stream;
  *             └- {SERVICE-BINDING-CONTENT#3}
  * </pre>
  * <p>
- * By default, {@code /etc/secrets/sapbtp} is used as the {@code SERVICE-BINDING-ROOT}. <br>
- * The {@code {SERVICE-BINDING-CONTENT}} itself can also have different structures, which are supported through
- * different {@link LayeredParsingStrategy}s. By default, following strategies are applied:
+ * <b>Note:</b> This class will attempt to read service bindings from {@code /etc/secrets/sapbtp} <b>if</b> the
+ * {@code SERVICE_BINDING_ROOT} environment variable is not defined (i.e.
+ * {@code System.getenv("SERVICE_BINDING_ROOT") == null}). The {@code {SERVICE-BINDING-CONTENT}} itself can also have
+ * different structures, which are supported through different {@link LayeredParsingStrategy}s. By default, following
+ * strategies are applied:
  * <ol>
  * <li>{@link LayeredSecretRootKeyParsingStrategy}</li>
  * <li>{@link LayeredSecretKeyParsingStrategy}</li>
@@ -55,6 +58,12 @@ public class SapServiceOperatorLayeredServiceBindingAccessor implements ServiceB
 {
     @Nonnull
     private static final Logger logger = LoggerFactory.getLogger(SapServiceOperatorLayeredServiceBindingAccessor.class);
+
+    /**
+     * The default {@link Function} to read environment variables.
+     */
+    @Nonnull
+    public static final Function<String, String> DEFAULT_ENVIRONMENT_VARIABLE_READER = System::getenv;
 
     /**
      * The default service binding root {@link Path}.
@@ -82,7 +91,12 @@ public class SapServiceOperatorLayeredServiceBindingAccessor implements ServiceB
     public static final Charset DEFAULT_CHARSET = StandardCharsets.UTF_8;
 
     @Nonnull
-    private final Path rootPath;
+    private static final String ROOT_DIRECTORY_KEY = "SERVICE_BINDING_ROOT";
+
+    @Nonnull
+    private final Function<String, String> environmentVariableReader;
+    @Nonnull
+    private final Path fallbackRootPath;
 
     @Nonnull
     private final Collection<LayeredParsingStrategy> parsingStrategies;
@@ -94,6 +108,13 @@ public class SapServiceOperatorLayeredServiceBindingAccessor implements ServiceB
     public SapServiceOperatorLayeredServiceBindingAccessor()
     {
         this(DEFAULT_ROOT_PATH, DEFAULT_PARSING_STRATEGIES);
+    }
+
+    public SapServiceOperatorLayeredServiceBindingAccessor(
+        @Nonnull final Function<String, String> environmentVariableReader,
+        @Nonnull final Collection<LayeredParsingStrategy> parsingStrategies )
+    {
+        this(environmentVariableReader, DEFAULT_ROOT_PATH, parsingStrategies);
     }
 
     /**
@@ -109,7 +130,16 @@ public class SapServiceOperatorLayeredServiceBindingAccessor implements ServiceB
         @Nonnull final Path rootPath,
         @Nonnull final Collection<LayeredParsingStrategy> parsingStrategies )
     {
-        this.rootPath = rootPath;
+        this(any -> null, rootPath, parsingStrategies);
+    }
+
+    SapServiceOperatorLayeredServiceBindingAccessor(
+        @Nonnull final Function<String, String> environmentVariableReader,
+        @Nonnull final Path fallbackRootPath,
+        @Nonnull final Collection<LayeredParsingStrategy> parsingStrategies )
+    {
+        this.environmentVariableReader = environmentVariableReader;
+        this.fallbackRootPath = fallbackRootPath;
         this.parsingStrategies = parsingStrategies;
     }
 
@@ -117,19 +147,56 @@ public class SapServiceOperatorLayeredServiceBindingAccessor implements ServiceB
     @Override
     public List<ServiceBinding> getServiceBindings()
     {
-        logger.debug("Trying to read service bindings from '{}'.", rootPath);
-
-        if( !Files.isDirectory(rootPath) ) {
-            logger.debug("Skipping '{}': Directory does not exist.", rootPath);
+        final Path rootPath = getRootDirectory();
+        if( rootPath == null ) {
             return Collections.emptyList();
         }
 
+        logger.debug("Trying to read service bindings from '{}'.", rootPath);
         try( final Stream<Path> servicePaths = Files.list(rootPath).filter(Files::isDirectory) ) {
             return parseServiceBindings(servicePaths);
         }
         catch( final SecurityException | IOException e ) {
             throw new ServiceBindingAccessException("Unable to access service binding files.", e);
         }
+    }
+
+    @Nullable
+    private Path getRootDirectory()
+    {
+        logger
+            .debug(
+                "Trying to determine service binding root directory using the '{}' environment variable.",
+                ROOT_DIRECTORY_KEY);
+        final String maybeRootDirectory = environmentVariableReader.apply(ROOT_DIRECTORY_KEY);
+        if( maybeRootDirectory == null || maybeRootDirectory.isEmpty() ) {
+            logger.debug("Environment variable '{}' is not defined.", ROOT_DIRECTORY_KEY);
+            return getFallbackRootDirectory();
+        }
+
+        final Path rootDirectory = Paths.get(maybeRootDirectory);
+        if( !Files.isDirectory(rootDirectory) ) {
+            logger
+                .debug(
+                    "Environment variable '{}' ('{}') does not point to a valid directory.",
+                    ROOT_DIRECTORY_KEY,
+                    maybeRootDirectory);
+            return null;
+        }
+
+        return rootDirectory;
+    }
+
+    @Nullable
+    private Path getFallbackRootDirectory()
+    {
+        logger.debug("Trying to fall back to '{}'.", fallbackRootPath);
+        if( !Files.isDirectory(fallbackRootPath) ) {
+            logger.debug("Fallback '{}' ('{}') is not a valid directory.", ROOT_DIRECTORY_KEY, fallbackRootPath);
+            return null;
+        }
+
+        return fallbackRootPath;
     }
 
     @Nonnull
