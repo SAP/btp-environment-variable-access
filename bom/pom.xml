@@ -4,7 +4,7 @@
 
     <groupId>com.sap.cloud.environment.servicebinding</groupId>
     <artifactId>java-bom</artifactId>
-    <version>0.10.4</version>
+    <version>0.10.5</version>
     <packaging>pom</packaging>
     <name>java-bom</name>
     <description>Bill of Material (BOM) for the Java client library to access BTP environment service bindings</description>
@@ -44,7 +44,7 @@
     </distributionManagement>
 
     <properties>
-        <cloud-environment.version>0.10.4</cloud-environment.version>
+        <cloud-environment.version>0.10.5</cloud-environment.version>
         <org.json.version>20240303</org.json.version>
         <junit-jupiter.version>5.10.2</junit-jupiter.version>
         <assertj-core.version>3.25.3</assertj-core.version>
