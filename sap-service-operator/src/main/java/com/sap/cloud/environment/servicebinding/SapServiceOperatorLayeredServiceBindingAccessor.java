@@ -110,6 +110,15 @@ public class SapServiceOperatorLayeredServiceBindingAccessor implements ServiceB
         this(DEFAULT_ROOT_PATH, DEFAULT_PARSING_STRATEGIES);
     }
 
+    /**
+     * Initializes a new {@link SapServiceOperatorLayeredServiceBindingAccessor} instance that uses the provided
+     * parameters.
+     * 
+     * @param environmentVariableReader
+     *            The function to read environment variables.
+     * @param parsingStrategies
+     *            The parsing strategies to use.
+     */
     public SapServiceOperatorLayeredServiceBindingAccessor(
         @Nonnull final Function<String, String> environmentVariableReader,
         @Nonnull final Collection<LayeredParsingStrategy> parsingStrategies )
