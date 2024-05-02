@@ -25,6 +25,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Approve and Merge PRs
+
         run: |
           PRS=$(gh pr list --app "dependabot" --state "open" --json number,title,autoMergeRequest,reviewDecision,mergeable,mergeStateStatus)
           PR_NUMBERS=
