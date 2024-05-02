@@ -2,9 +2,6 @@ name: dependabot merger
 
 on:
   workflow_dispatch:
-  pull_request:
-    branches:
-      - main
   schedule:
     - cron: '17 09 * * *' # trigger daily at 09:17 a.m., as dependabot will create new PRs daily at 6:00 a.m.
 
@@ -25,7 +22,6 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Approve and Merge PRs
-
         run: |
           PRS=$(gh pr list --app "dependabot" --state "open" --json number,title,autoMergeRequest,reviewDecision,mergeable,mergeStateStatus)
           PR_NUMBERS=
