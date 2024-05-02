@@ -58,8 +58,7 @@ jobs:
           
             # check if PR is already auto-mergeable
             AUTO_MERGE_REQUEST=$(jq -r --arg pr "$PR_NUMBER" '.[] | select(.number == $pr) | .autoMergeRequest' <<< "$PRS")
-            echo "[DEBUG] PR #$PR_NUMBER autoMergeRequest: '$AUTO_MERGE_REQUEST'"
-            if [[ "$AUTO_MERGE_REQUEST" != "null" ]]; then
+            if [[ -n "$AUTO_MERGE_REQUEST" ]]; then
               echo "[DEBUG] PR #$PR_NUMBER is already auto-mergeable, skipping"
             else
               echo "[DEBUG] PR #$PR_NUMBER is not auto-mergeable yet, enabling auto-merge"
