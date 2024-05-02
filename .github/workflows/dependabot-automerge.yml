@@ -48,7 +48,7 @@ jobs:
             echo "[DEBUG] Approving and Merging PR #$PR_NUMBER"
           
             # check if PR is already approved
-            REVIEW_DECISION=$(jq -r --arg pr "$PR_NUMBER" '.[] | select(.number == $pr) | .reviewDecision' <<< "$PRS")
+            REVIEW_DECISION=$(jq -r --arg pr "$PR_NUMBER" '.[] | select(.number == ($pr | tonumber)) | .reviewDecision' <<< "$PRS")
             if [[ "$REVIEW_DECISION" == "APPROVED" ]]; then
               echo "[DEBUG] PR #$PR_NUMBER is already approved, skipping"
             else
@@ -57,7 +57,7 @@ jobs:
             fi
           
             # check if PR is already auto-mergeable
-            AUTO_MERGE_REQUEST=$(jq -r --arg pr "$PR_NUMBER" '.[] | select(.number == $pr) | .autoMergeRequest' <<< "$PRS")
+            AUTO_MERGE_REQUEST=$(jq -r --arg pr "$PR_NUMBER" '.[] | select(.number == ($pr | tonumber)) | .autoMergeRequest' <<< "$PRS")
             if [[ -n "$AUTO_MERGE_REQUEST" ]]; then
               echo "[DEBUG] PR #$PR_NUMBER is already auto-mergeable, skipping"
             else
@@ -66,7 +66,7 @@ jobs:
             fi
           
             # check if PR is behind, so we can instruct dependabot to rebase
-            MERGE_STATE_STATUS=$(jq -r --arg pr "$PR_NUMBER" '.[] | select(.number == $pr) | .mergeStateStatus' <<< "$PRS")
+            MERGE_STATE_STATUS=$(jq -r --arg pr "$PR_NUMBER" '.[] | select(.number == ($pr | tonumber)) | .mergeStateStatus' <<< "$PRS")
             if [[ "$MERGE_STATE_STATUS" == "BEHIND" ]]; then
               echo "[DEBUG] PR #$PR_NUMBER is behind, instructing dependabot to rebase"
               gh pr comment "$PR_NUMBER" --body "@dependabot rebase"
