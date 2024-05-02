@@ -4,11 +4,26 @@ updates:
     directory: "/"
     schedule:
       interval: daily
-      time: "10:00"
+      time: "06:00"
       timezone: Etc/UCT
-    reviewers:
-      - "Johannes-Schneider"
     open-pull-requests-limit: 10
+    groups:
+      production-minor-patch:
+        dependency-type: "production"
+        update-types: [ "minor", "patch" ]
+        exclude-patterns:
+          - "*-plugin"
+      production-major:
+        dependency-type: "production"
+        update-types: [ "major" ]
+        exclude-patterns:
+          - "*-plugin"
+      plugins:
+        dependency-type: "production"
+        patterns:
+          - "*-plugin"
+      test:
+        dependency-type: "development"
     ignore:
       - dependency-name: "com.github.ekryd.sortpom:sortpom-maven-plugin" # newer versions require Java > 8
       - dependency-name: "net.revelc.code.formatter:formatter-maven-plugin" # newer versions require Java > 8
