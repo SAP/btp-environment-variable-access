@@ -13,6 +13,14 @@ Foundry and Kubernetes (K8S) environment.
 - Java `≥ 8`
 - Maven `≥ 3.8.1`
 
+### Building the Project
+
+Building the project is as simple as running the following command:
+
+```sh
+mvn clean install
+```
+
 ## Usage
 
 ### Parent POM
@@ -320,6 +328,4 @@ available [via the REUSE tool](https://api.reuse.software/info/github.com/SAP/bt
   https://search.maven.org/search?q=g:com.sap.cloud.environment.servicebinding
 - Specification<br>
   https://github.com/openservicebrokerapi/servicebroker/blob/master/spec.md#body-11
-- API / Java Doc<br>
-  TODO
 
