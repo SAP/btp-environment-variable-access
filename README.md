@@ -18,7 +18,14 @@ Foundry and Kubernetes (K8S) environment.
 Building the project is as simple as running the following command:
 
 ```sh
-mvn clean install
+mvn clean install -Dgpg.skip -DskipCveCheck
+```
+
+The command above skips both signing the artifacts and performing vulnerability checks.
+If you like to run the vulnerability checks (which might take a while, as it downloads the CVE database), you may use the following command instead:
+
+```sh
+mvn clean install -Dgpg.skip -DupdateCveDatabase
 ```
 
 ## Usage
