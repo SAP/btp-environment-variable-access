@@ -54,7 +54,7 @@
         <java.version>1.8</java.version>
         <maven.version>3.8</maven.version>
         <java.failOnWarning>true</java.failOnWarning>
-        <skipTests>false</skipTests>
+        <skipCveCheck>false</skipCveCheck>
         <updateCveDatabase>false</updateCveDatabase>
         <project.rootdir>${project.basedir}</project.rootdir>
         <project.build.resourceEncoding>UTF-8</project.build.resourceEncoding>
@@ -246,7 +246,7 @@
                         </execution>
                     </executions>
                     <configuration>
-                        <skip>${skipTests}</skip>
+                        <skip>${skipCveCheck}</skip>
                         <skipProvidedScope>true</skipProvidedScope>
                         <failBuildOnCVSS>7</failBuildOnCVSS>
                         <suppressionFile>.etc/suppression.xml</suppressionFile>
