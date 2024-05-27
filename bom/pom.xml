@@ -47,7 +47,7 @@
         <cloud-environment.version>0.10.5</cloud-environment.version>
         <org.json.version>20240303</org.json.version>
         <junit-jupiter.version>5.10.2</junit-jupiter.version>
-        <assertj-core.version>3.25.3</assertj-core.version>
+        <assertj-core.version>3.26.0</assertj-core.version>
         <mockito-core.version>4.11.0</mockito-core.version>
         <slf4j-api.version>2.0.13</slf4j-api.version>
     </properties>
