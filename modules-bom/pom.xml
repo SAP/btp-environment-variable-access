@@ -7,7 +7,8 @@
     <version>0.10.5</version>
     <packaging>pom</packaging>
     <name>java-modules-bom</name>
-    <description>Bill of Material (BOM) for modules of the Java client library to access BTP environment service bindings</description>
+    <description>Bill of Material (BOM) for modules of the Java client library
+		to access BTP environment service bindings</description>
     <url>https://github.com/SAP/btp-environment-variable-access</url>
 
     <licenses>
@@ -74,6 +75,11 @@
                 <artifactId>java-sap-vcap-services</artifactId>
                 <version>${cloud-environment.version}</version>
             </dependency>
+            <dependency>
+                <groupId>com.sap.cloud.environment.servicebinding</groupId>
+                <artifactId>java-sap-spring-properties</artifactId>
+                <version>${cloud-environment.version}</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
@@ -84,7 +90,8 @@
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-source-plugin</artifactId>
                     <version>3.3.1</version>
-                    <!-- don't use a property here to not manage consumer versions -->
+                    <!-- don't use a property here to not manage consumer
+					versions -->
                     <executions>
                         <execution>
                             <id>attach-sources</id>
@@ -123,7 +130,8 @@
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-gpg-plugin</artifactId>
                     <version>3.2.4</version>
-                    <!-- don't use a property here to not manage consumer versions -->
+                    <!-- don't use a property here to not manage consumer
+					versions -->
                     <extensions>true</extensions>
                     <executions>
                         <execution>
@@ -145,7 +153,8 @@
                     <groupId>org.sonatype.plugins</groupId>
                     <artifactId>nexus-staging-maven-plugin</artifactId>
                     <version>1.6.13</version>
-                    <!-- don't use a property here to not manage consumer versions -->
+                    <!-- don't use a property here to not manage consumer
+					versions -->
                     <extensions>true</extensions>
                     <configuration>
                         <serverId>ossrh</serverId>

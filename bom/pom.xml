@@ -7,7 +7,8 @@
     <version>0.10.5</version>
     <packaging>pom</packaging>
     <name>java-bom</name>
-    <description>Bill of Material (BOM) for the Java client library to access BTP environment service bindings</description>
+    <description>Bill of Material (BOM) for the Java client library to access
+		BTP environment service bindings</description>
     <url>https://github.com/SAP/btp-environment-variable-access</url>
 
     <licenses>
@@ -45,6 +46,8 @@
 
     <properties>
         <cloud-environment.version>0.10.5</cloud-environment.version>
+        <spring.version>6.1.10</spring.version>
+        <spring-boot.version>3.3.1</spring-boot.version>
         <org.json.version>20240303</org.json.version>
         <junit-jupiter.version>5.10.2</junit-jupiter.version>
         <assertj-core.version>3.25.3</assertj-core.version>
@@ -74,6 +77,16 @@
                 <artifactId>slf4j-api</artifactId>
                 <version>${slf4j-api.version}</version>
             </dependency>
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot</artifactId>
+                <version>${spring-boot.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-core</artifactId>
+                <version>${spring.version}</version>
+            </dependency>
 
             <!-- Scope: Test -->
             <dependency>
@@ -99,6 +112,12 @@
                 <version>${mockito-core.version}</version>
                 <scope>test</scope>
             </dependency>
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-test</artifactId>
+                <version>${spring.version}</version>
+                <scope>test</scope>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
@@ -109,7 +128,8 @@
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-source-plugin</artifactId>
                     <version>3.3.1</version>
-                    <!-- don't use a property here to not manage consumer versions -->
+                    <!-- don't use a property here to not manage consumer
+					versions -->
                     <executions>
                         <execution>
                             <id>attach-sources</id>
@@ -123,7 +143,8 @@
                     <groupId>com.github.ekryd.sortpom</groupId>
                     <artifactId>sortpom-maven-plugin</artifactId>
                     <version>2.15.0</version>
-                    <!-- don't use a property here to not manage consumer versions -->
+                    <!-- don't use a property here to not manage consumer
+					versions -->
                     <executions>
                         <execution>
                             <id>sort-all-poms</id>
@@ -149,7 +170,8 @@
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-gpg-plugin</artifactId>
                     <version>3.2.4</version>
-                    <!-- don't use a property here to not manage consumer versions -->
+                    <!-- don't use a property here to not manage consumer
+					versions -->
                     <extensions>true</extensions>
                     <executions>
                         <execution>
@@ -171,7 +193,8 @@
                     <groupId>org.sonatype.plugins</groupId>
                     <artifactId>nexus-staging-maven-plugin</artifactId>
                     <version>1.6.13</version>
-                    <!-- don't use a property here to not manage consumer versions -->
+                    <!-- don't use a property here to not manage consumer
+					versions -->
                     <extensions>true</extensions>
                     <configuration>
                         <serverId>ossrh</serverId>
@@ -183,7 +206,8 @@
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-enforcer-plugin</artifactId>
                     <version>3.4.1</version>
-                    <!-- don't use a property here to not manage consumer versions -->
+                    <!-- don't use a property here to not manage consumer
+					versions -->
                     <executions>
                         <execution>
                             <id>enforce-project-rules</id>
@@ -194,11 +218,13 @@
                                 <rules>
                                     <requireMavenVersion>
                                         <version>3.8</version>
-                                        <!-- don't use a property here to not manage consumer versions -->
+                                        <!-- don't use a property here to not
+										manage consumer versions -->
                                     </requireMavenVersion>
                                     <requireJavaVersion>
                                         <version>1.8</version>
-                                        <!-- don't use a property here to not manage consumer versions -->
+                                        <!-- don't use a property here to not
+										manage consumer versions -->
                                     </requireJavaVersion>
                                     <banDuplicatePomDependencyVersions />
                                     <dependencyConvergence />
@@ -213,7 +239,8 @@
                             <configuration>
                                 <rules>
                                     <bannedDependencies>
-                                        <message>Do not use deprecated dependencies.</message>
+                                        <message>Do not use deprecated
+											dependencies.</message>
                                     </bannedDependencies>
                                 </rules>
                             </configuration>
@@ -226,7 +253,9 @@
                             <configuration>
                                 <rules>
                                     <bannedDependencies>
-                                        <message>Do not use and do exclude all transitive uses of logging frameworks.</message>
+                                        <message>Do not use and do exclude all
+											transitive uses of logging
+											frameworks.</message>
                                         <excludes>
                                             <exclude>org.slf4j:slf4j-simple</exclude>
                                             <exclude>commons-logging</exclude>
@@ -251,7 +280,8 @@
                             <configuration>
                                 <rules>
                                     <bannedDependencies>
-                                        <message>Logger bridges must use scope runtime or test.</message>
+                                        <message>Logger bridges must use scope
+											runtime or test.</message>
                                         <excludes>
                                             <exclude>org.slf4j:jul-to-slf4j</exclude>
                                             <exclude>org.slf4j:jcl-over-slf4j</exclude>
