@@ -204,8 +204,8 @@ spec:
         - name: http
           containerPort: 8080
       volumeMounts:
-        - name: xsuaa
-          mountPath: "/bindings/authn"
+        - name: authn
+          mountPath: "/bindings/auth"
           readOnly: true
   volumes:
     - name: authn
