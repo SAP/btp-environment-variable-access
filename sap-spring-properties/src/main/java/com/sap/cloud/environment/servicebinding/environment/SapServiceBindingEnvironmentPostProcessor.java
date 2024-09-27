@@ -23,13 +23,10 @@ public class SapServiceBindingEnvironmentPostProcessor implements EnvironmentPos
     {
         Bindable<SapServiceBindingsProperties> bindable = Bindable.of(SapServiceBindingsProperties.class);
 
-        BindResult<?> bindResult = Binder.get(environment).bind("cds", bindable);
+        BindResult<?> bindResult = Binder.get(environment).bind("services", bindable);
         if( bindResult.isBound() ) {
             SapServiceBindingsPropertiesAccessor
                 .setServiceBindingsProperties(((SapServiceBindingsProperties) bindResult.get()).getServiceBindings());
-        } else if( bindable.getValue() != null ) {
-            SapServiceBindingsPropertiesAccessor
-                .setServiceBindingsProperties(bindable.getValue().get().getServiceBindings());
         } else {
             log.info("Could not bind any service from the properties.");
         }

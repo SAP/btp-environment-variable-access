@@ -10,6 +10,8 @@
 
     <properties>
         <project.rootdir>${project.basedir}/../</project.rootdir>
+        <spring.version>6.1.10</spring.version>
+        <spring-boot.version>3.3.1</spring-boot.version>
     </properties>
 
     <dependencies>
@@ -25,10 +27,12 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot</artifactId>
+            <version>${spring-boot.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-core</artifactId>
+            <version>${spring.version}</version>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
@@ -64,6 +68,7 @@
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-test</artifactId>
+            <version>${spring.version}</version>
             <scope>test</scope>
         </dependency>
     </dependencies>

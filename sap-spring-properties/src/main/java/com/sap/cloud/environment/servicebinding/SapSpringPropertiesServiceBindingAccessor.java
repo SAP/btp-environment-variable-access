@@ -22,79 +22,72 @@ import java.util.stream.Collectors;
  * A {@link ServiceBindingAccessor} that is able to load {@link SapServiceBindingsProperties}s from Spring's application
  * properties.
  */
-public class SapSpringPropertiesServiceBindingAccessor implements ServiceBindingAccessor {
+public class SapSpringPropertiesServiceBindingAccessor implements ServiceBindingAccessor
+{
     @Nonnull
     private static final Logger logger = LoggerFactory.getLogger(SapSpringPropertiesServiceBindingAccessor.class);
 
     @Nonnull
     @Override
     public List<ServiceBinding> getServiceBindings()
-            throws ServiceBindingAccessException {
-        if (SapServiceBindingsPropertiesAccessor.getServiceBindingsProperties().isEmpty()) {
-            logger.info("No service bindings found in properties.");
-            return Collections.emptyList();
-        }
-
+        throws ServiceBindingAccessException
+    {
         List<ServiceBinding> serviceBindings = fetchServiceBindings();
 
-        serviceBindings.forEach(binding ->
-                logger.info("Service binding {} found in properties.", binding.getServiceName().get()) //NOSONAR
-        );
+        serviceBindings
+            .forEach(binding -> logger.debug("Service binding {} found in properties.", binding.getServiceName().get()) //NOSONAR
+            );
+
         return serviceBindings;
     }
 
     @Nonnull
-    private List<ServiceBinding> fetchServiceBindings() {
+    private List<ServiceBinding> fetchServiceBindings()
+    {
         Map<String, ServiceBindingProperties> serviceBindingsProperties =
-                SapServiceBindingsPropertiesAccessor.getServiceBindingsProperties();
+            SapServiceBindingsPropertiesAccessor.getServiceBindingsProperties();
+
+        if( serviceBindingsProperties.isEmpty() ) {
+            logger.info("No service bindings found in properties.");
+        }
+
         return serviceBindingsProperties
-                .entrySet()
-                .stream()
-                .map(entry -> toServiceBinding(entry.getKey(), entry.getValue()))
-                .filter(Objects::nonNull)
-                .collect(Collectors.toList());
+            .entrySet()
+            .stream()
+            .map(entry -> toServiceBinding(entry.getKey(), entry.getValue()))
+            .filter(Objects::nonNull)
+            .collect(Collectors.toList());
     }
 
     @Nullable
     private ServiceBinding toServiceBinding(
-            @Nonnull String serviceName,
-            @Nonnull final ServiceBindingProperties serviceBindingProperties) {
-        if (validateServiceBindingProperties(serviceBindingProperties)) {
+        @Nonnull String serviceBindingName,
+        @Nonnull final ServiceBindingProperties serviceBindingProperties )
+    {
+        if( validateServiceBindingProperties(serviceBindingProperties) ) {
             return DefaultServiceBinding
-                    .builder()
-                    .copy(Collections.emptyMap())
-                    .withName(serviceBindingProperties.getName())
-                    .withServiceName(serviceName)
-                    .withServicePlan(serviceBindingProperties.getPlan())
-                    .withTags(
-                            Arrays.asList(serviceBindingProperties.getTags())
-                    )
-                    .withCredentials(
-                            serviceBindingProperties.getCredentials())
-                    .build();
+                .builder()
+                .copy(Collections.emptyMap())
+                .withName(serviceBindingName)
+                .withServiceName(serviceBindingProperties.getName())
+                .withServicePlan(serviceBindingProperties.getPlan())
+                .withTags(Arrays.asList(serviceBindingProperties.getTags()))
+                .withCredentials(serviceBindingProperties.getCredentials())
+                .build();
         } else {
             return null;
         }
     }
 
-    private boolean validateServiceBindingProperties(@Nonnull final ServiceBindingProperties serviceBindingProperties) {
+    private boolean validateServiceBindingProperties( @Nonnull final ServiceBindingProperties serviceBindingProperties )
+    {
         boolean isValid = true;
-        if (serviceBindingProperties.getName() == null || serviceBindingProperties.getName().isEmpty()) {
+        if( serviceBindingProperties.getName() == null || serviceBindingProperties.getName().isEmpty() ) {
             logger.error("Service binding properties with no name detected.");
             isValid = false;
         }
 
-        if (serviceBindingProperties.getLabel() == null || serviceBindingProperties.getLabel().isEmpty()) {
-            logger.error("Service binding properties of {} has no label.", serviceBindingProperties.getName());
-            isValid = false;
-        }
-
-        if (serviceBindingProperties.getTags() == null || serviceBindingProperties.getTags().length == 0) {
-            logger.error("Service binding properties of {} has no tag.", serviceBindingProperties.getName());
-            isValid = false;
-        }
-
-        if (serviceBindingProperties.getCredentials().isEmpty()) {
+        if( serviceBindingProperties.getCredentials().isEmpty() ) {
             logger.error("Service binding properties of {} has no credentials.", serviceBindingProperties.getName());
             isValid = false;
         }
