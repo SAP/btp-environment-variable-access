@@ -129,9 +129,9 @@ class SapSpringPropertiesServiceBindingAccessorTest
         assertNotNull(serviceManagerBinding1.getCredentials());
         assertEquals("https://localhost:8080", serviceManagerBinding1.getCredentials().get("url"));
 
-        ServiceBinding serviceManagerBinding2 = serviceManagerBindings.get("service-manager-test2");
+        ServiceBinding serviceManagerBinding2 = serviceManagerBindings.get("service_manager_test2");
         assertEquals("service-manager", serviceManagerBinding2.getServiceName().get());
-        assertEquals("service-manager-test2", serviceManagerBinding2.getName().get());
+        assertEquals("service_manager_test2", serviceManagerBinding2.getName().get());
         assertEquals("standard", serviceManagerBinding2.getServicePlan().get());
         assertNotNull(serviceManagerBinding2.getCredentials());
         assertEquals("https://localhost:8081", serviceManagerBinding2.getCredentials().get("url"));

@@ -34,6 +34,7 @@ public final class TestResource
         mockEnvironment.setProperty("services.servicebindings.service-manager-test.credentials.clientSecret", "secret");
         mockEnvironment
             .setProperty("services.servicebindings.service-manager-test.credentials.credential-type", "binding");
+        mockEnvironment.setProperty("services.servicebindings.service-manager-test2.name", "service_manager_test2");
         mockEnvironment.setProperty("services.servicebindings.service-manager-test2.serviceName", "service-manager");
         mockEnvironment
             .setProperty("services.servicebindings.service-manager-test2.credentials.url", "https://localhost:8081");

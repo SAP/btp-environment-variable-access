@@ -8,6 +8,7 @@ import com.sap.cloud.environment.servicebinding.api.exception.ServiceBindingAcce
 import com.sap.cloud.environment.servicebinding.environment.SapServiceBindingsPropertiesAccessor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.util.StringUtils;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -63,7 +64,10 @@ public class SapSpringPropertiesServiceBindingAccessor implements ServiceBinding
             return DefaultServiceBinding
                 .builder()
                 .copy(Collections.emptyMap())
-                .withName(serviceBindingName)
+                .withName(
+                    StringUtils.hasText(serviceBindingProperties.getName())
+                        ? serviceBindingProperties.getName()
+                        : serviceBindingName)
                 .withServiceName(serviceBindingProperties.getServiceName())
                 .withServicePlan(serviceBindingProperties.getPlan())
                 .withTags(Arrays.asList(serviceBindingProperties.getTags()))

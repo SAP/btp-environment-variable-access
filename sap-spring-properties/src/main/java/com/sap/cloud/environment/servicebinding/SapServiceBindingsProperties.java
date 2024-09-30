@@ -26,14 +26,9 @@ public class SapServiceBindingsProperties
     public static class ServiceBindingProperties
     {
         /**
-         * properties for credentials
+         * name of the service binding (optional)
          */
-        private Map<String, Object> credentials = new HashMap<>();
-
-        /**
-         * tags of the service binding
-         */
-        private String[] tags = new String[0];
+        private String name;
 
         /**
          * name of the service
@@ -44,6 +39,26 @@ public class SapServiceBindingsProperties
          * default plan used to create the service binding
          */
         private String plan = "standard";
+
+        /**
+         * tags of the service binding
+         */
+        private String[] tags = new String[0];
+
+        /**
+         * properties for credentials
+         */
+        private Map<String, Object> credentials = new HashMap<>();
+
+        public String getName()
+        {
+            return name;
+        }
+
+        public void setName( String name )
+        {
+            this.name = name;
+        }
 
         public Map<String, Object> getCredentials()
         {
