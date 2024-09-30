@@ -7,13 +7,11 @@ import org.springframework.boot.context.properties.bind.BindResult;
 import org.springframework.boot.context.properties.bind.Bindable;
 import org.springframework.boot.context.properties.bind.Binder;
 import org.springframework.boot.env.EnvironmentPostProcessor;
-import org.springframework.core.annotation.Order;
 import org.springframework.core.env.ConfigurableEnvironment;
 
 import com.sap.cloud.environment.servicebinding.SapServiceBindingsProperties;
 
 /* An {@link EnvironmentPostProcessor} that binds service binding properties to {@link SapServiceBindingsProperties}. */
-@Order
 public class SapServiceBindingEnvironmentPostProcessor implements EnvironmentPostProcessor
 {
     private static final Logger log = LoggerFactory.getLogger(SapServiceBindingEnvironmentPostProcessor.class);
@@ -28,7 +26,7 @@ public class SapServiceBindingEnvironmentPostProcessor implements EnvironmentPos
             SapServiceBindingsPropertiesAccessor
                 .setServiceBindingsProperties(((SapServiceBindingsProperties) bindResult.get()).getServiceBindings());
         } else {
-            log.info("Could not bind any service from the properties.");
+            log.debug("Could not bind 'services' from application properties.");
         }
     }
 }

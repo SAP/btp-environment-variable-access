@@ -9,7 +9,9 @@ import org.springframework.mock.env.MockEnvironment;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -34,7 +36,7 @@ class SapSpringPropertiesServiceBindingAccessorTest
 
         assertFalse(serviceBindings.isEmpty());
         assertContainsXsuaaBinding(serviceBindings);
-        assertContainsServiceManagerBinding(serviceBindings);
+        assertContainsServiceManagerBindings(serviceBindings);
     }
 
     @Test
@@ -53,7 +55,7 @@ class SapSpringPropertiesServiceBindingAccessorTest
     @Test
     void getBindingsInvalidNoName()
     {
-        final MockEnvironment mockEnvironment = TestResource.getInvalidPropertiesNoName();
+        final MockEnvironment mockEnvironment = TestResource.getInvalidPropertiesNoServiceName();
         final SapServiceBindingEnvironmentPostProcessor sapServiceBindingEnvironmentPostProcessor =
             new SapServiceBindingEnvironmentPostProcessor();
         sapServiceBindingEnvironmentPostProcessor.postProcessEnvironment(mockEnvironment, null);
@@ -94,28 +96,44 @@ class SapSpringPropertiesServiceBindingAccessorTest
         Optional<ServiceBinding> maybeXsuaaBinding =
             serviceBindings
                 .stream()
-                .filter(binding -> binding.getName().isPresent() && binding.getName().get().equals("xsuaa"))
+                .filter(
+                    binding -> binding.getServiceName().isPresent() && binding.getServiceName().get().equals("xsuaa"))
                 .findFirst();
         assertTrue(maybeXsuaaBinding.isPresent());
         ServiceBinding xsuaaCertBinding = maybeXsuaaBinding.get();
         assertTrue(xsuaaCertBinding.getServicePlan().isPresent());
         assertEquals("broker", xsuaaCertBinding.getServicePlan().get());
         assertTrue(xsuaaCertBinding.getServiceName().isPresent());
-        assertEquals("xsuaa-test", xsuaaCertBinding.getServiceName().get());
+        assertEquals("xsuaa", xsuaaCertBinding.getServiceName().get());
+        assertEquals("xsuaa-test", xsuaaCertBinding.getName().get());
         assertEquals("https://localhost:8080", xsuaaCertBinding.getCredentials().get("certurl"));
     }
 
-    private void assertContainsServiceManagerBinding( List<ServiceBinding> serviceBindings )
+    private void assertContainsServiceManagerBindings( List<ServiceBinding> serviceBindings )
     {
-        Optional<ServiceBinding> maybeServiceManagerBinding =
+        Map<String, ServiceBinding> serviceManagerBindings =
             serviceBindings
                 .stream()
-                .filter(binding -> binding.getName().isPresent() && binding.getName().get().equals("service-manager"))
-                .findFirst();
-        assertTrue(maybeServiceManagerBinding.isPresent());
-        ServiceBinding serviceManagerBinding = maybeServiceManagerBinding.get();
-        assertEquals("service-manager-test", serviceManagerBinding.getServiceName().get());
-        assertEquals("standard", serviceManagerBinding.getServicePlan().get());
-        assertNotNull(serviceManagerBinding.getCredentials());
+                .filter(
+                    binding -> binding.getServiceName().isPresent()
+                        && binding.getServiceName().get().equals("service-manager"))
+                .collect(
+                    Collectors
+                        .toMap(serviceBinding -> serviceBinding.getName().get(), serviceBinding -> serviceBinding));
+        assertEquals(2, serviceManagerBindings.size());
+
+        ServiceBinding serviceManagerBinding1 = serviceManagerBindings.get("service-manager-test");
+        assertEquals("service-manager", serviceManagerBinding1.getServiceName().get());
+        assertEquals("service-manager-test", serviceManagerBinding1.getName().get());
+        assertEquals("standard", serviceManagerBinding1.getServicePlan().get());
+        assertNotNull(serviceManagerBinding1.getCredentials());
+        assertEquals("https://localhost:8080", serviceManagerBinding1.getCredentials().get("url"));
+
+        ServiceBinding serviceManagerBinding2 = serviceManagerBindings.get("service-manager-test2");
+        assertEquals("service-manager", serviceManagerBinding2.getServiceName().get());
+        assertEquals("service-manager-test2", serviceManagerBinding2.getName().get());
+        assertEquals("standard", serviceManagerBinding2.getServicePlan().get());
+        assertNotNull(serviceManagerBinding2.getCredentials());
+        assertEquals("https://localhost:8081", serviceManagerBinding2.getCredentials().get("url"));
     }
 }

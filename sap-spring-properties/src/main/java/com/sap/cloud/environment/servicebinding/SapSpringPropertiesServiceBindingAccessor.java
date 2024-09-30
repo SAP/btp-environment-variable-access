@@ -1,22 +1,17 @@
 package com.sap.cloud.environment.servicebinding;
 
+import com.sap.cloud.environment.servicebinding.SapServiceBindingsProperties.ServiceBindingProperties;
 import com.sap.cloud.environment.servicebinding.api.DefaultServiceBinding;
 import com.sap.cloud.environment.servicebinding.api.ServiceBinding;
 import com.sap.cloud.environment.servicebinding.api.ServiceBindingAccessor;
 import com.sap.cloud.environment.servicebinding.api.exception.ServiceBindingAccessException;
 import com.sap.cloud.environment.servicebinding.environment.SapServiceBindingsPropertiesAccessor;
-import com.sap.cloud.environment.servicebinding.SapServiceBindingsProperties.ServiceBindingProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.stream.Collectors;
+import java.util.*;
 
 /**
  * A {@link ServiceBindingAccessor} that is able to load {@link SapServiceBindingsProperties}s from Spring's application
@@ -35,7 +30,7 @@ public class SapSpringPropertiesServiceBindingAccessor implements ServiceBinding
         List<ServiceBinding> serviceBindings = fetchServiceBindings();
 
         serviceBindings
-            .forEach(binding -> logger.debug("Service binding {} found in properties.", binding.getServiceName().get()) //NOSONAR
+            .forEach(binding -> logger.debug("Service binding {} found in properties.", binding.getName().get()) //NOSONAR
             );
 
         return serviceBindings;
@@ -48,7 +43,7 @@ public class SapSpringPropertiesServiceBindingAccessor implements ServiceBinding
             SapServiceBindingsPropertiesAccessor.getServiceBindingsProperties();
 
         if( serviceBindingsProperties.isEmpty() ) {
-            logger.info("No service bindings found in properties.");
+            logger.debug("No service bindings provided by application properties.");
         }
 
         return serviceBindingsProperties
@@ -56,7 +51,7 @@ public class SapSpringPropertiesServiceBindingAccessor implements ServiceBinding
             .stream()
             .map(entry -> toServiceBinding(entry.getKey(), entry.getValue()))
             .filter(Objects::nonNull)
-            .collect(Collectors.toList());
+            .toList();
     }
 
     @Nullable
@@ -64,12 +59,12 @@ public class SapSpringPropertiesServiceBindingAccessor implements ServiceBinding
         @Nonnull String serviceBindingName,
         @Nonnull final ServiceBindingProperties serviceBindingProperties )
     {
-        if( validateServiceBindingProperties(serviceBindingProperties) ) {
+        if( validateServiceBindingProperties(serviceBindingProperties, serviceBindingName) ) {
             return DefaultServiceBinding
                 .builder()
                 .copy(Collections.emptyMap())
                 .withName(serviceBindingName)
-                .withServiceName(serviceBindingProperties.getName())
+                .withServiceName(serviceBindingProperties.getServiceName())
                 .withServicePlan(serviceBindingProperties.getPlan())
                 .withTags(Arrays.asList(serviceBindingProperties.getTags()))
                 .withCredentials(serviceBindingProperties.getCredentials())
@@ -79,16 +74,18 @@ public class SapSpringPropertiesServiceBindingAccessor implements ServiceBinding
         }
     }
 
-    private boolean validateServiceBindingProperties( @Nonnull final ServiceBindingProperties serviceBindingProperties )
+    private boolean validateServiceBindingProperties(
+        @Nonnull final ServiceBindingProperties serviceBindingProperties,
+        @Nonnull final String serviceBindingName )
     {
         boolean isValid = true;
-        if( serviceBindingProperties.getName() == null || serviceBindingProperties.getName().isEmpty() ) {
-            logger.error("Service binding properties with no name detected.");
+        if( serviceBindingProperties.getServiceName() == null || serviceBindingProperties.getServiceName().isEmpty() ) {
+            logger.error("Service binding properties of {} with no service name detected.", serviceBindingName);
             isValid = false;
         }
 
         if( serviceBindingProperties.getCredentials().isEmpty() ) {
-            logger.error("Service binding properties of {} has no credentials.", serviceBindingProperties.getName());
+            logger.error("Service binding properties of {} has no credentials.", serviceBindingName);
             isValid = false;
         }
 

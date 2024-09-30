@@ -15,22 +15,35 @@ public final class TestResource
     public static MockEnvironment getAllBindingsProperties()
     {
         final MockEnvironment mockEnvironment = new MockEnvironment();
-        mockEnvironment.setProperty("services.servicebindings.xsuaa.name", "xsuaa-test");
-        mockEnvironment.setProperty("services.servicebindings.xsuaa.plan", "broker");
-        mockEnvironment.setProperty("services.servicebindings.xsuaa.credentials.uaadomain", "localhost");
-        mockEnvironment.setProperty("services.servicebindings.xsuaa.credentials.certUrl", "https://localhost:8080");
-        mockEnvironment.setProperty("services.servicebindings.xsuaa.credentials.clientId", "client");
-        mockEnvironment.setProperty("services.servicebindings.xsuaa.credentials.key", "encoded-key");
-        mockEnvironment.setProperty("services.servicebindings.xsuaa.credentials.certificate", "encoded-certificate");
-        mockEnvironment.setProperty("services.servicebindings.xsuaa.credentials.credential-type", "x509");
-        mockEnvironment.setProperty("services.servicebindings.service-manager.name", "service-manager-test");
+        mockEnvironment.setProperty("services.servicebindings.xsuaa-test.serviceName", "xsuaa");
+        mockEnvironment.setProperty("services.servicebindings.xsuaa-test.plan", "broker");
+        mockEnvironment.setProperty("services.servicebindings.xsuaa-test.credentials.uaadomain", "localhost");
         mockEnvironment
-            .setProperty("services.servicebindings.service-manager.credentials.url", "https://localhost:8080");
+            .setProperty("services.servicebindings.xsuaa-test.credentials.certUrl", "https://localhost:8080");
+        mockEnvironment.setProperty("services.servicebindings.xsuaa-test.credentials.clientId", "client");
+        mockEnvironment.setProperty("services.servicebindings.xsuaa-test.credentials.key", "encoded-key");
         mockEnvironment
-            .setProperty("services.servicebindings.service-manager.credentials.sm_url", "https://localhost:9785");
-        mockEnvironment.setProperty("services.servicebindings.service-manager.credentials.clientId", "client");
-        mockEnvironment.setProperty("services.servicebindings.service-manager.credentials.clientSecret", "secret");
-        mockEnvironment.setProperty("services.servicebindings.service-manager.credentials.credential-type", "binding");
+            .setProperty("services.servicebindings.xsuaa-test.credentials.certificate", "encoded-certificate");
+        mockEnvironment.setProperty("services.servicebindings.xsuaa-test.credentials.credential-type", "x509");
+        mockEnvironment.setProperty("services.servicebindings.service-manager-test.serviceName", "service-manager");
+        mockEnvironment
+            .setProperty("services.servicebindings.service-manager-test.credentials.url", "https://localhost:8080");
+        mockEnvironment
+            .setProperty("services.servicebindings.service-manager-test.credentials.sm_url", "https://localhost:9785");
+        mockEnvironment.setProperty("services.servicebindings.service-manager-test.credentials.clientId", "client");
+        mockEnvironment.setProperty("services.servicebindings.service-manager-test.credentials.clientSecret", "secret");
+        mockEnvironment
+            .setProperty("services.servicebindings.service-manager-test.credentials.credential-type", "binding");
+        mockEnvironment.setProperty("services.servicebindings.service-manager-test2.serviceName", "service-manager");
+        mockEnvironment
+            .setProperty("services.servicebindings.service-manager-test2.credentials.url", "https://localhost:8081");
+        mockEnvironment
+            .setProperty("services.servicebindings.service-manager-test2.credentials.sm_url", "https://localhost:9785");
+        mockEnvironment.setProperty("services.servicebindings.service-manager-test2.credentials.clientId", "client");
+        mockEnvironment
+            .setProperty("services.servicebindings.service-manager-test2.credentials.clientSecret", "secret");
+        mockEnvironment
+            .setProperty("services.servicebindings.service-manager-test2.credentials.credential-type", "binding");
 
         return mockEnvironment;
     }
@@ -42,16 +55,18 @@ public final class TestResource
     }
 
     @Nonnull
-    public static MockEnvironment getInvalidPropertiesNoName()
+    public static MockEnvironment getInvalidPropertiesNoServiceName()
     {
         final MockEnvironment mockEnvironment = new MockEnvironment();
-        mockEnvironment.setProperty("services.servicebindings.xsuaa.plan", "broker");
-        mockEnvironment.setProperty("services.servicebindings.xsuaa.credentials.uaadomain", "localhost");
-        mockEnvironment.setProperty("services.servicebindings.xsuaa.credentials.certUrl", "https://localhost:8080");
-        mockEnvironment.setProperty("services.servicebindings.xsuaa.credentials.clientId", "client");
-        mockEnvironment.setProperty("services.servicebindings.xsuaa.credentials.key", "encoded-key");
-        mockEnvironment.setProperty("services.servicebindings.xsuaa.credentials.certificate", "encoded-certificate");
-        mockEnvironment.setProperty("services.servicebindings.xsuaa.credentials.credential-type", "x509");
+        mockEnvironment.setProperty("services.servicebindings.xsuaa-test.plan", "broker");
+        mockEnvironment.setProperty("services.servicebindings.xsuaa-test.credentials.uaadomain", "localhost");
+        mockEnvironment
+            .setProperty("services.servicebindings.xsuaa-test.credentials.certUrl", "https://localhost:8080");
+        mockEnvironment.setProperty("services.servicebindings.xsuaa-test.credentials.clientId", "client");
+        mockEnvironment.setProperty("services.servicebindings.xsuaa-test.credentials.key", "encoded-key");
+        mockEnvironment
+            .setProperty("services.servicebindings.xsuaa-test.credentials.certificate", "encoded-certificate");
+        mockEnvironment.setProperty("services.servicebindings.xsuaa-test.credentials.credential-type", "x509");
 
         return mockEnvironment;
     }
@@ -60,14 +75,16 @@ public final class TestResource
     public static MockEnvironment getInvalidPropertiesEmptyName()
     {
         final MockEnvironment mockEnvironment = new MockEnvironment();
-        mockEnvironment.setProperty("services.servicebindings.xsuaa.name", "");
-        mockEnvironment.setProperty("services.servicebindings.xsuaa.plan", "broker");
-        mockEnvironment.setProperty("services.servicebindings.xsuaa.credentials.uaadomain", "localhost");
-        mockEnvironment.setProperty("services.servicebindings.xsuaa.credentials.certUrl", "https://localhost:8080");
-        mockEnvironment.setProperty("services.servicebindings.xsuaa.credentials.clientId", "client");
-        mockEnvironment.setProperty("services.servicebindings.xsuaa.credentials.key", "encoded-key");
-        mockEnvironment.setProperty("services.servicebindings.xsuaa.credentials.certificate", "encoded-certificate");
-        mockEnvironment.setProperty("services.servicebindings.xsuaa.credentials.credential-type", "x509");
+        mockEnvironment.setProperty("services.servicebindings.xsuaa-test.name", "");
+        mockEnvironment.setProperty("services.servicebindings.xsuaa-test.plan", "broker");
+        mockEnvironment.setProperty("services.servicebindings.xsuaa-test.credentials.uaadomain", "localhost");
+        mockEnvironment
+            .setProperty("services.servicebindings.xsuaa-test.credentials.certUrl", "https://localhost:8080");
+        mockEnvironment.setProperty("services.servicebindings.xsuaa-test.credentials.clientId", "client");
+        mockEnvironment.setProperty("services.servicebindings.xsuaa-test.credentials.key", "encoded-key");
+        mockEnvironment
+            .setProperty("services.servicebindings.xsuaa-test.credentials.certificate", "encoded-certificate");
+        mockEnvironment.setProperty("services.servicebindings.xsuaa-test.credentials.credential-type", "x509");
 
         return mockEnvironment;
     }
@@ -76,8 +93,8 @@ public final class TestResource
     public static MockEnvironment getInvalidPropertiesNoCredentials()
     {
         final MockEnvironment mockEnvironment = new MockEnvironment();
-        mockEnvironment.setProperty("services.servicebindings.xsuaa.name", "xsuaa-test");
-        mockEnvironment.setProperty("services.servicebindings.xsuaa.plan", "broker");
+        mockEnvironment.setProperty("services.servicebindings.xsuaa-test.name", "xsuaa-test");
+        mockEnvironment.setProperty("services.servicebindings.xsuaa-test.plan", "broker");
 
         return mockEnvironment;
     }

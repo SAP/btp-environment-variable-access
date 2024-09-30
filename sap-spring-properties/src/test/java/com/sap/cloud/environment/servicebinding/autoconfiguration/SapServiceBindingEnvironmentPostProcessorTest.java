@@ -34,9 +34,11 @@ class SapServiceBindingEnvironmentPostProcessorTest
 
         assertNotNull(SapServiceBindingsPropertiesAccessor.getServiceBindingsProperties());
         assertContainsXsuaaBindingProperties(
-            SapServiceBindingsPropertiesAccessor.getServiceBindingsProperties().get("xsuaa"));
+            SapServiceBindingsPropertiesAccessor.getServiceBindingsProperties().get("xsuaa-test"));
         assertContainsServiceManagerBindingProperties(
-            SapServiceBindingsPropertiesAccessor.getServiceBindingsProperties().get("service-manager"));
+            SapServiceBindingsPropertiesAccessor.getServiceBindingsProperties().get("service-manager-test"));
+        assertContainsServiceManagerBindingProperties(
+            SapServiceBindingsPropertiesAccessor.getServiceBindingsProperties().get("service-manager-test2"));
     }
 
     @Test
@@ -52,7 +54,8 @@ class SapServiceBindingEnvironmentPostProcessorTest
 
     private void assertContainsXsuaaBindingProperties( @Nonnull final ServiceBindingProperties xsuaaBindingProperties )
     {
-        assertEquals("xsuaa-test", xsuaaBindingProperties.getName());
+        assertNotNull(xsuaaBindingProperties);
+        assertEquals("xsuaa", xsuaaBindingProperties.getServiceName());
         assertEquals("broker", xsuaaBindingProperties.getPlan());
         assertNotNull(xsuaaBindingProperties.getCredentials());
     }
@@ -60,7 +63,8 @@ class SapServiceBindingEnvironmentPostProcessorTest
     private void assertContainsServiceManagerBindingProperties(
         @Nonnull final ServiceBindingProperties serviceManagerBindingProperties )
     {
-        assertEquals("service-manager-test", serviceManagerBindingProperties.getName());
+        assertNotNull(serviceManagerBindingProperties);
+        assertEquals("service-manager", serviceManagerBindingProperties.getServiceName());
         assertEquals("standard", serviceManagerBindingProperties.getPlan());
         assertNotNull(serviceManagerBindingProperties.getCredentials());
     }

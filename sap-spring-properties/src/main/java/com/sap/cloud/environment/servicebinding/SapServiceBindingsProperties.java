@@ -36,11 +36,6 @@ public class SapServiceBindingsProperties
         private String[] tags = new String[0];
 
         /**
-         * name of the service binding
-         */
-        private String name;
-
-        /**
          * name of the service
          */
         private String serviceName;
@@ -68,16 +63,6 @@ public class SapServiceBindingsProperties
         public void setTags( String[] tags )
         {
             this.tags = tags;
-        }
-
-        public String getName()
-        {
-            return name;
-        }
-
-        public void setName( String name )
-        {
-            this.name = name;
         }
 
         public String getServiceName()
