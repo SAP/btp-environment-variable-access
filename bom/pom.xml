@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.sap.cloud.environment.servicebinding</groupId>
@@ -8,9 +7,7 @@
     <version>0.10.5</version>
     <packaging>pom</packaging>
     <name>java-bom</name>
-    <description>Bill of Material (BOM) for the Java client library to access
-        BTP environment service bindings
-    </description>
+    <description>Bill of Material (BOM) for the Java client library to access BTP environment service bindings</description>
     <url>https://github.com/SAP/btp-environment-variable-access</url>
 
     <licenses>
@@ -23,7 +20,7 @@
     <developers>
         <developer>
             <name>BTP Development</name>
-            <email/>
+            <email />
             <organization>SAP SE</organization>
             <organizationUrl>https://www.sap.com</organizationUrl>
         </developer>
@@ -49,7 +46,7 @@
     <properties>
         <cloud-environment.version>0.10.5</cloud-environment.version>
         <org.json.version>20240303</org.json.version>
-        <junit-jupiter.version>5.11.1</junit-jupiter.version>
+        <junit-jupiter.version>5.11.2</junit-jupiter.version>
         <assertj-core.version>3.26.3</assertj-core.version>
         <mockito-core.version>4.11.0</mockito-core.version>
         <slf4j-api.version>2.0.16</slf4j-api.version>
@@ -77,6 +74,7 @@
                 <artifactId>slf4j-api</artifactId>
                 <version>${slf4j-api.version}</version>
             </dependency>
+
             <!-- Scope: Test -->
             <dependency>
                 <groupId>org.junit.jupiter</groupId>
@@ -111,8 +109,7 @@
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-source-plugin</artifactId>
                     <version>3.3.1</version>
-                    <!-- don't use a property here to not manage consumer
-					versions -->
+                    <!-- don't use a property here to not manage consumer versions -->
                     <executions>
                         <execution>
                             <id>attach-sources</id>
@@ -126,8 +123,7 @@
                     <groupId>com.github.ekryd.sortpom</groupId>
                     <artifactId>sortpom-maven-plugin</artifactId>
                     <version>2.15.0</version>
-                    <!-- don't use a property here to not manage consumer
-					versions -->
+                    <!-- don't use a property here to not manage consumer versions -->
                     <executions>
                         <execution>
                             <id>sort-all-poms</id>
@@ -198,16 +194,14 @@
                                 <rules>
                                     <requireMavenVersion>
                                         <version>3.8</version>
-                                        <!-- don't use a property here to not
-										manage consumer versions -->
+                                        <!-- don't use a property here to not manage consumer versions -->
                                     </requireMavenVersion>
                                     <requireJavaVersion>
-                                        <version>17</version>
-                                        <!-- don't use a property here to not
-										manage consumer versions -->
+                                        <version>1.8</version>
+                                        <!-- don't use a property here to not manage consumer versions -->
                                     </requireJavaVersion>
-                                    <banDuplicatePomDependencyVersions/>
-                                    <dependencyConvergence/>
+                                    <banDuplicatePomDependencyVersions />
+                                    <dependencyConvergence />
                                 </rules>
                             </configuration>
                         </execution>
@@ -232,10 +226,7 @@
                             <configuration>
                                 <rules>
                                     <bannedDependencies>
-                                        <message>Do not use and do exclude all
-                                            transitive uses of logging
-                                            frameworks.
-                                        </message>
+                                        <message>Do not use and do exclude all transitive uses of logging frameworks.</message>
                                         <excludes>
                                             <exclude>org.slf4j:slf4j-simple</exclude>
                                             <exclude>commons-logging</exclude>
@@ -260,9 +251,7 @@
                             <configuration>
                                 <rules>
                                     <bannedDependencies>
-                                        <message>Logger bridges must use scope
-                                            runtime or test.
-                                        </message>
+                                        <message>Logger bridges must use scope runtime or test.</message>
                                         <excludes>
                                             <exclude>org.slf4j:jul-to-slf4j</exclude>
                                             <exclude>org.slf4j:jcl-over-slf4j</exclude>
