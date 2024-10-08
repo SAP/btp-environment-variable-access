@@ -7,8 +7,7 @@
     <version>0.10.5</version>
     <packaging>pom</packaging>
     <name>java-modules-bom</name>
-    <description>Bill of Material (BOM) for modules of the Java client library
-		to access BTP environment service bindings</description>
+    <description>Bill of Material (BOM) for modules of the Java client library to access BTP environment service bindings</description>
     <url>https://github.com/SAP/btp-environment-variable-access</url>
 
     <licenses>
@@ -90,8 +89,7 @@
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-source-plugin</artifactId>
                     <version>3.3.1</version>
-                    <!-- don't use a property here to not manage consumer
-					versions -->
+                    <!-- don't use a property here to not manage consumer versions -->
                     <executions>
                         <execution>
                             <id>attach-sources</id>
