@@ -2,6 +2,7 @@ package com.sap.cloud.environment.servicebinding.environment;
 
 import com.sap.cloud.environment.servicebinding.SapServiceBindingsProperties.ServiceBindingProperties;
 
+import javax.annotation.Nonnull;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -18,11 +19,12 @@ public class SapServiceBindingsPropertiesAccessor
     {
     }
 
-    public static void setServiceBindingsProperties( Map<String, ServiceBindingProperties> serviceBindingsProperties )
+    public static void setServiceBindingsProperties( @Nonnull final Map<String, ServiceBindingProperties> serviceBindingsProperties )
     {
         SapServiceBindingsPropertiesAccessor.serviceBindingsProperties = serviceBindingsProperties;
     }
 
+    @Nonnull
     public static Map<String, ServiceBindingProperties> getServiceBindingsProperties()
     {
         return SapServiceBindingsPropertiesAccessor.serviceBindingsProperties;

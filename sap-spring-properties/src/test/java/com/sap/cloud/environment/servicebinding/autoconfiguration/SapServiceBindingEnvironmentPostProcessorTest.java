@@ -55,17 +55,17 @@ class SapServiceBindingEnvironmentPostProcessorTest
     private void assertContainsXsuaaBindingProperties( @Nonnull final ServiceBindingProperties xsuaaBindingProperties )
     {
         assertNotNull(xsuaaBindingProperties);
-        assertEquals("xsuaa", xsuaaBindingProperties.getServiceName());
-        assertEquals("broker", xsuaaBindingProperties.getPlan());
-        assertNotNull(xsuaaBindingProperties.getCredentials());
+        assertEquals("xsuaa", xsuaaBindingProperties.serviceName());
+        assertEquals("broker", xsuaaBindingProperties.plan());
+        assertNotNull(xsuaaBindingProperties.credentials());
     }
 
     private void assertContainsServiceManagerBindingProperties(
         @Nonnull final ServiceBindingProperties serviceManagerBindingProperties )
     {
         assertNotNull(serviceManagerBindingProperties);
-        assertEquals("service-manager", serviceManagerBindingProperties.getServiceName());
-        assertEquals("standard", serviceManagerBindingProperties.getPlan());
-        assertNotNull(serviceManagerBindingProperties.getCredentials());
+        assertEquals("service-manager", serviceManagerBindingProperties.serviceName());
+        assertEquals("standard", serviceManagerBindingProperties.plan());
+        assertNotNull(serviceManagerBindingProperties.credentials());
     }
 }

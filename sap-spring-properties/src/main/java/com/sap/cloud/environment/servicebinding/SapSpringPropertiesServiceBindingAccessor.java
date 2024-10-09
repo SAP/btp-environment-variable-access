@@ -57,7 +57,7 @@ public class SapSpringPropertiesServiceBindingAccessor implements ServiceBinding
 
     @Nullable
     private ServiceBinding toServiceBinding(
-        @Nonnull String serviceBindingName,
+        @Nonnull final String serviceBindingName,
         @Nonnull final ServiceBindingProperties serviceBindingProperties )
     {
         if( validateServiceBindingProperties(serviceBindingProperties, serviceBindingName) ) {
@@ -65,13 +65,13 @@ public class SapSpringPropertiesServiceBindingAccessor implements ServiceBinding
                 .builder()
                 .copy(Collections.emptyMap())
                 .withName(
-                    StringUtils.hasText(serviceBindingProperties.getName())
-                        ? serviceBindingProperties.getName()
+                    StringUtils.hasText(serviceBindingProperties.name())
+                        ? serviceBindingProperties.name()
                         : serviceBindingName)
-                .withServiceName(serviceBindingProperties.getServiceName())
-                .withServicePlan(serviceBindingProperties.getPlan())
-                .withTags(Arrays.asList(serviceBindingProperties.getTags()))
-                .withCredentials(serviceBindingProperties.getCredentials())
+                .withServiceName(serviceBindingProperties.serviceName())
+                .withServicePlan(serviceBindingProperties.plan())
+                .withTags(Arrays.asList(serviceBindingProperties.tags()))
+                .withCredentials(serviceBindingProperties.credentials())
                 .build();
         } else {
             return null;
@@ -83,12 +83,12 @@ public class SapSpringPropertiesServiceBindingAccessor implements ServiceBinding
         @Nonnull final String serviceBindingName )
     {
         boolean isValid = true;
-        if( serviceBindingProperties.getServiceName() == null || serviceBindingProperties.getServiceName().isEmpty() ) {
+        if( serviceBindingProperties.serviceName() == null || serviceBindingProperties.serviceName().isEmpty() ) {
             logger.error("Service binding properties of {} with no service name detected.", serviceBindingName);
             isValid = false;
         }
 
-        if( serviceBindingProperties.getCredentials().isEmpty() ) {
+        if( serviceBindingProperties.credentials().isEmpty() ) {
             logger.error("Service binding properties of {} has no credentials.", serviceBindingName);
             isValid = false;
         }

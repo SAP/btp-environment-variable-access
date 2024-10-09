@@ -11,20 +11,22 @@ import org.springframework.core.env.ConfigurableEnvironment;
 
 import com.sap.cloud.environment.servicebinding.SapServiceBindingsProperties;
 
+import javax.annotation.Nonnull;
+
 /* An {@link EnvironmentPostProcessor} that binds service binding properties to {@link SapServiceBindingsProperties}. */
 public class SapServiceBindingEnvironmentPostProcessor implements EnvironmentPostProcessor
 {
     private static final Logger log = LoggerFactory.getLogger(SapServiceBindingEnvironmentPostProcessor.class);
 
     @Override
-    public void postProcessEnvironment( ConfigurableEnvironment environment, SpringApplication application )
+    public void postProcessEnvironment( @Nonnull final ConfigurableEnvironment environment, @Nonnull final SpringApplication application )
     {
         Bindable<SapServiceBindingsProperties> bindable = Bindable.of(SapServiceBindingsProperties.class);
 
         BindResult<?> bindResult = Binder.get(environment).bind("services", bindable);
         if( bindResult.isBound() ) {
             SapServiceBindingsPropertiesAccessor
-                .setServiceBindingsProperties(((SapServiceBindingsProperties) bindResult.get()).getServiceBindings());
+                .setServiceBindingsProperties(((SapServiceBindingsProperties) bindResult.get()).serviceBindings());
         } else {
             log.debug("Could not bind 'services' from application properties.");
         }
