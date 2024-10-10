@@ -19,7 +19,9 @@ public class SapServiceBindingEnvironmentPostProcessor implements EnvironmentPos
     private static final Logger log = LoggerFactory.getLogger(SapServiceBindingEnvironmentPostProcessor.class);
 
     @Override
-    public void postProcessEnvironment( @Nonnull final ConfigurableEnvironment environment, @Nonnull final SpringApplication application )
+    public void postProcessEnvironment(
+        @Nonnull final ConfigurableEnvironment environment,
+        @Nonnull final SpringApplication application )
     {
         Bindable<SapServiceBindingsProperties> bindable = Bindable.of(SapServiceBindingsProperties.class);
 

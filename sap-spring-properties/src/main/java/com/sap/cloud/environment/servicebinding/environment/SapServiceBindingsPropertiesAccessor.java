@@ -19,7 +19,8 @@ public class SapServiceBindingsPropertiesAccessor
     {
     }
 
-    public static void setServiceBindingsProperties( @Nonnull final Map<String, ServiceBindingProperties> serviceBindingsProperties )
+    public static void setServiceBindingsProperties(
+        @Nonnull final Map<String, ServiceBindingProperties> serviceBindingsProperties )
     {
         SapServiceBindingsPropertiesAccessor.serviceBindingsProperties = serviceBindingsProperties;
     }
