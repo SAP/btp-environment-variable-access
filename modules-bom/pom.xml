@@ -74,6 +74,11 @@
                 <artifactId>java-sap-vcap-services</artifactId>
                 <version>${cloud-environment.version}</version>
             </dependency>
+            <dependency>
+                <groupId>com.sap.cloud.environment.servicebinding</groupId>
+                <artifactId>java-sap-spring-properties</artifactId>
+                <version>${cloud-environment.version}</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 

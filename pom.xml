@@ -31,6 +31,7 @@
         <module>modules-bom</module>
         <module>sap-service-operator</module>
         <module>sap-vcap-services</module>
+        <module>sap-spring-properties</module>
     </modules>
 
     <scm>
