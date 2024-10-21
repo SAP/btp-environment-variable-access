@@ -12,6 +12,10 @@ on:
           - minor
           - patch
         default: minor
+      customVersion:
+        description: "The custom version (Semver compatible version string (X.Y.Z)) that should be used for the release. Setting this argument would override the releaseType."
+        required: false
+        type: string
 
 env:
   # keep the below two variables in sync with the ones in .github/workflows/update-vulnerability-database.yaml
@@ -50,7 +54,11 @@ jobs:
         id: bump-version
         working-directory: .scripts/bump-version
         run: |
-          python maven_version.py bump --bump-type "${{ inputs.releaseType }}" "../../pom.xml" "../../modules-bom/pom.xml" "../../bom/pom.xml"
+          if [ -n "${{ inputs.customVersion }}" ]; then
+            python maven_version.py set --custom-version "${{ inputs.customVersion }}" "../../pom.xml" "../../modules-bom/pom.xml" "../../bom/pom.xml"
+          else
+            python maven_version.py bump --bump-type "${{ inputs.releaseType }}" "../../pom.xml" "../../modules-bom/pom.xml" "../../bom/pom.xml"
+          fi
 
       - name: Build Project
         run: mvn clean install -P release -Dgpg.skip
