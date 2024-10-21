@@ -21,7 +21,7 @@ def bump(
         )
 
     if custom_version and not XmlMavenProject.SEMANTIC_VERSION.match(custom_version):
-        raise AssertionError(f"Invalid bump type '{bump_type}'.")
+        raise AssertionError(f"Invalid custom version '{bump_type}'.")
 
     project: XmlMavenProject = XmlMavenProject()
     module_reader: XmlMavenModuleReader = XmlMavenModuleReader()
