@@ -1,7 +1,7 @@
 import os
 from argparse import ArgumentParser
 from pathlib import Path
-from typing import Any, Dict, Union
+from typing import Any, Dict
 
 from maven.xml_maven_module import XmlMavenModule
 from maven.xml_maven_module_reader import XmlMavenModuleReader
