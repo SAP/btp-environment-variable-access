@@ -5,7 +5,6 @@ on:
     inputs:
       releaseType:
         description: "The release type that should be performed."
-        required: true
         type: choice
         options:
           - major
@@ -14,7 +13,6 @@ on:
         default: minor
       customVersion:
         description: "The custom version (Semver compatible version string (X.Y.Z)) that should be used for the release. Setting this argument would override the releaseType."
-        required: false
         type: string
 
 env:
