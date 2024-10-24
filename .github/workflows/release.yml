@@ -53,7 +53,7 @@ jobs:
         working-directory: .scripts/bump-version
         run: |
           if [ -n "${{ inputs.customVersion }}" ]; then
-            python maven_version.py set --custom-version "${{ inputs.customVersion }}" "../../pom.xml" "../../modules-bom/pom.xml" "../../bom/pom.xml"
+            python maven_version.py bump --custom-version "${{ inputs.customVersion }}" "../../pom.xml" "../../modules-bom/pom.xml" "../../bom/pom.xml"
           else
             python maven_version.py bump --bump-type "${{ inputs.releaseType }}" "../../pom.xml" "../../modules-bom/pom.xml" "../../bom/pom.xml"
           fi
