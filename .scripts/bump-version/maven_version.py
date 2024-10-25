@@ -9,15 +9,22 @@ from maven.xml_maven_project import XmlMavenProject
 
 
 def bump(
-    project_root_poms: list[Path],
-    bump_type: XmlMavenProject.VersionBumpType,
-    assert_uniform_version: bool = True,
-    github_actions_output: bool = True,
+        project_root_poms: list[Path],
+        bump_type: XmlMavenProject.VersionBumpType,
+        custom_version: str = "",
+        assert_uniform_version: bool = True,
+        github_actions_output: bool = True,
 ) -> None:
     if any(filter(lambda x: x.name != "pom.xml", project_root_poms)):
         raise AssertionError(
             f"Currently, only Maven projects ('pom.xml') are supported by this operation. Sorry."
         )
+
+    if not bump_type and not custom_version:
+        raise AssertionError("Either bump-type or custom-version must be provided.")
+
+    if custom_version and not XmlMavenProject.SEMANTIC_VERSION.match(custom_version):
+        raise AssertionError(f"Invalid custom version '{custom_version}'.")
 
     project: XmlMavenProject = XmlMavenProject()
     module_reader: XmlMavenModuleReader = XmlMavenModuleReader()
@@ -36,7 +43,7 @@ def bump(
             __write_to_github_actions_output("old_version", "undefined")
 
     project.bump_version(
-        bump_type, assert_uniform_version=assert_uniform_version, write_modules=True
+        bump_type, custom_version, assert_uniform_version=assert_uniform_version, write_modules=True
     )
 
     if github_actions_output:
@@ -79,18 +86,28 @@ def main() -> None:
     bump_parser.add_argument(
         "--bump-type",
         type=str,
-        required=True,
+        required=False,
         help=f"Available values: '{XmlMavenProject.VersionBumpType.MAJOR}', "
-        f"'{XmlMavenProject.VersionBumpType.MINOR}', "
-        f"and '{XmlMavenProject.VersionBumpType.PATCH}'",
+             f"'{XmlMavenProject.VersionBumpType.MINOR}', "
+             f"and '{XmlMavenProject.VersionBumpType.PATCH}'"
+             "Note: Either bump-type or custom-version must be provided.",
+    )
+    bump_parser.add_argument(
+        "--custom-version",
+        type=str,
+        required=False,
+        help="Allows to update maven modules with a custom version. "
+             "The input value should be semver compatible version string (X.Y.Z). "
+             "Note: Either bump-type or custom-version must be provided."
+             "This option will override the bump-type option if both are provided.",
     )
     bump_parser.add_argument(
         "--accept-non-uniform-versions",
         action="store_false",
         required=False,
         help="Indicates whether the version bump should even be performed if the project contains "
-        "different versions. "
-        "Note: ALL module versions will be increased if this option is enabled.",
+             "different versions. "
+             "Note: ALL module versions will be increased if this option is enabled.",
     )
     bump_parser.add_argument(
         "--no-github-action-outputs",
@@ -104,9 +121,11 @@ def main() -> None:
 
     parsed_args: Any = argument_parser.parse_args()
     if parsed_args.subparser == "bump":
+        bump_type = XmlMavenProject.VersionBumpType[parsed_args.bump_type.upper()] if parsed_args.bump_type else ""
         bump(
             parsed_args.pom,
-            XmlMavenProject.VersionBumpType[parsed_args.bump_type.upper()],
+            bump_type,
+            parsed_args.custom_version,
             not parsed_args.accept_non_uniform_versions,
             not parsed_args.no_github_action_outputs,
         )

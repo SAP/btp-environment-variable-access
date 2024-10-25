@@ -41,6 +41,7 @@ class XmlMavenProject:
     def bump_version(
         self,
         bump_type: "XmlMavenProject.VersionBumpType",
+        custom_version: str = "",
         assert_uniform_version: bool = True,
         write_modules: bool = True,
     ) -> None:
@@ -57,7 +58,7 @@ class XmlMavenProject:
                 )
 
         updated_versions: dict[str, str] = self._bump_versions(
-            current_versions, bump_type
+            current_versions, bump_type, custom_version
         )
 
         for module in self._modules.values():
@@ -85,7 +86,7 @@ class XmlMavenProject:
         return f"{module_id.group_id}:{module_id.artifact_id}"
 
     def _bump_versions(
-        self, versions: dict[str, str], bump_type: "XmlMavenProject.VersionBumpType"
+        self, versions: dict[str, str], bump_type: "XmlMavenProject.VersionBumpType", custom_version: str = "",
     ) -> dict[str, str]:
         result: dict[str, str] = {}
         for key, value in versions.items():
@@ -102,7 +103,11 @@ class XmlMavenProject:
             prefix: str = get_or_else(match.group("prefix"), "")
             suffix: str = get_or_else(match.group("suffix"), "")
 
-            if bump_type == XmlMavenProject.VersionBumpType.MAJOR:
+            if custom_version:
+                match: Match = XmlMavenProject.SEMANTIC_VERSION.match(custom_version)
+                major, minor, patch = match.group("major"), match.group("minor"), match.group("patch")
+
+            elif bump_type == XmlMavenProject.VersionBumpType.MAJOR:
                 major += 1
                 minor = 0
                 patch = 0
@@ -115,7 +120,7 @@ class XmlMavenProject:
                 patch += 1
 
             else:
-                raise AssertionError(f"Unknown version bump type '{bump_type}'.")
+                raise AssertionError(f"Invalid bump type '{bump_type}'. and custom version '{custom_version}'.")
 
             result[key] = f"{prefix}{major}.{minor}.{patch}{suffix}"
 
