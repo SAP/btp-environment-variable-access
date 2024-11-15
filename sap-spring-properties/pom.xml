@@ -10,7 +10,7 @@
 
     <properties>
         <project.rootdir>${project.basedir}/../</project.rootdir>
-        <spring.version>6.1.14</spring.version>
+        <spring.version>6.2.0</spring.version>
         <spring-boot.version>3.3.5</spring-boot.version>
     </properties>
 
