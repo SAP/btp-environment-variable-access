@@ -189,6 +189,7 @@ class SapVcapServicesServiceBindingAccessorTest
         // second invocation
         assertThat(sut.getServiceBindings().size()).isEqualTo(3);
         assertThat(environmentVariableReader.getInvocations("VCAP_SERVICES")).isEqualTo(2);
+        assertThat(environmentVariableReader.getInvocations("VCAP_SERVICES_FILE_PATH")).isEqualTo(2);
     }
 
     @Test
