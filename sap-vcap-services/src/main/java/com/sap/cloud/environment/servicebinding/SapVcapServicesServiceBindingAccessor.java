@@ -1,8 +1,11 @@
 package com.sap.cloud.environment.servicebinding;
 
 import java.util.ArrayList;
+import java.io.IOException;
 import java.util.Collections;
+import java.nio.file.Files;
 import java.util.List;
+import java.nio.file.Path;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -40,6 +43,9 @@ public class SapVcapServicesServiceBindingAccessor implements ServiceBindingAcce
     private static final String VCAP_SERVICES = "VCAP_SERVICES";
 
     @Nonnull
+    private static final String VCAP_SERVICES_FILE_PATH = "VCAP_SERVICES_FILE_PATH";
+
+    @Nonnull
     private final Function<String, String> environmentVariableReader;
 
     /**
@@ -68,11 +74,31 @@ public class SapVcapServicesServiceBindingAccessor implements ServiceBindingAcce
     public List<ServiceBinding> getServiceBindings()
         throws ServiceBindingAccessException
     {
-        logger.debug("Trying to determine service bindings using the '{}' environment variable.", VCAP_SERVICES);
-        final String vcapServices = environmentVariableReader.apply(VCAP_SERVICES);
+        logger
+            .debug(
+                "Trying to determine service bindings using the '{}' and '{}' environment variables.",
+                VCAP_SERVICES,
+                VCAP_SERVICES_FILE_PATH);
+        String vcapServices = environmentVariableReader.apply(VCAP_SERVICES);
+        final String vcapServicesFilePath = environmentVariableReader.apply(VCAP_SERVICES_FILE_PATH);
 
-        if( vcapServices == null ) {
-            logger.debug("Environment variable '{}' is not defined.", VCAP_SERVICES);
+        if( vcapServices == null && vcapServicesFilePath != null ) {
+            logger
+                .debug(
+                    "Environment variable '{}' is not defined. Falling back to environment variable '{}'",
+                    VCAP_SERVICES,
+                    VCAP_SERVICES_FILE_PATH);
+            try {
+                vcapServices = Files.readString(Path.of(vcapServicesFilePath));
+            }
+            catch( final IOException e ) {
+                logger.error("Failed to read VCAP_SERVICES from file: {}", vcapServicesFilePath, e);
+                return Collections.emptyList();
+            }
+        }
+
+        if( vcapServices == null && vcapServicesFilePath == null ) {
+            logger.debug("Environment variable '{}' and '{}' are not defined.", VCAP_SERVICES, VCAP_SERVICES_FILE_PATH);
             return Collections.emptyList();
         }
 
