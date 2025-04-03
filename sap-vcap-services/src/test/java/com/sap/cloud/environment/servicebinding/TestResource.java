@@ -49,4 +49,10 @@ public final class TestResource
                 String.format("Unable to load test source from '%s/%s'", testClass.getSimpleName(), fileName));
         }
     }
+
+    @Nonnull
+    public static String getPathAsString( @Nonnull final Class<?> testClass, @Nonnull final String fileName )
+    {
+        return get(testClass, fileName).toAbsolutePath().toString();
+    }
 }

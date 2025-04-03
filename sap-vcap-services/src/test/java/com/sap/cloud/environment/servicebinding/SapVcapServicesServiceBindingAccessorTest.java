@@ -12,6 +12,10 @@ import org.junit.jupiter.api.Test;
 import com.sap.cloud.environment.servicebinding.api.ServiceBinding;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import java.util.Map;
+import java.util.HashMap;
+import java.nio.file.Paths;
+import java.nio.file.Path;
 
 class SapVcapServicesServiceBindingAccessorTest
 {
@@ -23,6 +27,25 @@ class SapVcapServicesServiceBindingAccessorTest
 
         final SapVcapServicesServiceBindingAccessor sut =
             new SapVcapServicesServiceBindingAccessor(any -> vcapServices);
+
+        final List<ServiceBinding> serviceBindings = sut.getServiceBindings();
+
+        assertThat(serviceBindings.size()).isEqualTo(3);
+
+        assertContainsXsuaaBinding1(serviceBindings);
+        assertContainsXsuaaBinding2(serviceBindings);
+        assertContainsDestinationBinding1(serviceBindings);
+    }
+
+    @Test
+    void parseFullVcapServicesFileBased()
+    {
+        final String vcapServicesFilePath =
+            TestResource.getPathAsString(SapVcapServicesServiceBindingAccessorTest.class, "FullVcapServices.json");
+
+        final SapVcapServicesServiceBindingAccessor sut =
+            new SapVcapServicesServiceBindingAccessor(
+                key -> "VCAP_SERVICES_FILE_PATH".equals(key) ? vcapServicesFilePath : null);
 
         final List<ServiceBinding> serviceBindings = sut.getServiceBindings();
 
@@ -129,52 +152,101 @@ class SapVcapServicesServiceBindingAccessorTest
     }
 
     @Test
+    void brokenBindingIsIgnoredWhenFileBased()
+    {
+        final String vcapServicesFilePath =
+            TestResource
+                .getPathAsString(SapVcapServicesServiceBindingAccessorTest.class, "VcapServicesWithBrokenBinding.json");
+
+        final SapVcapServicesServiceBindingAccessor sut =
+            new SapVcapServicesServiceBindingAccessor(
+                key -> "VCAP_SERVICES_FILE_PATH".equals(key) ? vcapServicesFilePath : null);
+
+        final List<ServiceBinding> serviceBindings = sut.getServiceBindings();
+
+        assertThat(serviceBindings.size()).isEqualTo(1);
+
+        assertContainsXsuaaBinding1(serviceBindings);
+    }
+
+    @Test
     void resultIsNotCached()
     {
         final String vcapServices =
             TestResource.read(SapVcapServicesServiceBindingAccessorTest.class, "FullVcapServices.json");
-        final CountingEnvironmentVariableReader environmentVariableReader =
-            new CountingEnvironmentVariableReader("VCAP_SERVICES", vcapServices);
+        final CountingEnvironmentVariableReader environmentVariableReader = new CountingEnvironmentVariableReader();
+        environmentVariableReader.addExpectedKeyAndValue("VCAP_SERVICES", vcapServices);
+        environmentVariableReader.addExpectedKeyAndValue("VCAP_SERVICES_FILE_PATH", null);
 
         final SapVcapServicesServiceBindingAccessor sut =
             new SapVcapServicesServiceBindingAccessor(environmentVariableReader);
 
         // first invocation
         assertThat(sut.getServiceBindings().size()).isEqualTo(3);
-        assertThat(environmentVariableReader.getInvocations()).isEqualTo(1);
+        assertThat(environmentVariableReader.getInvocations("VCAP_SERVICES")).isEqualTo(1);
+        assertThat(environmentVariableReader.getInvocations("VCAP_SERVICES_FILE_PATH")).isEqualTo(1);
 
         // second invocation
         assertThat(sut.getServiceBindings().size()).isEqualTo(3);
-        assertThat(environmentVariableReader.getInvocations()).isEqualTo(2);
+        assertThat(environmentVariableReader.getInvocations("VCAP_SERVICES")).isEqualTo(2);
+        assertThat(environmentVariableReader.getInvocations("VCAP_SERVICES_FILE_PATH")).isEqualTo(2);
+    }
+
+    @Test
+    void resultIsNotCachedWhenFileBased()
+    {
+        final String vcapServicesFilePath =
+            TestResource.getPathAsString(SapVcapServicesServiceBindingAccessorTest.class, "FullVcapServices.json");
+        final CountingEnvironmentVariableReader environmentVariableReader = new CountingEnvironmentVariableReader();
+        environmentVariableReader.addExpectedKeyAndValue("VCAP_SERVICES", null);
+        environmentVariableReader.addExpectedKeyAndValue("VCAP_SERVICES_FILE_PATH", vcapServicesFilePath);
+
+        final SapVcapServicesServiceBindingAccessor sut =
+            new SapVcapServicesServiceBindingAccessor(environmentVariableReader);
+
+        // first invocation
+        assertThat(sut.getServiceBindings().size()).isEqualTo(3);
+        assertThat(environmentVariableReader.getInvocations("VCAP_SERVICES")).isEqualTo(1);
+        assertThat(environmentVariableReader.getInvocations("VCAP_SERVICES_FILE_PATH")).isEqualTo(1);
+
+        // second invocation
+        assertThat(sut.getServiceBindings().size()).isEqualTo(3);
+        assertThat(environmentVariableReader.getInvocations("VCAP_SERVICES")).isEqualTo(2);
+        assertThat(environmentVariableReader.getInvocations("VCAP_SERVICES_FILE_PATH")).isEqualTo(2);
     }
 
     private static class CountingEnvironmentVariableReader implements Function<String, String>
     {
         @Nonnull
-        private final String expectedKey;
+        private final Map<String, String> expectedKeyToValueMap;
 
         @Nonnull
-        private final String value;
+        private final Map<String, Integer> expectedKeyInvocations;
 
-        private int invocations;
-
-        public CountingEnvironmentVariableReader( @Nonnull final String expectedKey, @Nonnull final String value )
+        public CountingEnvironmentVariableReader()
         {
-            this.expectedKey = expectedKey;
-            this.value = value;
+            this.expectedKeyToValueMap = new HashMap<>();
+            this.expectedKeyInvocations = new HashMap<>();
+        }
+
+        public void addExpectedKeyAndValue( @Nonnull final String expectedKey, @Nonnull final String value )
+        {
+            expectedKeyToValueMap.put(expectedKey, value);
+            expectedKeyInvocations.put(expectedKey, 0);
         }
 
         @Override
         public String apply( final String s )
         {
-            assertThat(s).isEqualTo(expectedKey);
-            invocations++;
-            return value;
+            assertThat(expectedKeyToValueMap.containsKey(s)).isTrue();
+            int invocations = expectedKeyInvocations.get(s) + 1;
+            expectedKeyInvocations.put(s, invocations);
+            return expectedKeyToValueMap.get(s);
         }
 
-        public int getInvocations()
+        public int getInvocations( @Nonnull final String expectedKey )
         {
-            return invocations;
+            return expectedKeyInvocations.get(expectedKey);
         }
     }
 }
