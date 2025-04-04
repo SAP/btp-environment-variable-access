@@ -219,7 +219,7 @@ class SapVcapServicesServiceBindingAccessorTest
     }
 
     @Test
-    void fileReaderThrowsIOException()
+    void ioExceptionIsHandledGracefully()
     {
         final String vcapServicesFilePath =
             TestResource.getPathAsString(SapVcapServicesServiceBindingAccessorTest.class, "non-existent-file.json");
