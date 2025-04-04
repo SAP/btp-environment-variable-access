@@ -26,7 +26,7 @@ class SapVcapServicesServiceBindingAccessorTest
             TestResource.read(SapVcapServicesServiceBindingAccessorTest.class, "FullVcapServices.json");
 
         final SapVcapServicesServiceBindingAccessor sut =
-            new SapVcapServicesServiceBindingAccessor(any -> vcapServices);
+            new SapVcapServicesServiceBindingAccessor(key -> "VCAP_SERVICES".equals(key) ? vcapServices : null);
 
         final List<ServiceBinding> serviceBindings = sut.getServiceBindings();
 
@@ -142,7 +142,7 @@ class SapVcapServicesServiceBindingAccessorTest
             TestResource.read(SapVcapServicesServiceBindingAccessorTest.class, "VcapServicesWithBrokenBinding.json");
 
         final SapVcapServicesServiceBindingAccessor sut =
-            new SapVcapServicesServiceBindingAccessor(any -> vcapServices);
+            new SapVcapServicesServiceBindingAccessor(key -> "VCAP_SERVICES".equals(key) ? vcapServices : null);
 
         final List<ServiceBinding> serviceBindings = sut.getServiceBindings();
 
@@ -195,24 +195,42 @@ class SapVcapServicesServiceBindingAccessorTest
     @Test
     void resultIsNotCachedWhenFileBased()
     {
-        final String vcapServicesFilePath =
+        final String vcapServicesFile =
             TestResource.getPathAsString(SapVcapServicesServiceBindingAccessorTest.class, "FullVcapServices.json");
+        final Path vcapServicesFilePath =
+            TestResource.get(SapVcapServicesServiceBindingAccessorTest.class, "FullVcapServices.json");
+        final String vcapServices =
+            TestResource.read(SapVcapServicesServiceBindingAccessorTest.class, "FullVcapServices.json");
         final CountingEnvironmentVariableReader environmentVariableReader = new CountingEnvironmentVariableReader();
         environmentVariableReader.addExpectedKeyAndValue("VCAP_SERVICES", null);
-        environmentVariableReader.addExpectedKeyAndValue("VCAP_SERVICES_FILE_PATH", vcapServicesFilePath);
+        environmentVariableReader.addExpectedKeyAndValue("VCAP_SERVICES_FILE_PATH", vcapServicesFile);
+        final CountingFileReader fileReader = new CountingFileReader(vcapServicesFilePath, vcapServices);
 
         final SapVcapServicesServiceBindingAccessor sut =
-            new SapVcapServicesServiceBindingAccessor(environmentVariableReader);
+            new SapVcapServicesServiceBindingAccessor(environmentVariableReader, fileReader);
 
         // first invocation
         assertThat(sut.getServiceBindings().size()).isEqualTo(3);
-        assertThat(environmentVariableReader.getInvocations("VCAP_SERVICES")).isEqualTo(1);
-        assertThat(environmentVariableReader.getInvocations("VCAP_SERVICES_FILE_PATH")).isEqualTo(1);
+        assertThat(fileReader.getInvocations()).isEqualTo(1);
 
         // second invocation
         assertThat(sut.getServiceBindings().size()).isEqualTo(3);
-        assertThat(environmentVariableReader.getInvocations("VCAP_SERVICES")).isEqualTo(2);
-        assertThat(environmentVariableReader.getInvocations("VCAP_SERVICES_FILE_PATH")).isEqualTo(2);
+        assertThat(fileReader.getInvocations()).isEqualTo(2);
+    }
+
+    @Test
+    void fileReaderThrowsIOException()
+    {
+        final String vcapServicesFilePath =
+            TestResource.getPathAsString(SapVcapServicesServiceBindingAccessorTest.class, "non-existent-file.json");
+
+        final SapVcapServicesServiceBindingAccessor sut =
+            new SapVcapServicesServiceBindingAccessor(
+                key -> "VCAP_SERVICES_FILE_PATH".equals(key) ? vcapServicesFilePath : null);
+
+        final List<ServiceBinding> serviceBindings = sut.getServiceBindings();
+
+        assertThat(serviceBindings).isEmpty();
     }
 
     private static class CountingEnvironmentVariableReader implements Function<String, String>
@@ -247,6 +265,36 @@ class SapVcapServicesServiceBindingAccessorTest
         public int getInvocations( @Nonnull final String expectedKey )
         {
             return expectedKeyInvocations.get(expectedKey);
+        }
+    }
+
+    private static class CountingFileReader implements Function<Path, String>
+    {
+        @Nonnull
+        private final Path expectedPath;
+
+        @Nonnull
+        private final String value;
+
+        private int invocations;
+
+        public CountingFileReader( @Nonnull final Path expectedPath, @Nonnull final String value )
+        {
+            this.expectedPath = expectedPath;
+            this.value = value;
+        }
+
+        @Override
+        public String apply( final Path path )
+        {
+            assertThat(path).isEqualTo(expectedPath);
+            invocations++;
+            return value;
+        }
+
+        public int getInvocations()
+        {
+            return invocations;
         }
     }
 }

@@ -33,6 +33,12 @@ public class SapVcapServicesServiceBindingAccessor implements ServiceBindingAcce
     @Nonnull
     private static final Logger logger = LoggerFactory.getLogger(SapVcapServicesServiceBindingAccessor.class);
 
+    @Nonnull
+    private static final String VCAP_SERVICES = "VCAP_SERVICES";
+
+    @Nonnull
+    private static final String VCAP_SERVICES_FILE_PATH = "VCAP_SERVICES_FILE_PATH";
+
     /**
      * The default {@link Function} to read environment variables.
      */
@@ -40,26 +46,51 @@ public class SapVcapServicesServiceBindingAccessor implements ServiceBindingAcce
     public static final Function<String, String> DEFAULT_ENVIRONMENT_VARIABLE_READER = System::getenv;
 
     @Nonnull
-    private static final String VCAP_SERVICES = "VCAP_SERVICES";
-
-    @Nonnull
-    private static final String VCAP_SERVICES_FILE_PATH = "VCAP_SERVICES_FILE_PATH";
+    public static final Function<Path, String> DEFAULT_FILE_READER = path -> {
+        try {
+            return Files.readString(path);
+        }
+        catch( IOException e ) {
+            logger.error("Failed to read VCAP_SERVICES from file: {}", VCAP_SERVICES_FILE_PATH, e);
+            return null;
+        }
+    };
 
     @Nonnull
     private final Function<String, String> environmentVariableReader;
 
+    @Nonnull
+    private final Function<Path, String> fileReader;
+
     /**
      * Initializes a new {@link SapVcapServicesServiceBindingAccessor} instance that uses the
-     * {@link #DEFAULT_ENVIRONMENT_VARIABLE_READER}.
+     * {@link #DEFAULT_ENVIRONMENT_VARIABLE_READER} and {@link #DEFAULT_FILE_READER}.
      */
     public SapVcapServicesServiceBindingAccessor()
     {
-        this(DEFAULT_ENVIRONMENT_VARIABLE_READER);
+        this(DEFAULT_ENVIRONMENT_VARIABLE_READER, DEFAULT_FILE_READER);
     }
 
     /**
      * Initializes a new {@link SapVcapServicesServiceBindingAccessor} instance that uses the given
-     * {@code environmentVariableReader}.
+     * {@code environmentVariableReader} and {@code fileReader}.
+     *
+     * @param environmentVariableReader
+     *            The {@link Function} that should be used to read environment variables.
+     * @param fileReader
+     *            The {@link Function} that should be used to read files.
+     */
+    public SapVcapServicesServiceBindingAccessor(
+        @Nonnull final Function<String, String> environmentVariableReader,
+        @Nonnull final Function<Path, String> fileReader )
+    {
+        this.environmentVariableReader = environmentVariableReader;
+        this.fileReader = fileReader;
+    }
+
+    /**
+     * Initializes a new {@link SapVcapServicesServiceBindingAccessor} instance that uses the given
+     * {@code environmentVariableReader} and the default {@link #DEFAULT_FILE_READER}.
      *
      * @param environmentVariableReader
      *            The {@link Function} that should be used to read environment variables.
@@ -67,6 +98,7 @@ public class SapVcapServicesServiceBindingAccessor implements ServiceBindingAcce
     public SapVcapServicesServiceBindingAccessor( @Nonnull final Function<String, String> environmentVariableReader )
     {
         this.environmentVariableReader = environmentVariableReader;
+        this.fileReader = DEFAULT_FILE_READER;
     }
 
     @Nonnull
@@ -88,12 +120,10 @@ public class SapVcapServicesServiceBindingAccessor implements ServiceBindingAcce
                     "Environment variable '{}' is not defined. Falling back to environment variable '{}'",
                     VCAP_SERVICES,
                     VCAP_SERVICES_FILE_PATH);
-            try {
-                vcapServices = Files.readString(Path.of(vcapServicesFilePath));
-            }
-            catch( final IOException e ) {
-                logger.error("Failed to read VCAP_SERVICES from file: {}", vcapServicesFilePath, e);
-                return Collections.emptyList();
+
+            vcapServices = fileReader.apply(Path.of(vcapServicesFilePath));
+            if( vcapServices == null ) {
+                return Collections.emptyList(); // File is empty or failed to read the file
             }
         }
 
