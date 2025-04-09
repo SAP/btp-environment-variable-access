@@ -7,7 +7,7 @@ on:
     branches: [ main ]
 
 env:
-  # keep the below two variables in sync with the ones in .github/workflows/update-vulnerability-database.yaml
+  # keep the below two variables in sync with the ones in .github/workflows/fosstars-project-report.yml
   CVE_CACHE_KEY: cve-db
   CVE_CACHE_DIR: ~/.m2/repository/org/owasp/dependency-check-data
 
@@ -32,7 +32,7 @@ jobs:
         with:
           path: ${{ env.CVE_CACHE_DIR }}
           key: ${{ env.CVE_CACHE_KEY }}
-          fail-on-cache-miss: true
+          # fail-on-cache-miss: true
 
       - name: Build with Maven
         run: mvn clean install -Dgpg.skip --no-transfer-progress
