@@ -46,7 +46,7 @@ jobs:
         with:
           path: ${{ env.CVE_CACHE_DIR }}
           key: ${{ env.CVE_CACHE_KEY }}
-          fail-on-cache-miss: true
+          # fail-on-cache-miss: true
 
       - name: Bump Version
         id: bump-version
