@@ -69,6 +69,32 @@ class TestXmlMavenProject(TestCase):
             module.dependencies, "com.example", "dp-with-version", "0.1.0"
         )
 
+        # set custom version
+        sut.bump_version(XmlMavenProject.VersionBumpType.MINOR, "1.2.3", write_modules=False)
+
+        self.assertEqual(module.identifier.version, "${this.version}")
+
+        self.assertEqual(len(module.properties), 2)
+        self.assertPropertyValue(module.properties, "this.version", "1.2.3")
+        self.assertPropertyValue(module.properties, "dependency.version", "42.9.9")
+
+        self.assertIsNotNone(module.parent_identifier)
+        self.assertEqual(module.parent_identifier.version, "1.1.1")
+
+        self.assertEqual(len(module.dependencies), 3)
+        self.assertDependencyVersion(
+            module.dependencies, "com.example", "dpm-with-version", "0.42.0"
+        )
+        self.assertDependencyVersion(
+            module.dependencies,
+            "com.example",
+            "dpm-with-property-version",
+            "${dependency.version}",
+        )
+        self.assertDependencyVersion(
+            module.dependencies, "com.example", "dp-with-version", "0.1.0"
+        )
+
     def test_bump_version_with_multi_module(self) -> None:
         modules: list[XmlMavenModule] = XmlMavenModuleReader().read_recursive(
             Path(self.RESOURCES, "multi_module", "pom.xml")
@@ -109,8 +135,19 @@ class TestXmlMavenProject(TestCase):
         self.assertIsNotNone(child_module.parent_identifier)
         self.assertEqual(child_module.parent_identifier.version, "13.3.8")
 
+        # set custom version
+        sut.bump_version(XmlMavenProject.VersionBumpType.MAJOR, "1.2.3", write_modules=False)
+
+        self.assertEqual(parent_module.identifier.version, "1.2.3")
+        self.assertIsNotNone(parent_module.parent_identifier)
+        self.assertEqual(parent_module.parent_identifier.version, "1.1.1")
+
+        self.assertEqual(child_module.identifier.version, "1.2.3")
+        self.assertIsNotNone(child_module.parent_identifier)
+        self.assertEqual(child_module.parent_identifier.version, "1.2.3")
+
     def assertPropertyValue(
-        self, properties: list[MavenProperty], name: str, expected_value: str
+            self, properties: list[MavenProperty], name: str, expected_value: str
     ) -> None:
         for p in properties:
             if p.name == name:
@@ -120,11 +157,11 @@ class TestXmlMavenProject(TestCase):
         self.fail(f"Property '{name}' not found")
 
     def assertDependencyVersion(
-        self,
-        dependencies: list[MavenModuleIdentifier],
-        group_id: str,
-        artifact_id: str,
-        expected_version: str,
+            self,
+            dependencies: list[MavenModuleIdentifier],
+            group_id: str,
+            artifact_id: str,
+            expected_version: str,
     ) -> None:
         for d in dependencies:
             if d.group_id == group_id and d.artifact_id == artifact_id:
