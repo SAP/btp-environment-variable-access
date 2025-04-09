@@ -239,19 +239,14 @@
                     <!--scans for vulnerabilities-->
                     <artifactId>dependency-check-maven</artifactId>
                     <version>${dependency-check-maven-plugin.version}</version>
-                    <executions>
-                        <execution>
-                            <goals>
-                                <goal>check</goal>
-                            </goals>
-                        </execution>
-                    </executions>
                     <configuration>
-                        <skip>${skipCveCheck}</skip>
-                        <skipProvidedScope>true</skipProvidedScope>
+                        <connectionTimeout>60000</connectionTimeout>
+                        <nvdMaxRetryCount>20</nvdMaxRetryCount>
                         <failBuildOnCVSS>7</failBuildOnCVSS>
+                        <nvdApiKeyEnvironmentVariable>NVD_API_KEY</nvdApiKeyEnvironmentVariable>
                         <suppressionFile>.etc/suppression.xml</suppressionFile>
-                        <autoUpdate>${updateCveDatabase}</autoUpdate>
+                        <nvdValidForHours>46</nvdValidForHours>
+                        <skipProvidedScope>true</skipProvidedScope>
                     </configuration>
                 </plugin>
                 <plugin>
