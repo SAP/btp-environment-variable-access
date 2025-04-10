@@ -55,8 +55,6 @@
         <java.version>17</java.version>
         <maven.version>3.8</maven.version>
         <java.failOnWarning>true</java.failOnWarning>
-        <skipCveCheck>false</skipCveCheck>
-        <updateCveDatabase>false</updateCveDatabase>
         <project.rootdir>${project.basedir}</project.rootdir>
         <project.build.resourceEncoding>UTF-8</project.build.resourceEncoding>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
