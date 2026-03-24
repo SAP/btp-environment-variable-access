@@ -273,6 +273,7 @@
                         <suppressionFile>.etc/suppression.xml</suppressionFile>
                         <nvdValidForHours>46</nvdValidForHours>
                         <skipProvidedScope>true</skipProvidedScope>
+                        <ossIndexServerId>ossindex</ossIndexServerId>
                     </configuration>
                 </plugin>
                 <plugin>
