@@ -80,10 +80,11 @@ jobs:
           git push --follow-tags
 
       - name: Deploy Release
-        uses: samuelmeuli/action-maven-publish@v1
-        with:
-          gpg_private_key: ${{ secrets.CLOUD_SDK_AT_SAP_PRIVATE_GPG_KEY }}
-          gpg_passphrase: ${{ secrets.CLOUD_SDK_AT_SAP_PRIVATE_GPG_PASSPHRASE }}
-          nexus_username: ${{ secrets.CLOUD_SDK_AT_SAP_NEXUS_USER }}
-          nexus_password: ${{ secrets.CLOUD_SDK_AT_SAP_NEXUS_PASSPHRASE }}
-          maven_profiles: "release"
+        env:
+          GPG_PASSPHRASE: ${{ secrets.CLOUD_SDK_AT_SAP_PRIVATE_GPG_PASSPHRASE }}
+          OSSRH_USERNAME: ${{ secrets.CLOUD_SDK_AT_SAP_NEXUS_USER }}
+          OSSRH_PASSWORD: ${{ secrets.CLOUD_SDK_AT_SAP_NEXUS_PASSPHRASE }}
+        run: |
+          mvn deploy -P release -DskipTests \
+            -Dgpg.passphrase="${GPG_PASSPHRASE}" \
+            --settings .github/settings.xml
