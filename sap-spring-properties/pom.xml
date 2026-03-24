@@ -11,7 +11,7 @@
     <properties>
         <project.rootdir>${project.basedir}/../</project.rootdir>
         <spring.version>7.0.6</spring.version>
-        <spring-boot.version>3.4.4</spring-boot.version>
+        <spring-boot.version>4.0.4</spring-boot.version>
     </properties>
 
     <dependencies>
@@ -33,10 +33,25 @@
             <groupId>org.springframework</groupId>
             <artifactId>spring-core</artifactId>
             <version>${spring.version}</version>
+            <exclusions>
+                <exclusion>
+                    <artifactId>commons-logging</artifactId>
+                    <groupId>commons-logging</groupId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
+        </dependency>
+
+        <!-- Scope: Runtime -->
+        <!-- Spring v7 depends on common-logging, this bridges it to SLF4J. -->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>jcl-over-slf4j</artifactId>
+            <version>2.0.17</version>
+            <scope>runtime</scope>
         </dependency>
 
         <!-- Scope: Test -->
