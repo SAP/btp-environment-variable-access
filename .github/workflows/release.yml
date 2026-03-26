@@ -33,6 +33,13 @@ jobs:
       - name: Import GPG Key
         run: |
           echo "${{ secrets.CLOUD_SDK_AT_SAP_PRIVATE_GPG_KEY }}" | gpg --batch --passphrase "$MAVEN_GPG_PASSPHRASE" --import
+          
+          # Get the GPG key ID from the imported key
+          GPG_KEY_ID=$(gpg --list-secret-keys --keyid-format LONG | grep sec | head -1 | awk '{print $2}' | cut -d'/' -f2)
+          
+          # Configure git to use this specific GPG key for signing
+          git config --global user.signingkey "$GPG_KEY_ID"
+          git config --global commit.gpgsign true
         env:
           MAVEN_GPG_PASSPHRASE: ${{ secrets.CLOUD_SDK_AT_SAP_PRIVATE_GPG_PASSPHRASE }}
 
