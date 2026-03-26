@@ -68,7 +68,7 @@
         <jsr305.version>3.0.2</jsr305.version>
         <slf4j-simple.version>2.0.17</slf4j-simple.version>
 
-        <junit-jupiter.version>5.11.3</junit-jupiter.version>
+        <junit-jupiter.version>6.0.3</junit-jupiter.version>
         <assertj-core.version>3.27.7</assertj-core.version>
         <mockito-core.version>4.11.0</mockito-core.version>
 
