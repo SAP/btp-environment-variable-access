@@ -35,7 +35,7 @@ jobs:
           echo "${{ secrets.CLOUD_SDK_AT_SAP_PRIVATE_GPG_KEY }}" | gpg --batch --import
           
           # Pre-cache the passphrase for signing operations
-#          echo "${{ secrets.CLOUD_SDK_AT_SAP_PRIVATE_GPG_PASSPHRASE }}" | gpg --batch --pinentry-mode loopback --passphrase-fd 0 --sign --armor --detach-sign '/dev/null' 2>/dev/null || true
+          # echo "${{ secrets.CLOUD_SDK_AT_SAP_PRIVATE_GPG_PASSPHRASE }}" | gpg --batch --pinentry-mode loopback --passphrase-fd 0 --sign --armor --detach-sign '/dev/null' 2>/dev/null || true
           
           # Get the GPG key ID
           GPG_KEY_ID=$(gpg --list-secret-keys --keyid-format LONG | grep sec | head -1 | awk '{print $2}' | cut -d'/' -f2)
