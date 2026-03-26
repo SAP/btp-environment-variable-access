@@ -34,8 +34,15 @@ jobs:
           # Import the GPG private key
           echo "${{ secrets.CLOUD_SDK_AT_SAP_PRIVATE_GPG_KEY }}" | gpg --batch --import
           
-          # Pre-cache the passphrase for signing operations
-          # echo "${{ secrets.CLOUD_SDK_AT_SAP_PRIVATE_GPG_PASSPHRASE }}" | gpg --batch --pinentry-mode loopback --passphrase-fd 0 --sign --armor --detach-sign '/dev/null' 2>/dev/null || true
+          # Configure GPG for non-interactive use in CI environment
+          mkdir -p ~/.gnupg
+          echo "use-agent" >> ~/.gnupg/gpg.conf
+          echo "pinentry-mode loopback" >> ~/.gnupg/gpg.conf
+          echo "allow-loopback-pinentry" >> ~/.gnupg/gpg-agent.conf
+          chmod 600 ~/.gnupg/gpg.conf ~/.gnupg/gpg-agent.conf
+          
+          # Restart gpg-agent to pick up new configuration
+          gpg-connect-agent reloadagent /bye
           
           # Get the GPG key ID
           GPG_KEY_ID=$(gpg --list-secret-keys --keyid-format LONG | grep sec | head -1 | awk '{print $2}' | cut -d'/' -f2)
@@ -71,9 +78,14 @@ jobs:
         run: mvn clean install -P release -Dgpg.skip
 
       - name: Commit Changes
+        env:
+          GPG_PASSPHRASE: ${{ secrets.CLOUD_SDK_AT_SAP_PRIVATE_GPG_PASSPHRASE }}
         run: |
           git config --global user.email "cloudsdk@sap.com"
           git config --global user.name "SAP Cloud SDK"
+          
+          # Use echo to provide passphrase to GPG via stdin
+          echo "$GPG_PASSPHRASE" | gpg --batch --pinentry-mode loopback --passphrase-fd 0 --armor --detach-sign /dev/null > /dev/null 2>&1
           
           git commit -S -am "bump version ${{ steps.bump-version.outputs.old_version}} -> ${{ steps.bump-version.outputs.new_version}}"
           git tag -s -m "Release version ${{ steps.bump-version.outputs.new_version}}" -a "${{ steps.bump-version.outputs.new_version}}"
