@@ -35,7 +35,7 @@ jobs:
           echo "${{ secrets.CLOUD_SDK_AT_SAP_PRIVATE_GPG_KEY }}" | gpg --batch --import
           
           # Pre-cache the passphrase for signing operations
-          echo "${{ secrets.CLOUD_SDK_AT_SAP_PRIVATE_GPG_PASSPHRASE }}" | gpg --batch --pinentry-mode loopback --passphrase-fd 0 --sign --armor --detach-sign /dev/null 2>/dev/null || true
+          echo "${{ secrets.CLOUD_SDK_AT_SAP_PRIVATE_GPG_PASSPHRASE }}" | gpg --batch --pinentry-mode loopback --passphrase-fd 0 --sign --armor --detach-sign '/dev/null' 2>/dev/null || true
           
           # Get the GPG key ID
           GPG_KEY_ID=$(gpg --list-secret-keys --keyid-format LONG | grep sec | head -1 | awk '{print $2}' | cut -d'/' -f2)
@@ -79,12 +79,12 @@ jobs:
           git tag -s -m "Release version ${{ steps.bump-version.outputs.new_version}}" -a "${{ steps.bump-version.outputs.new_version}}"
           git push --follow-tags
 
-      - name: Deploy Release
-        env:
-          GPG_PASSPHRASE: ${{ secrets.CLOUD_SDK_AT_SAP_PRIVATE_GPG_PASSPHRASE }}
-          OSSRH_USERNAME: ${{ secrets.CLOUD_SDK_AT_SAP_NEXUS_USER }}
-          OSSRH_PASSWORD: ${{ secrets.CLOUD_SDK_AT_SAP_NEXUS_PASSPHRASE }}
-        run: |
-          mvn deploy -P release -DskipTests \
-            -Dgpg.passphrase="${GPG_PASSPHRASE}" \
-            --settings .github/settings.xml
+      # - name: Deploy Release
+      #   env:
+      #     GPG_PASSPHRASE: ${{ secrets.CLOUD_SDK_AT_SAP_PRIVATE_GPG_PASSPHRASE }}
+      #     OSSRH_USERNAME: ${{ secrets.CLOUD_SDK_AT_SAP_NEXUS_USER }}
+      #     OSSRH_PASSWORD: ${{ secrets.CLOUD_SDK_AT_SAP_NEXUS_PASSPHRASE }}
+      #   run: |
+      #     mvn deploy -P release -DskipTests \
+      #       -Dgpg.passphrase="${GPG_PASSPHRASE}" \
+      #       --settings .github/settings.xml
