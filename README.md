@@ -10,9 +10,11 @@ Foundry and Kubernetes (K8S) environment.
 
 ## Requirements
 
-- Java `≥ 17`
-  - Java `≥ 8` may be used until version `0.10.5`, version `0.20.0` and onwards require Java `≥ 17` 
 - Maven `≥ 3.8.1`
+- Java `≥ 17` for version `0.20.0+`
+  - Java `≥ 8` until version `0.10.5`
+- (optional) Spring Boot 4 / Spring Framework 7 for version `0.30.0+`
+  - (optional) Spring Boot 3 / Spring Framework 6 until version `0.21.0`
 
 ### Building the Project
 
