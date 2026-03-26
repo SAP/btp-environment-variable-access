@@ -44,8 +44,12 @@ jobs:
           # Restart gpg-agent to pick up new configuration
           gpg-connect-agent reloadagent /bye
           
-          # Get the GPG key ID from the imported key
+          # Get the GPG key ID and keygrip from the imported key
           GPG_KEY_ID=$(gpg --list-secret-keys --keyid-format LONG | grep sec | head -1 | awk '{print $2}' | cut -d'/' -f2)
+          GPG_KEYGRIP=$(gpg --list-secret-keys --with-keygrip | grep -A 1 "sec" | grep "Keygrip" | awk '{print $3}')
+          
+          # Preset the passphrase in GPG agent for signing operations
+          echo "$MAVEN_GPG_PASSPHRASE" | /usr/lib/gnupg/gpg-preset-passphrase --preset "$GPG_KEYGRIP"
           
           # Configure git to use this specific GPG key for signing
           git config --global user.signingkey "$GPG_KEY_ID"
