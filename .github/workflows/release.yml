@@ -29,36 +29,13 @@ jobs:
         name: Checkout Repository
         with:
           token: ${{ secrets.CLOUD_SDK_AT_SAP_ALL_ACCESS_PAT }}
+
       - name: Import GPG Key
-        env:
-          GPG_PASSPHRASE: ${{ secrets.CLOUD_SDK_AT_SAP_PRIVATE_GPG_PASSPHRASE }}
         run: |
-          # Import the GPG private key
-          echo "${{ secrets.CLOUD_SDK_AT_SAP_PRIVATE_GPG_KEY }}" | gpg --batch --import
-          
-          # Configure GPG for non-interactive use in CI environment
-          mkdir -p ~/.gnupg
-          echo "use-agent" >> ~/.gnupg/gpg.conf
-          echo "pinentry-mode loopback" >> ~/.gnupg/gpg.conf
-          echo "allow-loopback-pinentry" >> ~/.gnupg/gpg-agent.conf
-          echo "max-cache-ttl 7200" >> ~/.gnupg/gpg-agent.conf
-          echo "default-cache-ttl 7200" >> ~/.gnupg/gpg-agent.conf
-          chmod 600 ~/.gnupg/gpg.conf ~/.gnupg/gpg-agent.conf
-          
-          # Restart gpg-agent to pick up new configuration
-          gpg-connect-agent reloadagent /bye
-          
-          # Get the GPG key ID and keygrip
-          GPG_KEY_ID=$(gpg --list-secret-keys --keyid-format LONG | grep sec | head -1 | awk '{print $2}' | cut -d'/' -f2)
-          GPG_KEYGRIP=$(gpg --list-secret-keys --with-keygrip | grep -A 1 "sec" | grep "Keygrip" | awk '{print $3}')
-          
-          # Preset the passphrase in GPG agent
-          echo "$GPG_PASSPHRASE" | /usr/lib/gnupg/gpg-preset-passphrase --preset "$GPG_KEYGRIP"
-          
-          # Configure git to use GPG signing
-          git config --global user.signingkey "$GPG_KEY_ID"
-          git config --global commit.gpgsign true
-          git config --global gpg.program gpg
+          echo "${{ secrets.CLOUD_SDK_AT_SAP_PRIVATE_GPG_KEY }}" | gpg --batch --passphrase "$MAVEN_GPG_PASSPHRASE" --import
+        env:
+          MAVEN_GPG_PASSPHRASE: ${{ secrets.CLOUD_SDK_AT_SAP_PRIVATE_GPG_PASSPHRASE }}
+
       - uses: actions/setup-java@v5
         name: Setup JDK
         with:
@@ -86,14 +63,9 @@ jobs:
         run: mvn clean install -P release -Dgpg.skip
 
       - name: Commit Changes
-        env:
-          GPG_TTY: $(tty)
         run: |
           git config --global user.email "cloudsdk@sap.com"
           git config --global user.name "SAP Cloud SDK"
-          
-          # Set GPG_TTY for proper terminal handling
-          export GPG_TTY=$(tty)
           
           git commit -S -am "bump version ${{ steps.bump-version.outputs.old_version}} -> ${{ steps.bump-version.outputs.new_version}}"
           git tag -s -m "Release version ${{ steps.bump-version.outputs.new_version}}" -a "${{ steps.bump-version.outputs.new_version}}"
