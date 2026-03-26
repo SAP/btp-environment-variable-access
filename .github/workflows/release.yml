@@ -34,6 +34,16 @@ jobs:
         run: |
           echo "${{ secrets.CLOUD_SDK_AT_SAP_PRIVATE_GPG_KEY }}" | gpg --batch --passphrase "$MAVEN_GPG_PASSPHRASE" --import
           
+          # Configure GPG for non-interactive use in CI environment
+          mkdir -p ~/.gnupg
+          echo "use-agent" >> ~/.gnupg/gpg.conf
+          echo "pinentry-mode loopback" >> ~/.gnupg/gpg.conf
+          echo "allow-loopback-pinentry" >> ~/.gnupg/gpg-agent.conf
+          chmod 600 ~/.gnupg/gpg.conf ~/.gnupg/gpg-agent.conf
+          
+          # Restart gpg-agent to pick up new configuration
+          gpg-connect-agent reloadagent /bye
+          
           # Get the GPG key ID from the imported key
           GPG_KEY_ID=$(gpg --list-secret-keys --keyid-format LONG | grep sec | head -1 | awk '{print $2}' | cut -d'/' -f2)
           
