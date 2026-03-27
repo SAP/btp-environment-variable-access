@@ -30,32 +30,12 @@ jobs:
         with:
           token: ${{ secrets.CLOUD_SDK_AT_SAP_ALL_ACCESS_PAT }}
 
-      - name: Import GPG Key
-        run: |
-          echo "${{ secrets.CLOUD_SDK_AT_SAP_PRIVATE_GPG_KEY }}" | gpg --batch --passphrase "$MAVEN_GPG_PASSPHRASE" --import
-          
-          # Configure GPG for non-interactive use in CI environment
-          mkdir -p ~/.gnupg
-          echo "use-agent" >> ~/.gnupg/gpg.conf
-          echo "pinentry-mode loopback" >> ~/.gnupg/gpg.conf
-          echo "allow-loopback-pinentry" >> ~/.gnupg/gpg-agent.conf
-          chmod 600 ~/.gnupg/gpg.conf ~/.gnupg/gpg-agent.conf
-          
-          # Restart gpg-agent to pick up new configuration
-          gpg-connect-agent reloadagent /bye
-          
-          # Get the GPG key ID and keygrip from the imported key
-          GPG_KEY_ID=$(gpg --list-secret-keys --keyid-format LONG | grep sec | head -1 | awk '{print $2}' | cut -d'/' -f2)
-          GPG_KEYGRIP=$(gpg --list-secret-keys --with-keygrip | grep -A 1 "sec" | grep "Keygrip" | awk '{print $3}')
-          
-          # Preset the passphrase in GPG agent for signing operations
-          echo "$MAVEN_GPG_PASSPHRASE" | /usr/lib/gnupg/gpg-preset-passphrase --preset "$GPG_KEYGRIP"
-          
-          # Configure git to use this specific GPG key for signing
-          git config --global user.signingkey "$GPG_KEY_ID"
-          git config --global commit.gpgsign true
-        env:
-          MAVEN_GPG_PASSPHRASE: ${{ secrets.CLOUD_SDK_AT_SAP_PRIVATE_GPG_PASSPHRASE }}
+      - uses: crazy-max/ghaction-import-gpg@v7
+        with:
+          gpg_private_key: ${{ secrets.CLOUD_SDK_AT_SAP_PRIVATE_GPG_KEY }}
+          passphrase: ${{ secrets.CLOUD_SDK_AT_SAP_PRIVATE_GPG_PASSPHRASE }}
+          git_user_signingkey: true
+          git_commit_gpgsign: true
 
       - uses: actions/setup-java@v5
         name: Setup JDK
