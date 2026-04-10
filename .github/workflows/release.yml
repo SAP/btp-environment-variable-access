@@ -70,7 +70,7 @@ jobs:
 
       - name: Deploy
         run: |
-          MVN_ARGS="${{ env.MVN_CLI_ARGS }} -Drelease -s settings.xml -Dgpg.executable=gpg"
+          MVN_ARGS="${{ env.MVN_CLI_ARGS }} -Drelease -s settings.xml"
           mvn deploy $MVN_ARGS
         env:
           MAVEN_GPG_PASSPHRASE: ${{ secrets.CLOUD_SDK_AT_SAP_PRIVATE_GPG_PASSPHRASE }}
