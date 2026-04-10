@@ -32,13 +32,6 @@
         <url>https://github.com/SAP/btp-environment-variable-access</url>
     </scm>
 
-    <distributionManagement>
-        <snapshotRepository>
-            <id>ossrh</id>
-            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
-        </snapshotRepository>
-    </distributionManagement>
-
     <properties>
         <cloud-environment.version>0.21.0</cloud-environment.version>
     </properties>
