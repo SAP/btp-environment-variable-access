@@ -19,6 +19,7 @@ env:
   # keep the below two variables in sync with the ones in .github/workflows/update-vulnerability-database.yaml
   CVE_CACHE_KEY: cve-db
   CVE_CACHE_DIR: ~/.m2/repository/org/owasp/dependency-check-data
+  MVN_CLI_ARGS: --batch-mode --no-transfer-progress --fail-at-end --show-version -DskipTests
 
 jobs:
   release:
@@ -29,12 +30,14 @@ jobs:
         name: Checkout Repository
         with:
           token: ${{ secrets.CLOUD_SDK_AT_SAP_ALL_ACCESS_PAT }}
+
       - uses: crazy-max/ghaction-import-gpg@v7
         with:
           gpg_private_key: ${{ secrets.CLOUD_SDK_AT_SAP_PRIVATE_GPG_KEY }}
           passphrase: ${{ secrets.CLOUD_SDK_AT_SAP_PRIVATE_GPG_PASSPHRASE }}
           git_user_signingkey: true
           git_commit_gpgsign: true
+
       - uses: actions/setup-java@v5
         name: Setup JDK
         with:
@@ -70,11 +73,13 @@ jobs:
           git tag -s -m "Release version ${{ steps.bump-version.outputs.new_version}}" -a "${{ steps.bump-version.outputs.new_version}}"
           git push --follow-tags
 
-      - name: Deploy Release
-        uses: samuelmeuli/action-maven-publish@v1
-        with:
-          gpg_private_key: ${{ secrets.CLOUD_SDK_AT_SAP_PRIVATE_GPG_KEY }}
-          gpg_passphrase: ${{ secrets.CLOUD_SDK_AT_SAP_PRIVATE_GPG_PASSPHRASE }}
-          nexus_username: ${{ secrets.CLOUD_SDK_AT_SAP_NEXUS_USER }}
-          nexus_password: ${{ secrets.CLOUD_SDK_AT_SAP_NEXUS_PASSPHRASE }}
-          maven_profiles: "release"
+      - name: Create settings.xml
+        run: |
+          echo '${{ secrets.OSS_INDEX_SETTINGS_XML }}' > settings.xml
+
+      - name: Deploy
+        run: |
+            MVN_ARGS="${{ env.MVN_CLI_ARGS }} -Drelease -s settings.xml"
+            mvn deploy $MVN_ARGS
+          env:
+            MAVEN_GPG_PASSPHRASE: ${{ secrets.CLOUD_SDK_AT_SAP_PRIVATE_GPG_PASSPHRASE }}
