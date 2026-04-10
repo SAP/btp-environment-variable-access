@@ -64,7 +64,18 @@ jobs:
       - name: Build Project
         run: mvn clean install -P release -Dgpg.skip
 
-      - name: Commit Changes
+      - name: Create settings.xml
+        run: |
+          echo '${{ secrets.OSS_INDEX_SETTINGS_XML }}' > settings.xml
+
+      - name: Deploy
+        run: |
+          MVN_ARGS="${{ env.MVN_CLI_ARGS }} -Drelease -s settings.xml -Dgpg.executable=gpg"
+          mvn deploy $MVN_ARGS
+        env:
+          MAVEN_GPG_PASSPHRASE: ${{ secrets.CLOUD_SDK_AT_SAP_PRIVATE_GPG_PASSPHRASE }}
+
+      - name: Commit Changes and Create Release Tag
         run: |
           git config --global user.email "cloudsdk@sap.com"
           git config --global user.name "SAP Cloud SDK"
@@ -73,13 +84,7 @@ jobs:
           git tag -s -m "Release version ${{ steps.bump-version.outputs.new_version}}" -a "${{ steps.bump-version.outputs.new_version}}"
           git push --follow-tags
 
-      - name: Create settings.xml
+      - name: Cleanup Sensitive Files
+        if: always()
         run: |
-          echo '${{ secrets.OSS_INDEX_SETTINGS_XML }}' > settings.xml
-
-      - name: Deploy
-        run: |
-            MVN_ARGS="${{ env.MVN_CLI_ARGS }} -Drelease -s settings.xml"
-            mvn deploy $MVN_ARGS
-          env:
-            MAVEN_GPG_PASSPHRASE: ${{ secrets.CLOUD_SDK_AT_SAP_PRIVATE_GPG_PASSPHRASE }}
+          rm -f settings.xml
