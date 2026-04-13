@@ -8,6 +8,7 @@
         <version>0.21.0</version>
     </parent>
     <artifactId>java-access-api</artifactId>
+    <name>Java Access API</name>
 
     <properties>
         <project.rootdir>${project.basedir}/../../</project.rootdir>

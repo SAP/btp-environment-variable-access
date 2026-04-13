@@ -8,6 +8,7 @@
         <version>0.21.0</version>
     </parent>
     <artifactId>java-core-api</artifactId>
+    <name>Java Core API</name>
 
     <properties>
         <project.rootdir>${project.basedir}/../../</project.rootdir>
