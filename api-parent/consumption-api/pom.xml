@@ -5,9 +5,10 @@
     <parent>
         <groupId>com.sap.cloud.environment.servicebinding.api</groupId>
         <artifactId>java-api-parent</artifactId>
-        <version>0.21.0</version>
+        <version>0.30.0</version>
     </parent>
     <artifactId>java-consumption-api</artifactId>
+    <name>Java Consumption API</name>
 
     <properties>
         <project.rootdir>${project.basedir}/../../</project.rootdir>

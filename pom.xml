@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.sap.cloud.environment.servicebinding</groupId>
     <artifactId>java-parent</artifactId>
-    <version>0.21.0</version>
+    <version>0.30.0</version>
     <packaging>pom</packaging>
     <name>java-parent</name>
     <description>Java Client Library to access BTP environment service bindings</description>
@@ -49,7 +49,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
-        <cloud-environment.version>0.21.0</cloud-environment.version>
+        <cloud-environment.version>0.30.0</cloud-environment.version>
 
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
@@ -67,7 +67,7 @@
         <maven-javadoc-plugin.version>3.12.0</maven-javadoc-plugin.version>
         <maven-gpg-plugin.version>3.2.8</maven-gpg-plugin.version>
         <nexus-staging-maven-plugin.version>1.7.0</nexus-staging-maven-plugin.version>
-        <dependency-check-maven-plugin.version>12.2.0</dependency-check-maven-plugin.version>
+        <dependency-check-maven-plugin.version>12.2.1</dependency-check-maven-plugin.version>
         <sortpom-maven-plugin.version>2.15.0</sortpom-maven-plugin.version>
         <formatter-maven-plugin.version>2.16.0</formatter-maven-plugin.version>
         <impsort-maven-plugin.version>1.6.2</impsort-maven-plugin.version>
