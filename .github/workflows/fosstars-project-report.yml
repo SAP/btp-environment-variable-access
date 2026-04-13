@@ -41,7 +41,7 @@ jobs:
 
       - name: "Create settings.xml"
         run: |
-          echo '${{ secrets.OSS_INDEX_SETTINGS_XML }}' > settings.xml
+          echo '${{ secrets.MAVEN_CENTRAL_SETTINGS_XML }}' > settings.xml
 
       - name: "CVE Scan"
         env:
