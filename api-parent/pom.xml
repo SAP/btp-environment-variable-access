@@ -10,6 +10,7 @@
     <groupId>com.sap.cloud.environment.servicebinding.api</groupId>
     <artifactId>java-api-parent</artifactId>
     <packaging>pom</packaging>
+    <name>Java API Parent</name>
 
     <modules>
         <module>core-api</module>
