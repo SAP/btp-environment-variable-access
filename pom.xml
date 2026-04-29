@@ -499,6 +499,7 @@
                             <version>0.10.0</version>
                             <extensions>true</extensions>
                             <configuration>
+                                <deploymentName>BTP Environment Service Binding Access ${project.version}</deploymentName>
                                 <publishingServerId>central</publishingServerId>
                                 <autoPublish>true</autoPublish>
                             </configuration>
