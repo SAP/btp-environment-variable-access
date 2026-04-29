@@ -11,8 +11,8 @@
 
     <properties>
         <project.rootdir>${project.basedir}/../</project.rootdir>
-        <spring.version>7.0.6</spring.version>
-        <spring-boot.version>4.0.5</spring-boot.version>
+        <spring.version>7.0.7</spring.version>
+        <spring-boot.version>4.0.6</spring-boot.version>
     </properties>
 
     <dependencies>
