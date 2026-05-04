@@ -67,7 +67,7 @@
         <maven-javadoc-plugin.version>3.12.0</maven-javadoc-plugin.version>
         <maven-gpg-plugin.version>3.2.8</maven-gpg-plugin.version>
         <nexus-staging-maven-plugin.version>1.7.0</nexus-staging-maven-plugin.version>
-        <dependency-check-maven-plugin.version>12.2.1</dependency-check-maven-plugin.version>
+        <dependency-check-maven-plugin.version>12.2.2</dependency-check-maven-plugin.version>
         <sortpom-maven-plugin.version>2.15.0</sortpom-maven-plugin.version>
         <formatter-maven-plugin.version>2.16.0</formatter-maven-plugin.version>
         <impsort-maven-plugin.version>1.6.2</impsort-maven-plugin.version>
