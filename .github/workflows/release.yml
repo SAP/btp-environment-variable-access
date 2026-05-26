@@ -21,6 +21,9 @@ env:
   CVE_CACHE_DIR: ~/.m2/repository/org/owasp/dependency-check-data
   MVN_CLI_ARGS: --batch-mode --no-transfer-progress --fail-at-end --show-version -DskipTests
 
+permissions:
+  contents: read # uses PAT
+
 jobs:
   release:
     runs-on: ubuntu-latest

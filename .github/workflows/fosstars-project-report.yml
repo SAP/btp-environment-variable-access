@@ -12,6 +12,10 @@ env:
   CVE_CACHE_DIR: ~/.m2/repository/org/owasp/dependency-check-data
   CVE_CACHE_REF: refs/heads/main
 
+permissions:
+  contents: write # needed for Fosstars Rating step
+  actions: write # needed for deleting/creating CVE cache
+
 jobs:
   create_fosstars_report:
     runs-on: ubuntu-latest

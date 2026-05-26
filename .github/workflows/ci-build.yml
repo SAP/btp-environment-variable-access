@@ -11,6 +11,9 @@ env:
   CVE_CACHE_KEY: cve-db
   CVE_CACHE_DIR: ~/.m2/repository/org/owasp/dependency-check-data
 
+permissions:
+  contents: read # checks out code
+
 jobs:
   build:
     runs-on: ubuntu-latest
