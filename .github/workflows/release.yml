@@ -21,20 +21,30 @@ env:
   CVE_CACHE_DIR: ~/.m2/repository/org/owasp/dependency-check-data
   MVN_CLI_ARGS: --batch-mode --no-transfer-progress --fail-at-end --show-version -DskipTests
 
-permissions:
-  contents: read # uses PAT
-
 jobs:
   release:
     runs-on: ubuntu-latest
     name: Perform Release
     steps:
-      - uses: actions/checkout@v6
-        name: Checkout Repository
+      - name: 'Create GitHub App Token'
+        id: app-token
+        uses: actions/create-github-app-token@v3
         with:
-          token: ${{ secrets.CLOUD_SDK_AT_SAP_ALL_ACCESS_PAT }}
+          client-id: ${{ secrets.SAP_CLOUD_SDK_BOT_CLIENT_ID }}
+          private-key: ${{ secrets.SAP_CLOUD_SDK_BOT_PRIVATE_KEY }}
+          owner: SAP
+          repositories: cloud-sdk-java,cloud-sdk
+          permission-contents: write
+          permission-pull-requests: write
+
+
+      - uses: actions/checkout@v6
+        name: 'Checkout Repository'
+        with:
+          token: ${{ steps.app-token.outputs.token }}
 
       - uses: crazy-max/ghaction-import-gpg@v7
+        name: 'Import GPG Key'
         with:
           gpg_private_key: ${{ secrets.CLOUD_SDK_AT_SAP_PRIVATE_GPG_KEY }}
           passphrase: ${{ secrets.CLOUD_SDK_AT_SAP_PRIVATE_GPG_PASSPHRASE }}
@@ -42,19 +52,19 @@ jobs:
           git_commit_gpgsign: true
 
       - uses: actions/setup-java@v5
-        name: Setup JDK
+        name: 'Setup JDK'
         with:
           distribution: 'sapmachine'
           java-version: 17
 
-      - name: Restore CVE Database
+      - name: 'Restore CVE Database'
         uses: actions/cache/restore@v5
         with:
           path: ${{ env.CVE_CACHE_DIR }}
           key: ${{ env.CVE_CACHE_KEY }}
           # fail-on-cache-miss: true
 
-      - name: Bump Version
+      - name: 'Bump Version'
         id: bump-version
         working-directory: .scripts/bump-version
         run: |
@@ -64,21 +74,21 @@ jobs:
             python maven_version.py bump --bump-type "${{ inputs.releaseType }}" "../../pom.xml" "../../modules-bom/pom.xml" "../../bom/pom.xml"
           fi
 
-      - name: Build Project
+      - name: 'Build Project'
         run: mvn clean install -P release -Dgpg.skip
 
-      - name: Create settings.xml
+      - name: 'Create settings.xml'
         run: |
           echo '${{ secrets.MAVEN_CENTRAL_SETTINGS_XML }}' > settings.xml
 
-      - name: Deploy
+      - name: 'Deploy'
         run: |
           MVN_ARGS="${{ env.MVN_CLI_ARGS }} -Drelease -s settings.xml"
           mvn deploy $MVN_ARGS
         env:
           MAVEN_GPG_PASSPHRASE: ${{ secrets.CLOUD_SDK_AT_SAP_PRIVATE_GPG_PASSPHRASE }}
 
-      - name: Commit Changes and Create Release Tag
+      - name: 'Commit Changes and Create Release Tag'
         run: |
           git config --global user.email "cloudsdk@sap.com"
           git config --global user.name "SAP Cloud SDK"
@@ -87,7 +97,7 @@ jobs:
           git tag -s -m "Release version ${{ steps.bump-version.outputs.new_version}}" -a "${{ steps.bump-version.outputs.new_version}}"
           git push --follow-tags
 
-      - name: Cleanup Sensitive Files
+      - name: 'Cleanup Sensitive Files'
         if: always()
         run: |
           rm -f settings.xml

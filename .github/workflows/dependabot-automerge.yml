@@ -14,14 +14,22 @@ env:
 jobs:
   review-prs:
     runs-on: ubuntu-latest
-    permissions:
-      pull-requests: write
-      contents: write
     steps:
-      - name: Checkout
+      - name: 'Checkout'
         uses: actions/checkout@v6
 
-      - name: Approve and Merge PRs
+      - name: 'Create GitHub App Token'
+        id: app-token
+        uses: actions/create-github-app-token@v3
+        with:
+          client-id: ${{ secrets.SAP_CLOUD_SDK_BOT_CLIENT_ID }}
+          private-key: ${{ secrets.SAP_CLOUD_SDK_BOT_PRIVATE_KEY }}
+          owner: SAP
+          repositories: cloud-sdk-java
+          permission-contents: write
+          permission-pull-requests: write
+
+      - name: 'Approve and Merge PRs'
         run: |
           PRS=$(gh pr list --app "dependabot" --state "open" --json number,title,autoMergeRequest,reviewDecision,mergeable,mergeStateStatus)
           PR_NUMBERS=
@@ -70,4 +78,4 @@ jobs:
             fi
           done <<< "$PR_NUMBERS"
         env:
-          GH_TOKEN: ${{ secrets.CLOUD_SDK_AT_SAP_ALL_ACCESS_PAT }}
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
