@@ -35,7 +35,7 @@
     <properties>
         <cloud-environment.version>0.31.0</cloud-environment.version>
         <org.json.version>20251224</org.json.version>
-        <slf4j-api.version>2.0.17</slf4j-api.version>
+        <slf4j-api.version>2.0.18</slf4j-api.version>
     </properties>
 
     <dependencyManagement>
