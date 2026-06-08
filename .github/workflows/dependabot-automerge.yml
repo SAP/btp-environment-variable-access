@@ -15,59 +15,46 @@ jobs:
   review-prs:
     runs-on: ubuntu-latest
     permissions:
-      pull-requests: write
-      contents: write
+      contents: read # all write operations use app token
     steps:
-      - name: Checkout
+      - name: 'Checkout'
         uses: actions/checkout@v6
 
-      - name: Approve and Merge PRs
+      - name: 'Create GitHub App Token'
+        id: app-token
+        uses: actions/create-github-app-token@v3
+        with:
+          client-id: ${{ secrets.SAP_CLOUD_SDK_BOT_CLIENT_ID }}
+          private-key: ${{ secrets.SAP_CLOUD_SDK_BOT_PRIVATE_KEY }}
+          owner: SAP
+          repositories: btp-environment-variable-access
+          permission-contents: write
+          permission-pull-requests: write
+
+      - name: 'Approve and Merge PRs'
         run: |
-          PRS=$(gh pr list --app "dependabot" --state "open" --json number,title,autoMergeRequest,reviewDecision,mergeable,mergeStateStatus)
+          PRS=$(gh pr list --app "dependabot" --state "open" --json number,title)
           PR_NUMBERS=
           while IFS= read -r GROUP; do
             if [[ -z "$GROUP" ]]; then
               continue
             fi
-          
+
             MATCHES=$(jq -r --arg group "$GROUP" '.[] | select(.title | contains($group)) | .number' <<< "$PRS")
             echo "[DEBUG] Found PRs for group '$GROUP': '$MATCHES'"
-          
+
             PR_NUMBERS="$MATCHES"$'\n'"$PR_NUMBERS"
           done <<< "${{ env.DEPENDABOT_GROUPS }}"
           echo "[DEBUG] Approving and Merging following PRs: '$PR_NUMBERS'"
-          
+
           while IFS= read -r PR_NUMBER; do
             if [[ -z "$PR_NUMBER" ]]; then
               continue
             fi
           
             echo "[DEBUG] Approving and Merging PR #$PR_NUMBER"
-          
-            # check if PR is already approved
-            REVIEW_DECISION=$(jq -r --arg pr "$PR_NUMBER" '.[] | select(.number == ($pr | tonumber)) | .reviewDecision' <<< "$PRS")
-            if [[ "$REVIEW_DECISION" == "APPROVED" ]]; then
-              echo "[DEBUG] PR #$PR_NUMBER is already approved, skipping"
-            else
-              echo "[DEBUG] PR #$PR_NUMBER is not approved yet, approving"
-              gh pr review "$PR_NUMBER" --approve
-            fi
-          
-            # check if PR is already auto-mergeable
-            AUTO_MERGE_REQUEST=$(jq -r --arg pr "$PR_NUMBER" '.[] | select(.number == ($pr | tonumber)) | .autoMergeRequest' <<< "$PRS")
-            if [[ -n "$AUTO_MERGE_REQUEST" ]]; then
-              echo "[DEBUG] PR #$PR_NUMBER is already auto-mergeable, skipping"
-            else
-              echo "[DEBUG] PR #$PR_NUMBER is not auto-mergeable yet, enabling auto-merge"
-              gh pr merge "$PR_NUMBER" --auto --squash
-            fi
-          
-            # check if PR is behind, so we can instruct dependabot to rebase
-            MERGE_STATE_STATUS=$(jq -r --arg pr "$PR_NUMBER" '.[] | select(.number == ($pr | tonumber)) | .mergeStateStatus' <<< "$PRS")
-            if [[ "$MERGE_STATE_STATUS" == "BEHIND" ]]; then
-              echo "[DEBUG] PR #$PR_NUMBER is behind, instructing dependabot to rebase"
-              gh pr comment "$PR_NUMBER" --body "@dependabot rebase"
-            fi
+            gh pr merge "$PR_NUMBER" --auto --squash
+            gh pr review "$PR_NUMBER" --approve
           done <<< "$PR_NUMBERS"
         env:
-          GH_TOKEN: ${{ secrets.CLOUD_SDK_AT_SAP_ALL_ACCESS_PAT }}
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
