@@ -38,7 +38,7 @@ jobs:
           permission-pull-requests: write
 
 
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
         name: 'Checkout Repository'
         with:
           token: ${{ steps.app-token.outputs.token }}
@@ -58,7 +58,7 @@ jobs:
           java-version: 17
 
       - name: 'Restore CVE Database'
-        uses: actions/cache/restore@v5
+        uses: actions/cache/restore@v6
         with:
           path: ${{ env.CVE_CACHE_DIR }}
           key: ${{ env.CVE_CACHE_KEY }}
