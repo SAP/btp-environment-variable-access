@@ -51,7 +51,7 @@ jobs:
           git_user_signingkey: true
           git_commit_gpgsign: true
 
-      - uses: actions/setup-java@v5
+      - uses: actions/setup-java@v5.6.0
         name: 'Setup JDK'
         with:
           distribution: 'sapmachine'
