@@ -1,23 +1,19 @@
 package com.sap.cloud.environment.servicebinding;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.Collections;
-import java.util.List;
-
-import javax.annotation.Nonnull;
-
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.io.TempDir;
-
 import com.sap.cloud.environment.servicebinding.api.ServiceBinding;
 import com.sap.cloud.environment.servicebinding.api.ServiceBindingAccessor;
+import org.junit.jupiter.api.Test;
+
+import javax.annotation.Nonnull;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.List;
+import java.util.function.Function;
 
 import static com.sap.cloud.environment.servicebinding.SapServiceOperatorLayeredServiceBindingAccessor.DEFAULT_PARSING_STRATEGIES;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -31,6 +27,38 @@ class SapServiceOperatorLayeredServiceBindingAccessorTest
         assertThat(new SapServiceOperatorLayeredServiceBindingAccessor()).isNotNull();
     }
 
+    @SuppressWarnings( "unchecked" )
+    @Test
+    void getServiceBindingsReadsEnvironmentVariable()
+    {
+        final Function<String, String> reader = mock(Function.class);
+        when(reader.apply(any())).thenReturn(null);
+
+        final SapServiceOperatorLayeredServiceBindingAccessor sut =
+            new SapServiceOperatorLayeredServiceBindingAccessor(reader, DEFAULT_PARSING_STRATEGIES);
+
+        sut.getServiceBindings();
+
+        verify(reader, times(1)).apply(eq("SERVICE_BINDING_ROOT"));
+    }
+
+    @SuppressWarnings( "unchecked" )
+    @Test
+    void environmentVariableIsReadEveryTime()
+    {
+        final Function<String, String> reader = mock(Function.class);
+        when(reader.apply(any())).thenReturn(null);
+
+        final SapServiceOperatorLayeredServiceBindingAccessor sut =
+            new SapServiceOperatorLayeredServiceBindingAccessor(reader, DEFAULT_PARSING_STRATEGIES);
+
+        sut.getServiceBindings();
+        sut.getServiceBindings();
+        sut.getServiceBindings();
+
+        verify(reader, times(3)).apply(eq("SERVICE_BINDING_ROOT"));
+    }
+
     @Test
     void parseMixedBindings()
     {
@@ -41,6 +69,31 @@ class SapServiceOperatorLayeredServiceBindingAccessorTest
 
         final List<ServiceBinding> serviceBindings = sut.getServiceBindings();
 
+        assertThat(serviceBindings).hasSize(3);
+
+        assertContainsSecretRootKeyBinding(serviceBindings);
+        assertContainsSecretKeyBinding(serviceBindings);
+        assertContainsDataBinding(serviceBindings);
+    }
+
+    @SuppressWarnings( "unchecked" )
+    @Test
+    void environmentVariableTakesPrecedence()
+    {
+        final Path preferredPath =
+            TestResource.get(SapServiceOperatorLayeredServiceBindingAccessorTest.class, "MixedBindings");
+        final Path ignoredPath =
+            TestResource.get(SapServiceOperatorLayeredServiceBindingAccessorTest.class, "InvalidBinding");
+
+        final Function<String, String> reader = mock(Function.class);
+        when(reader.apply(any())).thenReturn(preferredPath.toString());
+
+        final SapServiceOperatorLayeredServiceBindingAccessor sut =
+            new SapServiceOperatorLayeredServiceBindingAccessor(reader, ignoredPath, DEFAULT_PARSING_STRATEGIES);
+
+        final List<ServiceBinding> serviceBindings = sut.getServiceBindings();
+
+        // if the accessor had used the 'ignoredPath', we would've gotten 2 bindings only (see 'InvalidBinding' test)
         assertThat(serviceBindings).hasSize(3);
 
         assertContainsSecretRootKeyBinding(serviceBindings);
